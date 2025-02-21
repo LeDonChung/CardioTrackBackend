@@ -22,12 +22,14 @@ import java.util.Objects;
 public class UserController {
     @Autowired
     private UserService userService;
-    @Autowired
-    private JwtService jwtService;
-
     @PostMapping("/register")
     public ResponseEntity<BaseResponse<UserResponse>> register(@RequestBody UserRegisterRequest request) throws UserException {
-        log.info("Register request: " + request);
+        log.info("Register user: " + request);
+        // Kiểm tra mật khẩu và xác nhận mật khẩu có trùng nhau không
+        if (!Objects.equals(request.getPassword(), request.getRePassword())) {
+            throw new UserException("Mật khẩu và xác nhận mật khẩu không trùng khớp.");
+        }
+
         UserResponse result = userService.register(request);
 
         return ResponseEntity.ok(
@@ -43,7 +45,6 @@ public class UserController {
     @PostMapping("/validate-token")
     public ResponseEntity<BaseResponse<UserResponse>> validationToken(@RequestParam("token") String token) {
         UserResponse user = userService.getMe(token);
-        log.info("User: " + user);
         return new ResponseEntity<>(
                 BaseResponse
                         .<UserResponse>builder()

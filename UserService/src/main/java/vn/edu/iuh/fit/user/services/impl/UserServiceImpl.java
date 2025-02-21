@@ -40,8 +40,6 @@ public class UserServiceImpl implements UserService {
             throw new UserException(SystemConstraints.USERNAME_IS_EXISTS);
         }
 
-
-
         Role role = roleRepository.findByCode("USER");
 
 
