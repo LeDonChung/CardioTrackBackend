@@ -1,4 +1,4 @@
-package vn.edu.iuh.fit.user.utils;
+package vn.edu.iuh.fit.auth.utils;
 
 public class SystemConstraints {
     public static final String ENCRYPTION_PASSWORD = "tc-pharmacy";

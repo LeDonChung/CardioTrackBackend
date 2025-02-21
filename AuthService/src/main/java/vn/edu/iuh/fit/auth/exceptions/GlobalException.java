@@ -1,12 +1,13 @@
-package vn.edu.iuh.fit.user.exceptions;
+package vn.edu.iuh.fit.auth.exceptions;
 
+import feign.FeignException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import vn.edu.iuh.fit.user.model.dto.response.BaseResponse;
+import vn.edu.iuh.fit.auth.model.dto.response.BaseResponse;
 
 import java.time.LocalDateTime;
 
@@ -40,6 +41,10 @@ public class GlobalException extends ResponseEntityExceptionHandler {
                 .timeStamp(LocalDateTime.now())
                 .build();
         return new ResponseEntity<>(errorDetail, HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(FeignException.class)
+    public ResponseEntity<String> handlerFeignException(FeignException e, WebRequest req) {
+        return new ResponseEntity<>(e.contentUTF8(), HttpStatus.BAD_REQUEST);
     }
 
 
