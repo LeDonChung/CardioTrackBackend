@@ -1,4 +1,4 @@
-package vn.edu.iuh.fit.auth.resource;
+package vn.edu.iuh.fit.auth.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
