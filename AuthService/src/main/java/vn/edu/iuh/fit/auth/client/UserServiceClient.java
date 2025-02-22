@@ -21,4 +21,10 @@ public interface UserServiceClient {
 
     @PostMapping("/login")
     ResponseEntity<BaseResponse<Object>> login(@RequestBody LoginRequest loginRequest);
+
+    @PostMapping("/generation-otp")
+    ResponseEntity<BaseResponse<Boolean>> generationOtp(@RequestParam("phoneNumber") String phoneNumber);
+
+    @PostMapping("/verify-otp")
+    ResponseEntity<BaseResponse<Boolean>> verifyOtp(@RequestParam("phoneNumber") String phoneNumber, @RequestParam("otp") String otp);
 }

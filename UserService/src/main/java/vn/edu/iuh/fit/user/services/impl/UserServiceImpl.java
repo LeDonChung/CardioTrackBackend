@@ -1,6 +1,7 @@
 package vn.edu.iuh.fit.user.services.impl;
 
 import com.netflix.discovery.converters.Auto;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import vn.edu.iuh.fit.user.model.entity.Role;
 import vn.edu.iuh.fit.user.model.entity.User;
 import vn.edu.iuh.fit.user.repositories.RoleRepository;
 import vn.edu.iuh.fit.user.repositories.UserRepository;
+import vn.edu.iuh.fit.user.services.OTPService;
 import vn.edu.iuh.fit.user.services.UserService;
 import vn.edu.iuh.fit.user.utils.SystemConstraints;
 
@@ -21,6 +23,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @Service
+@Slf4j
 public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
@@ -32,6 +35,8 @@ public class UserServiceImpl implements UserService {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private JwtService jwtService;
+    @Autowired
+    private OTPService otpService;
     @Override
     public UserResponse register(UserRegisterRequest request) throws UserException {
 
@@ -47,6 +52,8 @@ public class UserServiceImpl implements UserService {
 
         user.setRoles(Set.of(role));
         user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setEnabled(true);
+        user.setVerify(true);
 
         User savedUser = userRepository.save(user);
 
@@ -64,5 +71,17 @@ public class UserServiceImpl implements UserService {
         String username = jwtService.getUsernameFromToken(token);
         Optional<User> userOptional = userRepository.findByUsername(username);
         return userOptional.map(user -> userMapper.toUserResponse(user)).orElse(null);
+    }
+
+    @Override
+    public Boolean sendOtp(String phoneNumber) throws UserException {
+        String otp = otpService.generateOTP(phoneNumber);
+        log.info("Phone: " + phoneNumber + " OTP: " + otp);
+        return otp != null;
+    }
+
+    @Override
+    public Boolean verifyOtp(String phoneNumber, String otp) throws UserException {
+        return otpService.validateOTP(phoneNumber, otp);
     }
 }

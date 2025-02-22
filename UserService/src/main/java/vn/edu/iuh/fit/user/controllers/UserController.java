@@ -13,6 +13,7 @@ import vn.edu.iuh.fit.user.model.dto.request.UserRegisterRequest;
 import vn.edu.iuh.fit.user.model.dto.response.BaseResponse;
 import vn.edu.iuh.fit.user.model.dto.response.UserResponse;
 import vn.edu.iuh.fit.user.services.UserService;
+import vn.edu.iuh.fit.user.utils.SystemConstraints;
 
 import java.util.Objects;
 
@@ -29,6 +30,11 @@ public class UserController {
         if (!Objects.equals(request.getPassword(), request.getRePassword())) {
             throw new UserException("Mật khẩu và xác nhận mật khẩu không trùng khớp.");
         }
+
+        if(!userService.verifyOtp(request.getUsername(), request.getOtp())){
+            throw new UserException(SystemConstraints.PLS_VERIFY_OTP);
+        }
+
 
         UserResponse result = userService.register(request);
 
@@ -55,5 +61,32 @@ public class UserController {
                 HttpStatus.OK
         );
     }
+
+    @PostMapping("/generation-otp")
+    public ResponseEntity<BaseResponse<Boolean>> generationOtp(@RequestParam("phoneNumber") String phoneNumber) throws UserException {
+        Boolean result = userService.sendOtp(phoneNumber);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<Boolean>builder()
+                        .data(result)
+                        .code(HttpStatus.OK.name())
+                        .success(true)
+                        .build()
+        );
+    }
+
+    @PostMapping("/verify-otp")
+    public ResponseEntity<BaseResponse<Boolean>> verifyOtp(@RequestParam("phoneNumber") String phoneNumber, @RequestParam("otp") String otp) throws UserException {
+        Boolean result = userService.verifyOtp(phoneNumber, otp);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<Boolean>builder()
+                        .data(result)
+                        .code(HttpStatus.OK.name())
+                        .success(true)
+                        .build()
+        );
+    }
+
 
 }
