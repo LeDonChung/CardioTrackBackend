@@ -1,4 +1,4 @@
-package vn.edu.iuh.fit.product.utils;
+package vn.edu.iuh.fit.notification.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
