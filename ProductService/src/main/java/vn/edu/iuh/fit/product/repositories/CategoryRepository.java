@@ -14,4 +14,6 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     // Lấy tất cả danh mục con của một danh mục cha (danh mục cha đang là cấp 1 - là con của cấp 0)
     @Query("SELECT c FROM Category c WHERE c.parent.id = :parentId")
     List<Category> findAllChildCategories(Long parentId);
+
+    //La
 }
