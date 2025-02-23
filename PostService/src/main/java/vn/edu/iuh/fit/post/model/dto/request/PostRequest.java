@@ -12,5 +12,5 @@ import lombok.Setter;
 public class PostRequest {
     private String title;
     private String content;
-    private Long authorId; // ID của người đăng bài (User từ UserService)
+    private String token;
 }

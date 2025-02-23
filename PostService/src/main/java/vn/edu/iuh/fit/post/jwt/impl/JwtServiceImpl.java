@@ -37,6 +37,12 @@ public class JwtServiceImpl  implements JwtService {
         return extractAllClaims(token).getSubject();
     }
 
+    @Override
+    public Long extractUserId(String token) {
+        Claims claims = extractAllClaims(token);
+        return claims.get("userId", Long.class);  // Lấy userId từ claims
+    }
+
     // 2️⃣ Giải mã toàn bộ Token để lấy Claims
     private Claims extractAllClaims(String token) {
         return Jwts.parserBuilder()
