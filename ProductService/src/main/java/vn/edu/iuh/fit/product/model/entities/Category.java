@@ -1,5 +1,8 @@
 package vn.edu.iuh.fit.product.model.entities;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -34,10 +37,20 @@ public class Category {
 
     // Quan hệ ManyToOne: Danh mục con -> Danh mục cha
     @ManyToOne
-    @JoinColumn(name = "parent_id")
+    @JoinColumn(name = "parent_id", referencedColumnName = "category_id")
+    @JsonIgnore  // Tránh vòng lặp JSON
     private Category parent;
 
     // Quan hệ OneToMany: Danh mục cha -> Danh mục con
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Category> children;
+
+    // Setter ánh xạ `parent_id` vào `parent`
+    @JsonSetter("parent_id")
+    public void setParentById(Long parentId) {
+        if (parentId != null) {
+            this.parent = new Category();
+            this.parent.setId(parentId);
+        }
+    }
 }
