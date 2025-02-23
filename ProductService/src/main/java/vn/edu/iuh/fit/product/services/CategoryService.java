@@ -13,8 +13,8 @@ public class CategoryService {
     private CategoryRepository categoryRepositories;
 
     //Thêm - cập nhật loại sản phẩm
-    public Category addCategory(Category category) {
-        return categoryRepositories.save(category);
+    public void addCategory(Category category) {
+        categoryRepositories.save(category);
     }
 
     //Tìm tất cả loại sản phẩm

@@ -21,7 +21,7 @@ public class Category {
     private Long id;
 
     @Column(name = "full_path_slug", length = 255, nullable = false)
-    private String fullPathSlug;
+    private String full_path_slug;
 
     @Column(name = "icon", length = 500)
     private String icon;
