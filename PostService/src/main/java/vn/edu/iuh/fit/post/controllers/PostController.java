@@ -46,4 +46,30 @@ public class PostController {
                 new BaseResponse<>(postResponse, true, HttpStatus.CREATED.name())
         );
     }
+
+    @PutMapping("/update/{postId}")
+    public ResponseEntity<BaseResponse<PostResponse>> updatePost(
+            @PathVariable Long postId,
+            @RequestBody PostRequest postRequest,
+            HttpServletRequest request) throws PostException {
+
+        // 1️⃣ Lấy token từ request header
+        String token = request.getHeader("Authorization");
+        if (token == null || !token.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+                    new BaseResponse<>(null, false, "Unauthorized: Missing token")
+            );
+        }
+        token = token.replace("Bearer ", ""); // Loại bỏ "Bearer " khỏi token
+
+        // 2️⃣ Gán token vào postRequest
+        postRequest.setToken(token);
+
+        // 3️⃣ Gọi PostService để cập nhật bài viết
+        PostResponse postResponse = postService.updatePost(postId, postRequest, jwtService.extractUserId(token));
+
+        return ResponseEntity.ok(
+                new BaseResponse<>(postResponse, true, HttpStatus.OK.name())
+        );
+    }
 }

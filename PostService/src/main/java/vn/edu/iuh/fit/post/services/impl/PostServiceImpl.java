@@ -51,5 +51,21 @@ public class PostServiceImpl implements PostService {
         return postMapper.toResponse(savedPost);
     }
 
+    @Override
+    public PostResponse updatePost(Long postId, PostRequest postRequest, Long userId) throws PostException {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new PostException("Post not found!"));
+
+        if(!post.getAuthorId().equals(userId)) {
+            throw new PostException("You are not the author of this post!");
+        }
+        post.setTitle(postRequest.getTitle());
+        post.setContent(postRequest.getContent());
+        post.setCreatedAt(LocalDateTime.now());
+
+        Post updatedPost = postRepository.save(post);
+        return  postMapper.toResponse(updatedPost);
+    }
+
 
 }

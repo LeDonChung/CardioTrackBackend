@@ -8,5 +8,9 @@ public interface PostService {
     //tạo bài post
 PostResponse createPost(PostRequest  postRequest) throws PostException;
 
+    // cập nhật bài post
+    PostResponse updatePost(Long postId, PostRequest postRequest, Long userId) throws PostException;
+
+    // xóa bài post
 
 }
