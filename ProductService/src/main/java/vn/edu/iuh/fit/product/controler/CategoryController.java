@@ -16,6 +16,7 @@ public class CategoryController {
     @Autowired
     private CategoryService categoryService;
 
+    //Thêm - chỉnh sửa danh mục thuốc
     @PostMapping("/addCategory")
     @PreAuthorize("hasAuthority('ADMIN')")
     public void addCategory(@RequestBody Map<String, Object> requestData) {
@@ -40,10 +41,11 @@ public class CategoryController {
         categoryService.addCategory(category);
     }
 
-    @GetMapping("/home")
-    public String home() {
-        return "Category Service";
+    //Tìm danh mục thuốc theo id
+    @GetMapping("/getCategory/{id}")
+    public Category getCategory(@PathVariable Long id) {
+        Category category = categoryService.getCategoryById(id);
+        System.out.println("Category: " + category);
+        return category;
     }
-
-
 }
