@@ -49,6 +49,9 @@ dependencies {
     //mail service
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     implementation 'javax.ws.rs:javax.ws.rs-api:2.1.1'
+
+    implementation 'com.infobip:infobip-api-java-client:6.0.0'
+
 }
 
 dependencyManagement {
