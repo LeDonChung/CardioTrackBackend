@@ -99,12 +99,38 @@ public class MailServiceImpl implements MailService {
     }
 
     @Override
-    public void sendMailNotificationRegisterSuccess(UserRequest user, String content, String subject) {
+    public void sendMailNotificationRegisterSuccess(UserRequest user, String content, String subject) throws MessagingException {
+        MimeMessage message = mailSender.createMimeMessage();
+        String to = user.getEmail();
+        MimeMessageHelper helper = new MimeMessageHelper(message,
+                MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
+                StandardCharsets.UTF_8.name());
+        helper.setTo(to);
+        helper.setSubject(subject);
+        // content
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("content", content);
 
+        helper.setText(thymeleafService.createContent("init-mail.html", variables), true);
+        helper.setFrom(email);
+        mailSender.send(message);
     }
 
     @Override
     public boolean sendNotificationRegisterSuccess(UserRequest user) {
+        String subject = "Thông báo đăng ký tài khoản nhà thuốc Thera Care thành công!";
+        StringBuilder contentBuilder = new StringBuilder()
+                .append(String.format("<p>Kính gửi %s,</p>", user.getFullName()))
+                .append(String.format("<p>Số điện thoại đã đăng ký: %s.</p>", user.getPhoneNumber()))
+                .append("<p>Cảm ơn bạn đã đăng ký tài khoản nhà thuốc Thera Care. Tài khoản của bạn đã được kích hoạt và bạn có thể sử dụng dịch vụ của nhà thuốc.</p>")
+                .append("<p>Chúng tôi rất vui mừng khi bạn đã trở thành một phần của cộng đồng nhà thuốc Thera Care. Chúng tôi hy vọng bạn sẽ có những trải nghiệm tuyệt vời khi sử dụng dịch vụ của nhà thuốc.</p>")
+                .append("<p>Chúc bạn một ngày tốt lành!</p>");
+        try {
+            sendMailNotificationRegisterSuccess(user, contentBuilder.toString(), subject);
+            return true;
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
         return false;
     }
 }
