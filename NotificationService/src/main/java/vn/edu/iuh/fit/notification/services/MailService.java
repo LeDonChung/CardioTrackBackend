@@ -7,6 +7,6 @@ import vn.edu.iuh.fit.notification.model.dto.request.UserRequest;
 public interface MailService {
     void sendMailNotificationOrder(OrderRequest order, String content, String subject) throws MessagingException;
     boolean sendNotificationOrder(OrderRequest order);
-    void sendMailNotificationRegisterSuccess(UserRequest user, String content, String subject);
+    void sendMailNotificationRegisterSuccess(UserRequest user, String content, String subject) throws MessagingException;
     boolean sendNotificationRegisterSuccess(UserRequest user);
 }

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import vn.edu.iuh.fit.notification.model.dto.request.OrderRequest;
+import vn.edu.iuh.fit.notification.model.dto.request.UserRequest;
 import vn.edu.iuh.fit.notification.services.MailService;
 
 @RestController
@@ -19,6 +20,16 @@ public class MailController {
     public ResponseEntity<Boolean> sendNotificationOrderToEmail(@RequestBody OrderRequest order){
         try {
             boolean status = mailService.sendNotificationOrder(order);
+            return ResponseEntity.ok(status);
+        }catch (Exception e){
+            return ResponseEntity.ok(false);
+        }
+    }
+
+    @PostMapping("/notification-register-success")
+    public ResponseEntity<Boolean> sendNotificationRegisterSuccessToEmail(@RequestBody UserRequest user){
+        try {
+            boolean status = mailService.sendNotificationRegisterSuccess(user);
             return ResponseEntity.ok(status);
         }catch (Exception e){
             return ResponseEntity.ok(false);
