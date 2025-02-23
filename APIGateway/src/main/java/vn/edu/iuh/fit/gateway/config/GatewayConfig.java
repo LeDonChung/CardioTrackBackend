@@ -42,6 +42,8 @@ public class GatewayConfig {
                         .uri("lb://user-service"))
                 .route("product-service", r -> r.path("/api/v1/product/**")
                         .uri("lb://product-service"))
+                .route("notification-service", r -> r.path("/api/v1/notification/**")
+                        .uri("lb://notification-service"))
                 .build();
     }
 
