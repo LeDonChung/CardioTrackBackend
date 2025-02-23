@@ -12,6 +12,7 @@ import vn.edu.iuh.fit.post.repositories.PostRepository;
 import vn.edu.iuh.fit.post.services.PostService;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -77,6 +78,17 @@ public class PostServiceImpl implements PostService {
         }
 
         postRepository.deleteById(postId);
+    }
+
+    @Override
+    public List<PostResponse> searchPosts(String title) throws PostException {
+        List<Post> posts = postRepository.findByTitleContainingIgnoreCase(title);
+        if(posts.isEmpty()) {
+            throw new PostException("No posts found with title: " + title);
+        }
+        return posts.stream()
+                .map(postMapper::toResponse)
+                .toList();
     }
 
 

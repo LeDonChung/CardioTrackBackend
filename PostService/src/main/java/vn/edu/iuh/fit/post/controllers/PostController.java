@@ -12,6 +12,8 @@ import vn.edu.iuh.fit.post.model.dto.request.PostRequest;
 import vn.edu.iuh.fit.post.services.PostService;
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/posts")
 public class PostController {
@@ -94,5 +96,23 @@ public class PostController {
         return ResponseEntity.ok(
                 new BaseResponse<>(null , true, HttpStatus.OK.name())
         );
+    }
+
+    //haàm tìm kiếm gần đúng theo title
+    @GetMapping("/search")
+    public ResponseEntity<BaseResponse<List<PostResponse>>> searchPosts(
+            @RequestParam String title) throws PostException {
+        try{
+    List<PostResponse> postResponses = postService.searchPosts(title);
+    return ResponseEntity.ok(
+            new BaseResponse<>(postResponses, true, HttpStatus.OK.name())
+    );
+        }catch (PostException  e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    new BaseResponse<>(null, false, e.getMessage())
+            );
+}
+
+
     }
 }
