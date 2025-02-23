@@ -10,16 +10,16 @@ import org.springframework.web.bind.annotation.RestController;
 public class OrderService {
     @GetMapping("/home")
     public String home() {
-        return "Product Service";
+        return "Order Service";
     }
     @GetMapping("/user")
     @PreAuthorize("hasAuthority('READ_A')")
     public String user() {
-        return "Product Service USER";
+        return "Order Service USER";
     }
     @GetMapping("/admin")
     @PreAuthorize("hasAuthority('ADMIN')")
     public String admin() {
-        return "Product Service ADMIN";
+        return "Order Service ADMIN";
     }
 }
