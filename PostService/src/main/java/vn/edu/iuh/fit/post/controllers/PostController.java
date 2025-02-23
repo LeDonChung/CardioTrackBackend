@@ -72,4 +72,27 @@ public class PostController {
                 new BaseResponse<>(postResponse, true, HttpStatus.OK.name())
         );
     }
+
+    //hàm xóa
+    @PostMapping("/delete/{postId}")
+    public ResponseEntity<BaseResponse<PostResponse>> deletePost(
+            @PathVariable Long postId,
+            HttpServletRequest request) throws PostException {
+
+        // 1️⃣ Lấy token từ request header
+        String token = request.getHeader("Authorization");
+        if (token == null || !token.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+                    new BaseResponse<>(null, false, "Unauthorized: Missing token")
+            );
+        }
+        token = token.replace("Bearer ", ""); // Loại bỏ "Bearer " khỏi token
+
+        // 2️⃣ Gọi PostService để xóa bài viết
+        postService.deletePost(postId, jwtService.extractUserId(token));
+
+        return ResponseEntity.ok(
+                new BaseResponse<>(null , true, HttpStatus.OK.name())
+        );
+    }
 }

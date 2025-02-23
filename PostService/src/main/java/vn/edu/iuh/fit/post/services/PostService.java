@@ -12,5 +12,6 @@ PostResponse createPost(PostRequest  postRequest) throws PostException;
     PostResponse updatePost(Long postId, PostRequest postRequest, Long userId) throws PostException;
 
     // xóa bài post
+    void deletePost(Long postId, Long userId) throws PostException;
 
 }

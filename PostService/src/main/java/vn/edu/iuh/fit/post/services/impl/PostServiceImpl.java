@@ -67,5 +67,17 @@ public class PostServiceImpl implements PostService {
         return  postMapper.toResponse(updatedPost);
     }
 
+    @Override
+    public void deletePost(Long postId, Long userId) throws PostException {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new PostException("Post not found!"));
+
+        if(!post.getAuthorId().equals(userId)) {
+            throw new PostException("You are not the author of this post!");
+        }
+
+        postRepository.deleteById(postId);
+    }
+
 
 }
