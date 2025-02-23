@@ -22,6 +22,11 @@ public class CategoryService {
         return categoryRepositories.findAll();
     }
 
+    //Lấy danh mục theo id
+    public Category getCategoryById(Long id) {
+        return categoryRepositories.findById(id).orElse(null);
+    }
+
     // Lấy tất cả danh mục cha (cấp 0)
     public List<Category> getAllParentCategories() {
         return categoryRepositories.findAllParentCategories();
