@@ -13,4 +13,5 @@ public class SystemConstraints {
     public static final String PASSWORD_NOT_MATCH = "Mật khẩu không trùng khớp.";
     public static final String PHONE_EXISTS = "Số điện thoại đã được đăng ký.";
     public static final String USERNAME_IS_EXISTS = "Số điện thoại đã được đăng ký.";
+    public static final String PLS_VERIFY_OTP = "Vui lòng xác thực OTP.";
 }
