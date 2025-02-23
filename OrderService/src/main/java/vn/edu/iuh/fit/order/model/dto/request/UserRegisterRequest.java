@@ -1,4 +1,4 @@
-package vn.edu.iuh.fit.order.dto.request;
+package vn.edu.iuh.fit.order.model.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
