@@ -53,4 +53,8 @@ public class Category {
             this.parent.setId(parentId);
         }
     }
+
+//    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
+//    private List<Medicine> medicines;
+
 }

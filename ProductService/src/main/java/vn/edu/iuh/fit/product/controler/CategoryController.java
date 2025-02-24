@@ -74,4 +74,12 @@ public class CategoryController {
         System.out.println("Category of "+ title + ": " + category);
         return ResponseEntity.ok(category);
     }
+
+    //Xóa danh mục thuốc theo category_id
+    @DeleteMapping("/deleteCategory/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<String> deleteCategory(@PathVariable Long id) {
+        categoryService.deleteCategoryById(id);
+        return ResponseEntity.ok("Category has been deleted successfully.");
+    }
 }
