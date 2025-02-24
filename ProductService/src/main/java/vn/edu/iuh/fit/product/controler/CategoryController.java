@@ -6,80 +6,96 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import vn.edu.iuh.fit.product.model.entities.Category;
+import vn.edu.iuh.fit.product.exceptions.CategoryException;
+import vn.edu.iuh.fit.product.model.dto.request.CategoryRequest;
+import vn.edu.iuh.fit.product.model.dto.response.BaseResponse;
+import vn.edu.iuh.fit.product.model.dto.response.CategoryResponse;
+import vn.edu.iuh.fit.product.model.entity.Category;
 import vn.edu.iuh.fit.product.services.CategoryService;
 
 import java.util.List;
 import java.util.Map;
 
-@Controller
+@RestController
 @RequestMapping("/api/v1/category")
 public class CategoryController {
     @Autowired
     private CategoryService categoryService;
 
     //Thêm - chỉnh sửa danh mục thuốc
-    @PostMapping("/addCategory")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public void addCategory(@RequestBody Map<String, Object> requestData) {
-        // Lấy `category` từ requestData và convert sang object Category
-        ObjectMapper objectMapper = new ObjectMapper();
-        Category category = objectMapper.convertValue(requestData, Category.class);
+    @PostMapping
+    public ResponseEntity<BaseResponse<CategoryResponse>> addCategory(@RequestBody CategoryRequest request) throws CategoryException {
+        CategoryResponse category = categoryService.save(request);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<CategoryResponse>builder()
+                        .data(category)
+                        .success(true)
+                        .build()
+        );
+    }
 
-        // Lấy `parent_id` nếu có
-        Long parent_id = (requestData.get("parent_id") != null) ? Long.valueOf(requestData.get("parent_id").toString()) : null;
-
-        System.out.println("parent_id: " + parent_id);
-        System.out.println("category: " + category);
-
-        if(parent_id != null){
-            Category categoryParent = categoryService.getCategoryById(parent_id);
-            if (categoryParent != null) {
-                category.setParent(categoryParent);
-            } else {
-                System.out.println("Category parent with ID " + parent_id + " not found!");
-            }
-        }
-        categoryService.addCategory(category);
+    @PutMapping
+    public ResponseEntity<BaseResponse<CategoryResponse>> updateCategory(@RequestBody CategoryRequest request) throws CategoryException {
+        CategoryResponse category = categoryService.save(request);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<CategoryResponse>builder()
+                        .data(category)
+                        .success(true)
+                        .build()
+        );
     }
 
     //Tìm danh mục thuốc theo category_id
-    @GetMapping("/getCategoryById/{id}")
-    public ResponseEntity<Category> getCategoryById(@PathVariable Long id) {
-        Category category = categoryService.getCategoryById(id);
-        System.out.println("Category of "+ id + ": " + category);
-        return ResponseEntity.ok(category);
+    @GetMapping("/{id}")
+    public ResponseEntity<BaseResponse<CategoryResponse>> getCategoryById(@PathVariable Long id) throws CategoryException {
+        CategoryResponse category = categoryService.getCategoryById(id);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<CategoryResponse>builder()
+                        .data(category)
+                        .success(true)
+                        .build()
+        );
     }
 
     //Danh sách các danh mục thuốc cha cấp 1
-    @GetMapping("/getParentCategories_level1")
-    public ResponseEntity<List<Category>> getParentCategories() {
-        List<Category> categories = categoryService.getAllParentCategories();
-        System.out.println("AllParentCategories: " + categories);
-        return ResponseEntity.ok(categories);
+    @GetMapping("/get-category-level1")
+    public ResponseEntity<BaseResponse<List<CategoryResponse>>> getParentCategories() {
+        List<CategoryResponse> categories = categoryService.getAllParentCategories();
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<List<CategoryResponse>>builder()
+                        .data(categories)
+                        .success(true)
+                        .build()
+        );
     }
 
     //Danh sách các danh mục con theo parent_id
-    @GetMapping("/getChildCategories/{parent_id}")
-    public ResponseEntity<List<Category>> getChildCategories(@PathVariable Long parent_id) {
-        List<Category> categories = categoryService.getAllChildCategories(parent_id);
-        System.out.println("ChildCategories of " + parent_id + ": " + categories);
-        return ResponseEntity.ok(categories);
+    @GetMapping("/get-by-parent-id/{parentId}")
+    public ResponseEntity<BaseResponse<List<CategoryResponse>>> getChildCategories(@PathVariable Long parentId) {
+        List<CategoryResponse> categories = categoryService.getAllChildCategories(parentId);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<List<CategoryResponse>>builder()
+                        .data(categories)
+                        .success(true)
+                        .build()
+        );
     }
 
     //Tìm Danh mục theo tên (title)
-    @GetMapping("/getCategoryByTitle/{title}")
-    public ResponseEntity<Category> getCategoryByTitle(@PathVariable String title) {
-        Category category = categoryService.findCategoryByTitle(title);
-        System.out.println("Category of "+ title + ": " + category);
-        return ResponseEntity.ok(category);
-    }
-
-    //Xóa danh mục thuốc theo category_id
-    @DeleteMapping("/deleteCategory/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<String> deleteCategory(@PathVariable Long id) {
-        categoryService.deleteCategoryById(id);
-        return ResponseEntity.ok("Category has been deleted successfully.");
+    @GetMapping("/get-by-title")
+    public ResponseEntity<BaseResponse<List<CategoryResponse>>> getCategoryByTitle(@RequestParam String title) {
+        List<CategoryResponse> categories = categoryService.getCategoryByTitle(title);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<List<CategoryResponse>>builder()
+                        .data(categories)
+                        .success(true)
+                        .build()
+        );
     }
 }

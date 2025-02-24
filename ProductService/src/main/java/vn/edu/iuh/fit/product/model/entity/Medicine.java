@@ -1,4 +1,4 @@
-package vn.edu.iuh.fit.product.model.entities;
+package vn.edu.iuh.fit.product.model.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
