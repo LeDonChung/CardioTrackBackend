@@ -43,7 +43,7 @@ public class CategoryController {
         categoryService.addCategory(category);
     }
 
-    //Tìm danh mục thuốc theo id
+    //Tìm danh mục thuốc theo category_id
     @GetMapping("/getCategoryById/{id}")
     public ResponseEntity<Category> getCategoryById(@PathVariable Long id) {
         Category category = categoryService.getCategoryById(id);
