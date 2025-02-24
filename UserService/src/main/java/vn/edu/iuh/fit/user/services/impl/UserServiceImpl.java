@@ -84,4 +84,10 @@ public class UserServiceImpl implements UserService {
     public Boolean verifyOtp(String phoneNumber, String otp) throws UserException {
         return otpService.validateOTP(phoneNumber, otp);
     }
+
+    @Override
+    public Long findIdByPhoneNumber(String phoneNumber) {
+        Optional<User> userOptional = userRepository.findByUsername(phoneNumber);
+        return userOptional.map(User::getId).orElse(null);
+    }
 }

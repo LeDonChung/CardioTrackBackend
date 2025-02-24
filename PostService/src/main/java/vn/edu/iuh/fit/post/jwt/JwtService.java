@@ -1,7 +1,17 @@
 package vn.edu.iuh.fit.post.jwt;
 
+import io.jsonwebtoken.Claims;
+
+import java.security.Key;
+
 public interface JwtService {
-    //lấy token từ user khi đăng nhập
-    String extractUsername(String token); // Lấy username từ JWT Token
-    Long extractUserId(String token); // Lấy userId từ JWT Token
+
+    Claims extractClaims(String token);
+
+    Key getKey();
+
+    String getCurrentUser();
+
+    String getUsernameFromToken(String token);
+
 }
