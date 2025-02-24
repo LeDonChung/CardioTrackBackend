@@ -31,4 +31,9 @@ public class MedicineService {
         }
     }
 
+    //find by id
+    public Medicine getMedicineById(Long id) {
+        return medicineRepositories.findById(id).orElse(null);
+    }
+
 }
