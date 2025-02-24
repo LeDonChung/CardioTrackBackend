@@ -1,6 +1,5 @@
-package vn.edu.iuh.fit.product.model.entities;
+package vn.edu.iuh.fit.product.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import jakarta.persistence.*;
@@ -24,7 +23,7 @@ public class Category {
     private Long id;
 
     @Column(name = "full_path_slug", length = 255, nullable = false)
-    private String full_path_slug;
+    private String fullPathSlug;
 
     @Column(name = "icon", length = 500)
     private String icon;
@@ -38,7 +37,6 @@ public class Category {
     // Quan hệ ManyToOne: Danh mục con -> Danh mục cha
     @ManyToOne
     @JoinColumn(name = "parent_id", referencedColumnName = "category_id")
-    @JsonIgnore  // Tránh vòng lặp JSON
     private Category parent;
 
     // Quan hệ OneToMany: Danh mục cha -> Danh mục con
