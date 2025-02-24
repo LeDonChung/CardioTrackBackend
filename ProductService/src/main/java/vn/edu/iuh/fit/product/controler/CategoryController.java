@@ -44,7 +44,7 @@ public class CategoryController {
     }
 
     //Tìm danh mục thuốc theo id
-    @GetMapping("/getCategory/{id}")
+    @GetMapping("/getCategoryById/{id}")
     public ResponseEntity<Category> getCategoryById(@PathVariable Long id) {
         Category category = categoryService.getCategoryById(id);
         System.out.println("Category of "+ id + ": " + category);
@@ -67,5 +67,11 @@ public class CategoryController {
         return ResponseEntity.ok(categories);
     }
 
-
+    //Tìm Danh mục theo tên (title)
+    @GetMapping("/getCategoryByTitle/{title}")
+    public ResponseEntity<Category> getCategoryByTitle(@PathVariable String title) {
+        Category category = categoryService.findCategoryByTitle(title);
+        System.out.println("Category of "+ title + ": " + category);
+        return ResponseEntity.ok(category);
+    }
 }

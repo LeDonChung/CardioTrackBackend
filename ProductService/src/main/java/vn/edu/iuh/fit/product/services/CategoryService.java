@@ -38,7 +38,7 @@ public class CategoryService {
     }
 
     // Lấy tất cả danh mục con Theo title
-    public Category getCategoryById(String title) {
-        return categoryRepositories.findByTitle(title);
+    public Category findCategoryByTitle(String title) {
+        return categoryRepositories.findCategoryByTitle(title);
     }
 }

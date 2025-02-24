@@ -17,5 +17,5 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
 
     // Lấy danh mục thuốc theo title
     @Query("SELECT c FROM Category c WHERE c.title = :title")
-    Category findByTitle(String title);
+    Category findCategoryByTitle(String title);
 }
