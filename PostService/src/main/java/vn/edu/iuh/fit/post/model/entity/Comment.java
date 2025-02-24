@@ -1,27 +1,25 @@
 package vn.edu.iuh.fit.post.model.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "comments")
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String content;
 
+    @Column(name = "author_id", nullable = false) // Đặt tên cột rõ ràng
     private Long authorId; // Người bình luận (userId)
-    private Long postId;   // Bài viết được bình luận
 
     private LocalDateTime createdAt;
 

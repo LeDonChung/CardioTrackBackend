@@ -1,20 +1,18 @@
 package vn.edu.iuh.fit.post.model.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
 @Table(name = "posts")
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Post {
 
     @Id
@@ -24,10 +22,11 @@ public class Post {
     private String title;
     private String content;
 
-    private Long authorId; // Tác giả bài viết (chính là userId)
+    @Column(name = "author_id", nullable = false) // Đảm bảo tên cột không trùng lặp
+    private Long authorId; // Tác giả bài viết (userId)
 
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "post_id", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;
 }
