@@ -3,11 +3,13 @@ package vn.edu.iuh.fit.order.model.entities;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "addresses")
+@ToString
 public class Address {
     @Id
     @Column(name = "address_id", nullable = false)
