@@ -35,44 +35,24 @@ public class PostController {
     @PutMapping("/update/{postId}")
     public ResponseEntity<BaseResponse<PostResponse>> updatePost(
             @PathVariable Long postId,
-            @RequestBody PostRequest postRequest,
-            HttpServletRequest request) throws PostException {
+            @RequestBody PostRequest postRequest) throws PostException {
 
-        // 1️⃣ Lấy token từ request header
-        String token = request.getHeader("Authorization");
-        if (token == null || !token.startsWith("Bearer ")) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
-                    new BaseResponse<>(null, false, "Unauthorized: Missing token")
-            );
-        }
-        token = token.replace("Bearer ", ""); // Loại bỏ "Bearer " khỏi token
-
-
-        // 3️⃣ Gọi PostService để cập nhật bài viết
+        PostResponse postResponse = postService.updatePost(postId, postRequest);
 
         return ResponseEntity.ok(
-                new BaseResponse<>(null, true, HttpStatus.OK.name())
+                new BaseResponse<>(postResponse, true, HttpStatus.OK.name())
         );
     }
 
     //hàm xóa
-    @PostMapping("/delete/{postId}")
+    @DeleteMapping("/delete/{postId}")
     public ResponseEntity<BaseResponse<PostResponse>> deletePost(
-            @PathVariable Long postId,
-            HttpServletRequest request) throws PostException {
+            @PathVariable Long postId) throws PostException {
 
-        // 1️⃣ Lấy token từ request header
-        String token = request.getHeader("Authorization");
-        if (token == null || !token.startsWith("Bearer ")) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
-                    new BaseResponse<>(null, false, "Unauthorized: Missing token")
-            );
-        }
-        token = token.replace("Bearer ", ""); // Loại bỏ "Bearer " khỏi token
-
+        postService.deletePost(postId);
 
         return ResponseEntity.ok(
-                new BaseResponse<>(null , true, HttpStatus.OK.name())
+                new BaseResponse<>(null, true, "Deleted successfully")
         );
     }
 
