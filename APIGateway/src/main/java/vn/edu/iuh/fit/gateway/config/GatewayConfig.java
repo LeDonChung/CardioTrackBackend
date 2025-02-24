@@ -5,6 +5,10 @@ import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.cors.reactive.CorsWebFilter;
+import org.springframework.web.filter.CorsFilter;
 import vn.edu.iuh.fit.gateway.filter.JwtAuthenticationFilter;
 
 import java.util.List;
@@ -44,6 +48,10 @@ public class GatewayConfig {
                         .uri("lb://product-service"))
                 .route("category-service", r -> r.path("/api/v1/category/**")
                         .uri("lb://product-service")) // Thêm route này
+                .route("post-service", r -> r.path("/api/v1/post/**")
+                        .uri("lb://post-service"))
+                .route("notification-service", r -> r.path("/api/v1/notification/**")
+                        .uri("lb://notification-service"))
                 .build();
     }
 

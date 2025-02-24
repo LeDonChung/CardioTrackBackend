@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -16,6 +17,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import vn.edu.iuh.fit.user.config.filter.CustomAuthenticationProvider;
 import vn.edu.iuh.fit.user.config.filter.JwtTokenAuthenticationFilter;
 import vn.edu.iuh.fit.user.config.filter.JwtUsernamePasswordAuthenticationFilter;
@@ -26,6 +29,7 @@ import vn.edu.iuh.fit.user.services.security.UserDetailsServiceCustom;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -61,6 +65,11 @@ public class AppConfig {
     public RestTemplate restTemplate(){
         return new RestTemplate();
     }
+    /**
+     * Configures the CORS settings.
+     *
+     * @return the CORS configuration source
+     */
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -71,25 +80,11 @@ public class AppConfig {
         AuthenticationManager manager = builder.build();
 
         http
-                .cors().configurationSource(request -> {
-                    CorsConfiguration cf = new CorsConfiguration();
-                    cf.setAllowedOrigins(
-                            Arrays.asList("*")
-                    );
-                    cf.setAllowedMethods(Collections.singletonList("*"));
-                    cf.setAllowCredentials(true);
-                    cf.setAllowedHeaders(Collections.singletonList("*"));
-                    cf.setExposedHeaders(Arrays.asList("Authorization"));
-                    cf.setMaxAge(3600L);
-
-                    return cf;
-                })
-                .and()
-                .csrf().disable()
+                .csrf(AbstractHttpConfigurer::disable)
                 .formLogin().disable()
                 .authorizeHttpRequests()
                 .requestMatchers("/api/v1/user/register").permitAll()
-                .requestMatchers("/api/v1/user/login").permitAll()
+                .requestMatchers("/api/v1/user/login", "/api/v1/user/verify-otp", "/api/v1/user/generation-otp", "/api/v1/user/find-id-by-phone-number").permitAll()
                 .requestMatchers("/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
