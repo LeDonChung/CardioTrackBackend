@@ -123,5 +123,11 @@ public class MedicineController {
         return ResponseEntity.ok(medicines);
     }
 
-
+    //find by init
+    @GetMapping("/findMedicineByInit/{init}")
+    public ResponseEntity<List<Medicine>> findMedicineByInit(@PathVariable String init) {
+        List<Medicine> medicines = medicineService.findMedicineByInit(init);
+        System.out.println("Medicine of "+ init + ": " + medicines);
+        return ResponseEntity.ok(medicines);
+    }
 }
