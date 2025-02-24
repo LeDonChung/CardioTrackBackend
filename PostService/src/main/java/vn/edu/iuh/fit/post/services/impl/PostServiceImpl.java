@@ -45,13 +45,22 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostResponse updatePost(Long postId, PostRequest postRequest, Long userId) throws PostException {
+    public PostResponse updatePost(Long postId, PostRequest postRequest) throws PostException {
+
+        Long userId = userServiceClient.findIdByPhoneNumber(jwtService.getCurrentUser()).getBody().getData();
+        if (userId == null) {
+            throw new PostException("User not found!");
+        }
+
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new PostException(SystemConstraints.ACCESS_DENIED));
 
+        // 3️⃣ Kiểm tra user có phải tác giả không
         if (!post.getAuthorId().equals(userId)) {
-            throw new PostException("You are not the author of this post!");
+            throw new PostException(SystemConstraints.NOT_AUTHOR);
         }
+
+
         post.setTitle(postRequest.getTitle());
         post.setContent(postRequest.getContent());
         post.setCreatedAt(LocalDateTime.now());
@@ -61,14 +70,19 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void deletePost(Long postId, Long userId) throws PostException {
+    public void deletePost(Long postId) throws PostException {
+
+        Long userId = userServiceClient.findIdByPhoneNumber(jwtService.getCurrentUser()).getBody().getData();
+
+        //kiểm tra bài viết có tồn tại không
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new PostException("Post not found!"));
+                .orElseThrow(() -> new PostException(SystemConstraints.POST_NOT_FOUND));
 
+        //  Kiểm tra user có phải tác giả không
         if (!post.getAuthorId().equals(userId)) {
-            throw new PostException("You are not the author of this post!");
+            throw new PostException(SystemConstraints.NOT_AUTHOR);
         }
-
+        // 4️⃣ Xóa bài viết
         postRepository.deleteById(postId);
     }
 
@@ -76,7 +90,7 @@ public class PostServiceImpl implements PostService {
     public List<PostResponse> searchPosts(String title) throws PostException {
         List<Post> posts = postRepository.findByTitleContainingIgnoreCase(title);
         if (posts.isEmpty()) {
-            throw new PostException("No posts found with title: " + title);
+            throw new PostException("Không tìm thấy bài viết với tiêu đề: " + title);
         }
         return posts.stream()
                 .map(postMapper::toResponse)
