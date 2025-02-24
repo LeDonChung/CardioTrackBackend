@@ -11,4 +11,10 @@ public interface MedicineRepositories extends JpaRepository<Medicine, Long> {
 
     @Query("SELECT m FROM Medicine m WHERE m.name LIKE %:name%")
     List<Medicine> findMedicineByName(String name);
+
+    @Query("SELECT m FROM Medicine m WHERE m.des LIKE %:des%")
+    List<Medicine> findMedicineByDes(String des);
+
+    @Query("SELECT m FROM Medicine m WHERE m.desShort LIKE %:desShort%")
+    List<Medicine> findMedicineByDesShort(String desShort);
 }

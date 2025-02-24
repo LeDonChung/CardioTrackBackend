@@ -98,4 +98,20 @@ public class MedicineController {
         System.out.println("Medicine of "+ brandId + ": " + medicines);
         return ResponseEntity.ok(medicines);
     }
+
+    //find by description
+    @GetMapping("/findMedicineByDes/{des}")
+    public ResponseEntity<List<Medicine>> findMedicineByDes(@PathVariable String des) {
+        List<Medicine> medicines = medicineService.findMedicineByDes(des);
+        System.out.println("Medicine of "+ des + ": " + medicines);
+        return ResponseEntity.ok(medicines);
+    }
+
+    //find by description short
+    @GetMapping("/findMedicineByDesShort/{desShort}")
+    public ResponseEntity<List<Medicine>> findMedicineByDesShort(@PathVariable String desShort) {
+        List<Medicine> medicines = medicineService.findMedicineByDesShort(desShort);
+        System.out.println("Medicine of "+ desShort + ": " + medicines);
+        return ResponseEntity.ok(medicines);
+    }
 }

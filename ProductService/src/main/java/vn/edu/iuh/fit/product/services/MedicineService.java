@@ -45,4 +45,14 @@ public class MedicineService {
     public List<Medicine> findMedicineByName(String name) {
         return medicineRepositories.findMedicineByName(name);
     }
+
+    //find by description
+    public List<Medicine> findMedicineByDes(String des) {
+        return medicineRepositories.findMedicineByDes(des);
+    }
+
+    //find by short description
+    public List<Medicine> findMedicineByDesShort(String desShort) {
+        return medicineRepositories.findMedicineByDesShort(desShort);
+    }
 }
