@@ -36,16 +36,6 @@ public class MedicineService {
         return medicineRepositories.findById(id).orElse(null);
     }
 
-    //find by status
-    public List<Medicine> getAllMedicinesByStatus(int status) {
-        return medicineRepositories.findAllByStatus(status);
-    }
-
-    //find by category id
-    public List<Medicine> getAllMedicinesByCategoryId(Long categoryId) {
-        return medicineRepositories.findAllByCategoryId(categoryId);
-    }
-
     //find by brand id
     public List<Medicine> getAllMedicinesByBrandId(Long brandId) {
         return medicineRepositories.findAllByBrandId(brandId);

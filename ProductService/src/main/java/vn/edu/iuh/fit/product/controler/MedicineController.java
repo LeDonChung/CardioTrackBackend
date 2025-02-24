@@ -90,4 +90,12 @@ public class MedicineController {
         System.out.println("Medicine of "+ name + ": " + medicines);
         return ResponseEntity.ok(medicines);
     }
+
+    //find by brand id
+    @GetMapping("/getAllMedicinesByBrandId/{brandId}")
+    public ResponseEntity<List<Medicine>> getAllMedicinesByBrandId(@PathVariable Long brandId) {
+        List<Medicine> medicines = medicineService.getAllMedicinesByBrandId(brandId);
+        System.out.println("Medicine of "+ brandId + ": " + medicines);
+        return ResponseEntity.ok(medicines);
+    }
 }
