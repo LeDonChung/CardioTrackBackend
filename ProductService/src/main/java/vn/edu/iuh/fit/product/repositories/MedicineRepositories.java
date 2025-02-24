@@ -21,4 +21,10 @@ public interface MedicineRepositories extends JpaRepository<Medicine, Long> {
     List<Medicine> findMedicineByDiscountBetween(int min, int max);
 
     List<Medicine> findMedicineByInit(String init);
+
+    List<Medicine> findMedicineByPriceBetween(double min, double max);
+
+    List<Medicine> findMedicineByPriceLessThan(double price);
+
+    List<Medicine> findMedicineByPriceGreaterThan(double price);
 }

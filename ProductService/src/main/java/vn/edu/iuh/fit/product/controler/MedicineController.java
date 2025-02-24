@@ -130,4 +130,28 @@ public class MedicineController {
         System.out.println("Medicine of "+ init + ": " + medicines);
         return ResponseEntity.ok(medicines);
     }
+
+    //find by price between
+    @GetMapping("/findMedicineByPriceBetween/{min}/{max}")
+    public ResponseEntity<List<Medicine>> findMedicineByPriceBetween(@PathVariable double min, @PathVariable double max) {
+        List<Medicine> medicines = medicineService.findMedicineByPriceBetween(min, max);
+        System.out.println("Medicine of price between "+ min + " and " + max + ": " + medicines);
+        return ResponseEntity.ok(medicines);
+    }
+
+    //find by price less than
+    @GetMapping("/findMedicineByPriceLessThan/{price}")
+    public ResponseEntity<List<Medicine>> findMedicineByPriceLessThan(@PathVariable double price) {
+        List<Medicine> medicines = medicineService.findMedicineByPriceLessThan(price);
+        System.out.println("Medicine of price less than "+ price + ": " + medicines);
+        return ResponseEntity.ok(medicines);
+    }
+
+    //find by price greater than
+    @GetMapping("/findMedicineByPriceGreaterThan/{price}")
+    public ResponseEntity<List<Medicine>> findMedicineByPriceGreaterThan(@PathVariable double price) {
+        List<Medicine> medicines = medicineService.findMedicineByPriceGreaterThan(price);
+        System.out.println("Medicine of price greater than "+ price + ": " + medicines);
+        return ResponseEntity.ok(medicines);
+    }
 }

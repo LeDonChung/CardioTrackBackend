@@ -65,4 +65,19 @@ public class MedicineService {
     public List<Medicine> findMedicineByInit(String init) {
         return medicineRepositories.findMedicineByInit(init);
     }
+
+    //find by price between
+    public List<Medicine> findMedicineByPriceBetween(double min, double max) {
+        return medicineRepositories.findMedicineByPriceBetween(min, max);
+    }
+
+    //find by price less than
+    public List<Medicine> findMedicineByPriceLessThan(double price) {
+        return medicineRepositories.findMedicineByPriceLessThan(price);
+    }
+
+    //find by price greater than
+    public List<Medicine> findMedicineByPriceGreaterThan(double price) {
+        return medicineRepositories.findMedicineByPriceGreaterThan(price);
+    }
 }
