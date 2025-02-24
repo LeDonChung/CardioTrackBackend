@@ -5,4 +5,5 @@ import vn.edu.iuh.fit.product.model.entities.Medicine;
 
 public interface MedicineRepositories extends JpaRepository<Medicine, Long> {
 //    Medicine findByName(String name);
+
 }

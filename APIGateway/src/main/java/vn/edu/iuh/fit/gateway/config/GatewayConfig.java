@@ -44,6 +44,8 @@ public class GatewayConfig {
                         .uri("lb://product-service"))
                 .route("category-service", r -> r.path("/api/v1/category/**")
                         .uri("lb://product-service")) // Thêm route này
+                .route("medicine-service", r -> r.path("/api/v1/medicine/**")
+                        .uri("lb://product-service"))
                 .build();
     }
 
