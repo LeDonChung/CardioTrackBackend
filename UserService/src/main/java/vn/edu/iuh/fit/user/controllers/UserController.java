@@ -88,5 +88,18 @@ public class UserController {
         );
     }
 
+    @GetMapping("/find-id-by-phone-number")
+    public ResponseEntity<BaseResponse<Long>> findIdByPhoneNumber(@RequestParam("phoneNumber") String phoneNumber) {
+        Long result = userService.findIdByPhoneNumber(phoneNumber);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<Long>builder()
+                        .data(result)
+                        .code(HttpStatus.OK.name())
+                        .success(true)
+                        .build()
+        );
+    }
+
 
 }
