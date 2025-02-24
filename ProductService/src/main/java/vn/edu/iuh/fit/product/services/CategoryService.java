@@ -36,4 +36,9 @@ public class CategoryService {
     public List<Category> getAllChildCategories(Long parentID) {
         return categoryRepositories.findAllChildCategories(parentID);
     }
+
+    // Lấy tất cả danh mục con Theo title
+    public Category getCategoryById(String title) {
+        return categoryRepositories.findByTitle(title);
+    }
 }

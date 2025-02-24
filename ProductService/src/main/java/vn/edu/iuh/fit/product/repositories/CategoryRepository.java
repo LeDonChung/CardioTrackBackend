@@ -14,4 +14,8 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     // Lấy tất cả danh mục con Theo parent_id
     @Query("SELECT c FROM Category c WHERE c.parent.id = :parentId")
     List<Category> findAllChildCategories(Long parentId);
+
+    // Lấy danh mục thuốc theo title
+    @Query("SELECT c FROM Category c WHERE c.title = :title")
+    Category findByTitle(String title);
 }
