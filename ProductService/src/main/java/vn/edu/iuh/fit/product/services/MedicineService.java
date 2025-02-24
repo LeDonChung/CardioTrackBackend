@@ -80,4 +80,9 @@ public class MedicineService {
     public List<Medicine> findMedicineByPriceGreaterThan(double price) {
         return medicineRepositories.findMedicineByPriceGreaterThan(price);
     }
+
+    //find by quantity
+    public List<Medicine> findMedicineByQuantity(int quantity) {
+        return medicineRepositories.findMedicineByQuantity(quantity);
+    }
 }

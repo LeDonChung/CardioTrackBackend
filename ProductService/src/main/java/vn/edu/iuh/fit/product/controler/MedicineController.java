@@ -154,4 +154,12 @@ public class MedicineController {
         System.out.println("Medicine of price greater than "+ price + ": " + medicines);
         return ResponseEntity.ok(medicines);
     }
+
+    //find by quantity
+    @GetMapping("/findMedicineByQuantity/{quantity}")
+    public ResponseEntity<List<Medicine>> findMedicineByQuantity(@PathVariable int quantity) {
+        List<Medicine> medicines = medicineService.findMedicineByQuantity(quantity);
+        System.out.println("Medicine of quantity "+ quantity + ": " + medicines);
+        return ResponseEntity.ok(medicines);
+    }
 }

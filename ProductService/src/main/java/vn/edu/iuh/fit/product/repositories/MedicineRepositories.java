@@ -27,4 +27,12 @@ public interface MedicineRepositories extends JpaRepository<Medicine, Long> {
     List<Medicine> findMedicineByPriceLessThan(double price);
 
     List<Medicine> findMedicineByPriceGreaterThan(double price);
+
+    List<Medicine> findMedicineByQuantity(int quantity);
+
+    List<Medicine> findMedicineByQuantityBetween(int min, int max);
+
+    List<Medicine> findMedicineByQuantityLessThan(int quantity);
+
+    List<Medicine> findMedicineByQuantityGreaterThan(int quantity);
 }
