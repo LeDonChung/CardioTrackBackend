@@ -27,12 +27,12 @@ public class CategoryService {
         return categoryRepositories.findById(id).orElse(null);
     }
 
-    // Lấy tất cả danh mục cha (cấp 0)
+    // Lấy tất cả danh mục cha (cấp 1)
     public List<Category> getAllParentCategories() {
         return categoryRepositories.findAllParentCategories();
     }
 
-    // Lấy tất cả danh mục con của một danh mục cha (danh mục cha đang là cấp 1 - là con của cấp 0)
+    // Lấy tất cả danh mục con Theo parent_id
     public List<Category> getAllChildCategories(Long parentID) {
         return categoryRepositories.findAllChildCategories(parentID);
     }

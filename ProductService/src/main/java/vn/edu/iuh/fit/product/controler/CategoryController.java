@@ -2,12 +2,14 @@ package vn.edu.iuh.fit.product.controler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import vn.edu.iuh.fit.product.model.entities.Category;
 import vn.edu.iuh.fit.product.services.CategoryService;
 
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -43,9 +45,17 @@ public class CategoryController {
 
     //Tìm danh mục thuốc theo id
     @GetMapping("/getCategory/{id}")
-    public Category getCategory(@PathVariable Long id) {
+    public ResponseEntity<Category> getCategoryById(@PathVariable Long id) {
         Category category = categoryService.getCategoryById(id);
-        System.out.println("Category: " + category);
-        return category;
+        System.out.println("Category of "+ id + ": " + category);
+        return ResponseEntity.ok(category);
+    }
+
+    //Danh sách danh mục thuốc cha cấp 1
+    @GetMapping("/getParentCategories_level1")
+    public ResponseEntity<List<Category>> getParentCategories() {
+        List<Category> categories = categoryService.getAllParentCategories();
+        System.out.println("AllParentCategories: " + categories);
+        return ResponseEntity.ok(categories);
     }
 }
