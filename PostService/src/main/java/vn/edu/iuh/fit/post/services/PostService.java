@@ -11,10 +11,10 @@ public interface PostService {
     PostResponse createPost(PostRequest postRequest) throws PostException;
 
     // cập nhật bài post
-    PostResponse updatePost(Long postId, PostRequest postRequest, Long userId) throws PostException;
+    PostResponse updatePost(Long postId, PostRequest postRequest) throws PostException;
 
     // xóa bài post
-    void deletePost(Long postId, Long userId) throws PostException;
+    void deletePost(Long postId) throws PostException;
 
     //  Tìm kiếm bài viết theo tiêu đề gần đúng
     List<PostResponse> searchPosts(String title) throws PostException;
