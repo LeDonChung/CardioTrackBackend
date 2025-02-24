@@ -46,6 +46,10 @@ public class GatewayConfig {
                         .uri("lb://user-service"))
                 .route("product-service", r -> r.path("/api/v1/product/**")
                         .uri("lb://product-service"))
+                .route("post-service", r -> r.path("/api/v1/posts/**")
+                        .filters(f -> f.filter(jwtAuthFilter.apply(new JwtAuthenticationFilter.Config()
+                                .setPublicEndpoints(PUBLIC_ENDPOINTS))))
+                        .uri("lb://post-service"))
                 .route("notification-service", r -> r.path("/api/v1/notification/**")
                         .uri("lb://notification-service"))
                 .build();
