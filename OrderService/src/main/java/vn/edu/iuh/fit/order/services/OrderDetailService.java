@@ -1,17 +1,13 @@
 package vn.edu.iuh.fit.order.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import vn.edu.iuh.fit.order.model.entities.OrdersDetail;
-import vn.edu.iuh.fit.order.repositories.OrderDetailRepository;
+import vn.edu.iuh.fit.order.model.dto.request.OrderDetailRequest;
+import vn.edu.iuh.fit.order.model.dto.request.OrderRequest;
+import vn.edu.iuh.fit.order.model.dto.response.OrderDetailResponse;
+import vn.edu.iuh.fit.order.model.dto.response.OrderResponse;
+import vn.edu.iuh.fit.order.model.entities.OrderDetail;
 
-@Service
-public class OrderDetailService {
-    @Autowired
-    private OrderDetailRepository orderDetailRepository;
+public interface OrderDetailService {
 
     // Thêm OrderDetail
-    public OrdersDetail addOrderDetail(OrdersDetail orderDetail) {
-        return orderDetailRepository.save(orderDetail);
-    }
+    OrderDetailResponse save(OrderDetailRequest request);
 }

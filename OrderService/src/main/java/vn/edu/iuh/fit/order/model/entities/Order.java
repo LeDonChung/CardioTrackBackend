@@ -1,49 +1,43 @@
 package vn.edu.iuh.fit.order.model.entities;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
+import vn.edu.iuh.fit.order.enums.OrderStatus;
 
-import java.time.Instant;
+import java.util.List;
 
-@Getter
-@Setter
 @Entity
-@ToString
+@AllArgsConstructor
+@NoArgsConstructor
+@Setter
+@Getter
 @Table(name = "orders")
 public class Order {
+
     @Id
-    @Column(name = "order_id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "export_invoice")
-    private Boolean exportInvoice;
-
-    @Column(name = "fee_ship")
-    private Double feeShip;
-
-    @Column(name = "note")
     private String note;
 
-    @Column(name = "order_date")
-    private Instant orderDate;
+    @Column(name = "export_invoice")
+    private boolean exportInvoice;
 
-    @Column(name = "point", nullable = false)
-    private Integer point;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
 
-    @Column(name = "status")
-    private Byte status;
+    @Column(name = "fee_ship")
+    private double feeShip;
 
-    @Column(name = "use_point")
-    private Boolean usePoint;
+    private Long customer;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "address_id")
-    private Address address;
+    private Long addressDetail;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private vn.edu.iuh.fit.order.model.entities.User user;
+    @OneToMany(mappedBy = "order")
+    private List<OrderDetail> orderDetails;
 
+    // Getters and Setters
 }
