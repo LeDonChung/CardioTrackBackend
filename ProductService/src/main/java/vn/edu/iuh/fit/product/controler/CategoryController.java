@@ -51,11 +51,20 @@ public class CategoryController {
         return ResponseEntity.ok(category);
     }
 
-    //Danh sách danh mục thuốc cha cấp 1
+    //Danh sách các danh mục thuốc cha cấp 1
     @GetMapping("/getParentCategories_level1")
     public ResponseEntity<List<Category>> getParentCategories() {
         List<Category> categories = categoryService.getAllParentCategories();
         System.out.println("AllParentCategories: " + categories);
         return ResponseEntity.ok(categories);
     }
+
+    //Danh sách các danh mục con theo parent_id
+    @GetMapping("/getChildCategories/{parent_id}")
+    public ResponseEntity<List<Category>> getChildCategories(@PathVariable Long parent_id) {
+        List<Category> categories = categoryService.getAllChildCategories(parent_id);
+        System.out.println("ChildCategories of " + parent_id + ": " + categories);
+        return ResponseEntity.ok(categories);
+    }
+
 }
