@@ -30,7 +30,7 @@ public class MedicineController {
 
     //Get all medicines
     @GetMapping("/getAllMedicines")
-    @PreAuthorize("hasAuthority('ADMIN')")
+//    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<List<Medicine>> getAllMedicines() {
         List<Medicine> medicines = medicineService.getAllMedicines();
         return ResponseEntity.ok(medicines);
@@ -46,7 +46,7 @@ public class MedicineController {
     //add - update medicine
     @PostMapping("/addMedicine")
     @PutMapping("/addMedicine/{id}")
-//    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public void addMedicine(@PathVariable(required = false) Long id, @RequestBody Map<String, Object> requestData) {
         Medicine medicine = objectMapper.convertValue(requestData, Medicine.class);
 
@@ -81,5 +81,13 @@ public class MedicineController {
         }
         System.out.println("Medicine: " + medicine);
         medicineService.addMedicine(medicine);
+    }
+
+    //find by name
+    @GetMapping("/findMedicineByName/{name}")
+    public ResponseEntity<List<Medicine>> findMedicineByName(@PathVariable String name) {
+        List<Medicine> medicines = medicineService.findMedicineByName(name);
+        System.out.println("Medicine of "+ name + ": " + medicines);
+        return ResponseEntity.ok(medicines);
     }
 }
