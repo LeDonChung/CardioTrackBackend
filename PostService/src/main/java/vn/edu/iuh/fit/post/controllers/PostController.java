@@ -6,8 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vn.edu.iuh.fit.post.exceptions.PostException;
 import vn.edu.iuh.fit.post.jwt.JwtService;
-import vn.edu.iuh.fit.post.model.dto.reponse.BaseResponse;
-import vn.edu.iuh.fit.post.model.dto.reponse.PostResponse;
+import vn.edu.iuh.fit.post.model.dto.response.BaseResponse;
+import vn.edu.iuh.fit.post.model.dto.response.PostResponse;
 import vn.edu.iuh.fit.post.model.dto.request.PostRequest;
 import vn.edu.iuh.fit.post.services.PostService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,33 +15,16 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/posts")
+@RequestMapping("/api/v1/post")
 public class PostController {
 
     @Autowired
     private PostService postService;
 
-    @Autowired
-    private JwtService jwtService; // Dùng để lấy userId từ JWT
-
     @PostMapping("/create")
     public ResponseEntity<BaseResponse<PostResponse>> createPost(
-            @RequestBody PostRequest postRequest,
-            HttpServletRequest request) throws PostException {
+            @RequestBody PostRequest postRequest) throws PostException {
 
-        // 1️⃣ Lấy token từ request header
-        String token = request.getHeader("Authorization");
-        if (token == null || !token.startsWith("Bearer ")) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
-                    new BaseResponse<>(null, false, "Unauthorized: Missing token")
-            );
-        }
-        token = token.replace("Bearer ", ""); // Loại bỏ "Bearer " khỏi token
-
-        // 2️⃣ Gán token vào postRequest
-        postRequest.setToken(token);
-
-        // 3️⃣ Gọi PostService để tạo bài viết
         PostResponse postResponse = postService.createPost(postRequest);
 
         return ResponseEntity.ok(
@@ -64,14 +47,11 @@ public class PostController {
         }
         token = token.replace("Bearer ", ""); // Loại bỏ "Bearer " khỏi token
 
-        // 2️⃣ Gán token vào postRequest
-        postRequest.setToken(token);
 
         // 3️⃣ Gọi PostService để cập nhật bài viết
-        PostResponse postResponse = postService.updatePost(postId, postRequest, jwtService.extractUserId(token));
 
         return ResponseEntity.ok(
-                new BaseResponse<>(postResponse, true, HttpStatus.OK.name())
+                new BaseResponse<>(null, true, HttpStatus.OK.name())
         );
     }
 
@@ -90,8 +70,6 @@ public class PostController {
         }
         token = token.replace("Bearer ", ""); // Loại bỏ "Bearer " khỏi token
 
-        // 2️⃣ Gọi PostService để xóa bài viết
-        postService.deletePost(postId, jwtService.extractUserId(token));
 
         return ResponseEntity.ok(
                 new BaseResponse<>(null , true, HttpStatus.OK.name())

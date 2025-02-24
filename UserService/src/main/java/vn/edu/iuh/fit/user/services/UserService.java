@@ -12,4 +12,6 @@ public interface UserService {
     Boolean sendOtp(String phoneNumber) throws UserException;
 
     Boolean verifyOtp(String phoneNumber, String otp) throws UserException;
+
+    Long findIdByPhoneNumber(String phoneNumber);
 }
