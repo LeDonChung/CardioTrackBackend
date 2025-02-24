@@ -5,6 +5,10 @@ import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.cors.reactive.CorsWebFilter;
+import org.springframework.web.filter.CorsFilter;
 import vn.edu.iuh.fit.gateway.filter.JwtAuthenticationFilter;
 
 import java.util.List;
@@ -46,6 +50,8 @@ public class GatewayConfig {
                         .filters(f -> f.filter(jwtAuthFilter.apply(new JwtAuthenticationFilter.Config()
                                 .setPublicEndpoints(PUBLIC_ENDPOINTS))))
                         .uri("lb://post-service"))
+                .route("notification-service", r -> r.path("/api/v1/notification/**")
+                        .uri("lb://notification-service"))
                 .build();
     }
 
