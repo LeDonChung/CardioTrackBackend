@@ -16,8 +16,19 @@ public class MedicineService {
     public List<Medicine> getAllMedicines() {
         return medicineRepositories.findAll();
     }
+
     //Add - update medicine
     public void addMedicine(Medicine medicine) {
         medicineRepositories.save(medicine);
     }
+
+    //update status by id
+    public void updateStatusById(Long id, int status) {
+        Medicine medicine = medicineRepositories.findById(id).orElse(null);
+        if (medicine != null) {
+            medicine.setStatus(status);
+            medicineRepositories.save(medicine);
+        }
+    }
+
 }
