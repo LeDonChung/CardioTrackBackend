@@ -90,7 +90,7 @@ public class PostServiceImpl implements PostService {
     public List<PostResponse> searchPosts(String title) throws PostException {
         List<Post> posts = postRepository.findByTitleContainingIgnoreCase(title);
         if (posts.isEmpty()) {
-            throw new PostException("No posts found with title: " + title);
+            throw new PostException("Không tìm thấy bài viết với tiêu đề: " + title);
         }
         return posts.stream()
                 .map(postMapper::toResponse)
