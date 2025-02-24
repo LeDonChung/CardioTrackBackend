@@ -18,4 +18,8 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     // Lấy danh mục thuốc theo title
     @Query("SELECT c FROM Category c WHERE c.title = :title")
     Category findCategoryByTitle(String title);
+
+    //Xóa danh mục thuốc theo id
+    @Query("DELETE FROM Category c WHERE c.id = :id")
+    void deleteCategoryById(Long id);
 }

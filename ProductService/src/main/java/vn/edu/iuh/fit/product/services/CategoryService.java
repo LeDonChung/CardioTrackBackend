@@ -41,4 +41,9 @@ public class CategoryService {
     public Category findCategoryByTitle(String title) {
         return categoryRepositories.findCategoryByTitle(title);
     }
+
+    // Xóa danh mục thuôc theo category_id
+    public void deleteCategoryById(Long id) {
+        categoryRepositories.deleteById(id);
+    }
 }
