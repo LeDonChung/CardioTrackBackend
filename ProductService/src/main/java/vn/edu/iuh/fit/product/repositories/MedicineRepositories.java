@@ -17,4 +17,8 @@ public interface MedicineRepositories extends JpaRepository<Medicine, Long> {
 
     @Query("SELECT m FROM Medicine m WHERE m.desShort LIKE %:desShort%")
     List<Medicine> findMedicineByDesShort(String desShort);
+
+    List<Medicine> findMedicineByDiscountBetween(int min, int max);
+
+    List<Medicine> findMedicineByInit(String init);
 }

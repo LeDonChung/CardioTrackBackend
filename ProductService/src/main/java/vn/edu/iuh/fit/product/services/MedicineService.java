@@ -55,4 +55,14 @@ public class MedicineService {
     public List<Medicine> findMedicineByDesShort(String desShort) {
         return medicineRepositories.findMedicineByDesShort(desShort);
     }
+
+    //find by discount
+    public List<Medicine> findMedicineByDiscountBetween(int min, int max) {
+        return medicineRepositories.findMedicineByDiscountBetween(min, max);
+    }
+
+    //find by init
+    public List<Medicine> findMedicineByInit(String init) {
+        return medicineRepositories.findMedicineByInit(init);
+    }
 }

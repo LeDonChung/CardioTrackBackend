@@ -114,4 +114,14 @@ public class MedicineController {
         System.out.println("Medicine of "+ desShort + ": " + medicines);
         return ResponseEntity.ok(medicines);
     }
+
+    //find by discount
+    @GetMapping("/findMedicineByDiscountBetween/{min}/{max}")
+    public ResponseEntity<List<Medicine>> findMedicineByDiscountBetween(@PathVariable int min, @PathVariable int max) {
+        List<Medicine> medicines = medicineService.findMedicineByDiscountBetween(min, max);
+        System.out.println("Medicine of discount between "+ min + " and " + max + ": " + medicines);
+        return ResponseEntity.ok(medicines);
+    }
+
+
 }
