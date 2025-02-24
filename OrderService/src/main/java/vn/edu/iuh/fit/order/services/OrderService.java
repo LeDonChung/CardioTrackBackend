@@ -14,4 +14,11 @@ public class OrderService {
     public Order addOrder(Order order) {
         return orderRepository.save(order);
     }
+
+    //Thay đổi trạng thái Order
+    public Order changeStatus(Long id, Order order) {
+        Order updatedOrder = orderRepository.findById(id).get();
+        updatedOrder.setStatus(order.getStatus());
+        return orderRepository.save(updatedOrder);
+    }
 }

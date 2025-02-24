@@ -46,4 +46,15 @@ public class OrderController {
         Order createdOrder = orderService.addOrder(order);
         return new ResponseEntity<>(createdOrder, HttpStatus.CREATED);
     }
+
+    // Change order status
+    @PutMapping("/changeStatus/{id}")
+    public ResponseEntity<Order> changeStatus(@PathVariable Long id, @RequestBody Order order) {
+        System.out.println("----------------------------------------------------------");
+        System.out.println("Order: " + order);
+        System.out.println("----------------------------------------------------------");
+        System.out.println("id: " + id);
+        Order updatedOrder = orderService.changeStatus(id, order);
+        return new ResponseEntity<>(updatedOrder, HttpStatus.OK);
+    }
 }
