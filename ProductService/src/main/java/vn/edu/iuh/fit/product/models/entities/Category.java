@@ -1,6 +1,5 @@
-package vn.edu.iuh.fit.product.model.entity;
+package vn.edu.iuh.fit.product.models.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

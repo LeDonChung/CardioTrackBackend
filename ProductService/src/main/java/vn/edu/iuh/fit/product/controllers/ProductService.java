@@ -1,4 +1,4 @@
-package vn.edu.iuh.fit.product.controler;
+package vn.edu.iuh.fit.product.controllers;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;

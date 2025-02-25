@@ -1,20 +1,15 @@
-package vn.edu.iuh.fit.product.controler;
+package vn.edu.iuh.fit.product.controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import vn.edu.iuh.fit.product.exceptions.CategoryException;
-import vn.edu.iuh.fit.product.model.dto.request.CategoryRequest;
-import vn.edu.iuh.fit.product.model.dto.response.BaseResponse;
-import vn.edu.iuh.fit.product.model.dto.response.CategoryResponse;
-import vn.edu.iuh.fit.product.model.entity.Category;
+import vn.edu.iuh.fit.product.models.dtos.requests.CategoryRequest;
+import vn.edu.iuh.fit.product.models.dtos.responses.BaseResponse;
+import vn.edu.iuh.fit.product.models.dtos.responses.CategoryResponse;
 import vn.edu.iuh.fit.product.services.CategoryService;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/category")

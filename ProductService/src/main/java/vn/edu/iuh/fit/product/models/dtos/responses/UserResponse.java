@@ -1,4 +1,4 @@
-package vn.edu.iuh.fit.product.model.dto.request;
+package vn.edu.iuh.fit.product.models.dtos.responses;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserRegisterRequest {
+public class UserResponse {
     private String username;
     private String password;
 }
