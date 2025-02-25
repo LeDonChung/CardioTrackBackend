@@ -1,4 +1,4 @@
-package vn.edu.iuh.fit.product;
+ package vn.edu.iuh.fit.product;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
