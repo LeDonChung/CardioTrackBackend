@@ -1,17 +1,12 @@
 package vn.edu.iuh.fit.product.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import vn.edu.iuh.fit.product.model.entities.Brand;
-import vn.edu.iuh.fit.product.repositories.BrandRepository;
+import vn.edu.iuh.fit.product.exceptions.BrandException;
+import vn.edu.iuh.fit.product.models.dtos.requests.BrandRequest;
+import vn.edu.iuh.fit.product.models.dtos.responses.BrandResponse;
 
-@Service
-public class BrandService {
-    @Autowired
-    private BrandRepository brandRepository;
+public interface BrandService {
+    BrandResponse save(BrandRequest request) throws BrandException;
 
     //get by id
-    public Brand getBrandById(Long id) {
-        return brandRepository.findById(id).orElse(null);
-    }
+    BrandResponse getBrandById(Long id) throws BrandException;
 }

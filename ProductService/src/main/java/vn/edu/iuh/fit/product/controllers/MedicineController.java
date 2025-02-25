@@ -1,14 +1,15 @@
-package vn.edu.iuh.fit.product.controler;
+package vn.edu.iuh.fit.product.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import vn.edu.iuh.fit.product.model.entities.Brand;
-import vn.edu.iuh.fit.product.model.entities.Category;
-import vn.edu.iuh.fit.product.model.entities.Medicine;
+import vn.edu.iuh.fit.product.exceptions.MedicineException;
+import vn.edu.iuh.fit.product.models.dtos.requests.MedicineRequest;
+import vn.edu.iuh.fit.product.models.dtos.responses.BaseResponse;
+import vn.edu.iuh.fit.product.models.dtos.responses.MedicineReponse;
+import vn.edu.iuh.fit.product.models.entities.Medicine;
 import vn.edu.iuh.fit.product.services.BrandService;
 import vn.edu.iuh.fit.product.services.CategoryService;
 import vn.edu.iuh.fit.product.services.MedicineService;
@@ -28,138 +29,198 @@ public class MedicineController {
     @Autowired
     private CategoryService categoryService;
 
-    //Get all medicines
-    @GetMapping("/getAllMedicines")
-//    @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<List<Medicine>> getAllMedicines() {
-        List<Medicine> medicines = medicineService.getAllMedicines();
-        return ResponseEntity.ok(medicines);
+    //add - update medicine
+    @PostMapping
+    public ResponseEntity<BaseResponse<MedicineReponse>> saveMedicine(@RequestBody MedicineRequest medicineRequest) throws MedicineException {
+        MedicineReponse medicineReponse = medicineService.save(medicineRequest);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<MedicineReponse>builder()
+                        .data(medicineReponse)
+                        .success(true)
+                        .build()
+        );
+    }
+
+    //update medicine
+    @PutMapping
+    public ResponseEntity<BaseResponse<MedicineReponse>> updateMedicine(@RequestBody MedicineRequest medicineRequest) throws MedicineException {
+        MedicineReponse medicineReponse = medicineService.save(medicineRequest);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<MedicineReponse>builder()
+                        .data(medicineReponse)
+                        .success(true)
+                        .build()
+        );
     }
 
     //update status by id
-    @PatchMapping("/updateStatusById/{id}/{status}")
-    public ResponseEntity<String> updateStatusById(@PathVariable Long id, @PathVariable int status) {
-        medicineService.updateStatusById(id, status);
-        return ResponseEntity.ok("Update status success");
+    @PutMapping("/update-status-by-id")
+    public ResponseEntity<BaseResponse<MedicineReponse>> updateStatusById(@RequestParam Long id, @RequestParam int status) throws MedicineException {
+        MedicineReponse medicineReponse = medicineService.updateStatusById(id, status);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<MedicineReponse>builder()
+                        .data(medicineReponse)
+                        .success(true)
+                        .build()
+        );
     }
 
-    //add - update medicine
-    @PostMapping("/addMedicine")
-    @PutMapping("/addMedicine/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public void addMedicine(@PathVariable(required = false) Long id, @RequestBody Map<String, Object> requestData) {
-        Medicine medicine = objectMapper.convertValue(requestData, Medicine.class);
+    //Get all medicines
+    @GetMapping("/get-all-medicines")
+    public ResponseEntity<BaseResponse<List<MedicineReponse>>> getAllMedicines() {
+        List<MedicineReponse> medicines = medicineService.getAllMedicines();
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<List<MedicineReponse>>builder()
+                        .data(medicines)
+                        .success(true)
+                        .build()
+        );
+    }
 
-        if (id != null) {
-            Medicine existingMedicine = medicineService.getMedicineById(id);
-            if (existingMedicine == null) {
-                System.out.println("Medicine with ID " + id + " not found!");
-                return;
-            }
-            medicine.setId(id);
-        }
-
-        Long categoryId = (requestData.get("category_id") != null) ? Long.valueOf(requestData.get("category_id").toString()) : null;
-        Long brandId = (requestData.get("brand_id") != null) ? Long.valueOf(requestData.get("brand_id").toString()) : null;
-
-        if (categoryId != null) {
-            Category category = categoryService.getCategoryById(categoryId);
-            if (category != null) {
-                medicine.setCategory(category);
-            } else {
-                System.out.println("Category with ID " + categoryId + " not found!");
-            }
-        }
-
-        if (brandId != null) {
-            Brand brand = brandService.getBrandById(brandId);
-            if (brand != null) {
-                medicine.setBrand(brand);
-            } else {
-                System.out.println("Brand with ID " + brandId + " not found!");
-            }
-        }
-        System.out.println("Medicine: " + medicine);
-        medicineService.addMedicine(medicine);
+    //find by id
+    @GetMapping("/{id}")
+    public ResponseEntity<BaseResponse<MedicineReponse>> getMedicineById(@PathVariable Long id) throws MedicineException {
+        MedicineReponse medicine = medicineService.getMedicineById(id);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<MedicineReponse>builder()
+                        .data(medicine)
+                        .success(true)
+                        .build()
+        );
     }
 
     //find by name
-    @GetMapping("/findMedicineByName/{name}")
-    public ResponseEntity<List<Medicine>> findMedicineByName(@PathVariable String name) {
-        List<Medicine> medicines = medicineService.findMedicineByName(name);
-        System.out.println("Medicine of "+ name + ": " + medicines);
-        return ResponseEntity.ok(medicines);
+    @GetMapping("/get-by-name")
+    public ResponseEntity<BaseResponse<List<MedicineReponse>>> findMedicineByName(@RequestParam String name) {
+        List<MedicineReponse> medicines = medicineService.findMedicineByName(name);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<List<MedicineReponse>>builder()
+                        .data(medicines)
+                        .success(true)
+                        .build()
+        );
     }
 
     //find by brand id
-    @GetMapping("/getAllMedicinesByBrandId/{brandId}")
-    public ResponseEntity<List<Medicine>> getAllMedicinesByBrandId(@PathVariable Long brandId) {
-        List<Medicine> medicines = medicineService.getAllMedicinesByBrandId(brandId);
-        System.out.println("Medicine of "+ brandId + ": " + medicines);
-        return ResponseEntity.ok(medicines);
+    @GetMapping("/get-medicines-by-brand-id/{brandId}")
+    public ResponseEntity<BaseResponse<List<MedicineReponse>>> getAllMedicinesByBrandId(@PathVariable Long brandId) {
+        List<MedicineReponse> medicines = medicineService.getAllMedicinesByBrandId(brandId);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<List<MedicineReponse>>builder()
+                        .data(medicines)
+                        .success(true)
+                        .build()
+        );
     }
 
     //find by description
-    @GetMapping("/findMedicineByDes/{des}")
-    public ResponseEntity<List<Medicine>> findMedicineByDes(@PathVariable String des) {
-        List<Medicine> medicines = medicineService.findMedicineByDes(des);
-        System.out.println("Medicine of "+ des + ": " + medicines);
-        return ResponseEntity.ok(medicines);
+    @GetMapping("/get-by-des")
+    public ResponseEntity<BaseResponse<List<MedicineReponse>>> findMedicineByDes(@RequestParam String des) {
+        List<MedicineReponse> medicines = medicineService.findMedicineByDes(des);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<List<MedicineReponse>>builder()
+                        .data(medicines)
+                        .success(true)
+                        .build()
+        );
     }
 
     //find by description short
-    @GetMapping("/findMedicineByDesShort/{desShort}")
-    public ResponseEntity<List<Medicine>> findMedicineByDesShort(@PathVariable String desShort) {
-        List<Medicine> medicines = medicineService.findMedicineByDesShort(desShort);
-        System.out.println("Medicine of "+ desShort + ": " + medicines);
-        return ResponseEntity.ok(medicines);
-    }
-
-    //find by discount
-    @GetMapping("/findMedicineByDiscountBetween/{min}/{max}")
-    public ResponseEntity<List<Medicine>> findMedicineByDiscountBetween(@PathVariable int min, @PathVariable int max) {
-        List<Medicine> medicines = medicineService.findMedicineByDiscountBetween(min, max);
-        System.out.println("Medicine of discount between "+ min + " and " + max + ": " + medicines);
-        return ResponseEntity.ok(medicines);
-    }
-
-    //find by init
-    @GetMapping("/findMedicineByInit/{init}")
-    public ResponseEntity<List<Medicine>> findMedicineByInit(@PathVariable String init) {
-        List<Medicine> medicines = medicineService.findMedicineByInit(init);
-        System.out.println("Medicine of "+ init + ": " + medicines);
-        return ResponseEntity.ok(medicines);
-    }
-
-    //find by price between
-    @GetMapping("/findMedicineByPriceBetween/{min}/{max}")
-    public ResponseEntity<List<Medicine>> findMedicineByPriceBetween(@PathVariable double min, @PathVariable double max) {
-        List<Medicine> medicines = medicineService.findMedicineByPriceBetween(min, max);
-        System.out.println("Medicine of price between "+ min + " and " + max + ": " + medicines);
-        return ResponseEntity.ok(medicines);
-    }
-
-    //find by price less than
-    @GetMapping("/findMedicineByPriceLessThan/{price}")
-    public ResponseEntity<List<Medicine>> findMedicineByPriceLessThan(@PathVariable double price) {
-        List<Medicine> medicines = medicineService.findMedicineByPriceLessThan(price);
-        System.out.println("Medicine of price less than "+ price + ": " + medicines);
-        return ResponseEntity.ok(medicines);
-    }
-
-    //find by price greater than
-    @GetMapping("/findMedicineByPriceGreaterThan/{price}")
-    public ResponseEntity<List<Medicine>> findMedicineByPriceGreaterThan(@PathVariable double price) {
-        List<Medicine> medicines = medicineService.findMedicineByPriceGreaterThan(price);
-        System.out.println("Medicine of price greater than "+ price + ": " + medicines);
-        return ResponseEntity.ok(medicines);
+    @GetMapping("/get-by-des-short")
+    public ResponseEntity<BaseResponse<List<MedicineReponse>>> findMedicineByDesShort(@RequestParam String desShort) {
+        List<MedicineReponse> medicines = medicineService.findMedicineByDesShort(desShort);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<List<MedicineReponse>>builder()
+                        .data(medicines)
+                        .success(true)
+                        .build()
+        );
     }
 
     //find by quantity
-    @GetMapping("/findMedicineByQuantity/{quantity}")
-    public ResponseEntity<List<Medicine>> findMedicineByQuantity(@PathVariable int quantity) {
-        List<Medicine> medicines = medicineService.findMedicineByQuantity(quantity);
-        System.out.println("Medicine of quantity "+ quantity + ": " + medicines);
-        return ResponseEntity.ok(medicines);
+    @GetMapping("/get-by-quantity")
+    public ResponseEntity<BaseResponse<List<MedicineReponse>>> findMedicineByQuantity(@RequestParam int quantity) {
+        List<MedicineReponse> medicines = medicineService.findMedicineByQuantity(quantity);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<List<MedicineReponse>>builder()
+                        .data(medicines)
+                        .success(true)
+                        .build()
+        );
+    }
+
+    //find by init
+    @GetMapping("/get-by-init")
+    public ResponseEntity<BaseResponse<List<MedicineReponse>>> findMedicineByInit(@RequestParam String init) {
+        List<MedicineReponse> medicines = medicineService.findMedicineByInit(init);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<List<MedicineReponse>>builder()
+                        .data(medicines)
+                        .success(true)
+                        .build()
+        );
+    }
+
+    //find by discount
+    @GetMapping("/get-medicine-by-discount-between")
+    public ResponseEntity<BaseResponse<List<MedicineReponse>>> findMedicineByDiscountBetween(@RequestParam int min, @RequestParam int max) {
+        List<MedicineReponse> medicines = medicineService.findMedicineByDiscountBetween(min, max);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<List<MedicineReponse>>builder()
+                        .data(medicines)
+                        .success(true)
+                        .build()
+        );
+    }
+
+    //find by price between
+    @GetMapping("/get-medicine-by-price-between")
+    public ResponseEntity<BaseResponse<List<MedicineReponse>>> findMedicineByPriceBetween(@RequestParam double min, @RequestParam double max) {
+        List<MedicineReponse> medicines = medicineService.findMedicineByPriceBetween(min, max);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<List<MedicineReponse>>builder()
+                        .data(medicines)
+                        .success(true)
+                        .build()
+        );
+    }
+
+    //find by price less than
+    @GetMapping("/get-medicine-by-price-less-than")
+    public ResponseEntity<BaseResponse<List<MedicineReponse>>> findMedicineByPriceLessThan(@RequestParam double price) {
+        List<MedicineReponse> medicines = medicineService.findMedicineByPriceLessThan(price);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<List<MedicineReponse>>builder()
+                        .data(medicines)
+                        .success(true)
+                        .build()
+        );
+    }
+
+    //find by price greater than
+    @GetMapping("/get-medicine-by-price-greater-than")
+    public ResponseEntity<BaseResponse<List<MedicineReponse>>> findMedicineByPriceGreaterThan(@RequestParam double price) {
+        List<MedicineReponse> medicines = medicineService.findMedicineByPriceGreaterThan(price);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<List<MedicineReponse>>builder()
+                        .data(medicines)
+                        .success(true)
+                        .build()
+        );
     }
 }

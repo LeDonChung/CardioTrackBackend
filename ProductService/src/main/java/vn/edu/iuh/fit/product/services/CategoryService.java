@@ -14,6 +14,7 @@ public interface CategoryService {
 
     // Lấy tất cả danh mục cha (cấp 1)
     List<CategoryResponse> getAllParentCategories();
+
     // Lấy tất cả danh mục con Theo parent_id
     List<CategoryResponse> getAllChildCategories(Long parentID);
 
