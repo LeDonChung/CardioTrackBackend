@@ -2,7 +2,6 @@ package vn.edu.iuh.fit.auth.client;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,4 +21,10 @@ public interface UserServiceClient {
 
     @PostMapping("/login")
     ResponseEntity<BaseResponse<Object>> login(@RequestBody LoginRequest loginRequest);
+
+    @PostMapping("/generation-otp")
+    ResponseEntity<BaseResponse<Boolean>> generationOtp(@RequestParam("phoneNumber") String phoneNumber);
+
+    @PostMapping("/verify-otp")
+    ResponseEntity<BaseResponse<Boolean>> verifyOtp(@RequestParam("phoneNumber") String phoneNumber, @RequestParam("otp") String otp);
 }

@@ -1,49 +1,23 @@
 package vn.edu.iuh.fit.product.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import vn.edu.iuh.fit.product.model.entities.Category;
-import vn.edu.iuh.fit.product.repositories.CategoryRepository;
+import vn.edu.iuh.fit.product.exceptions.CategoryException;
+import vn.edu.iuh.fit.product.models.dtos.requests.CategoryRequest;
+import vn.edu.iuh.fit.product.models.dtos.responses.CategoryResponse;
 
 import java.util.List;
 
-@Service
-public class CategoryService {
-    @Autowired
-    private CategoryRepository categoryRepositories;
-
-    //Thêm - cập nhật loại sản phẩm
-    public void addCategory(Category category) {
-        categoryRepositories.save(category);
-    }
-
-    //Tìm tất cả loại sản phẩm
-    public List<Category> getAllCategories() {
-        return categoryRepositories.findAll();
-    }
+public interface CategoryService {
+    CategoryResponse save(CategoryRequest request) throws CategoryException;
 
     //Lấy danh mục theo id
-    public Category getCategoryById(Long id) {
-        return categoryRepositories.findById(id).orElse(null);
-    }
+    CategoryResponse getCategoryById(Long id) throws CategoryException;
 
     // Lấy tất cả danh mục cha (cấp 1)
-    public List<Category> getAllParentCategories() {
-        return categoryRepositories.findAllParentCategories();
-    }
-
+    List<CategoryResponse> getAllParentCategories();
     // Lấy tất cả danh mục con Theo parent_id
-    public List<Category> getAllChildCategories(Long parentID) {
-        return categoryRepositories.findAllChildCategories(parentID);
-    }
+    List<CategoryResponse> getAllChildCategories(Long parentID);
 
     // Lấy tất cả danh mục con Theo title
-    public Category findCategoryByTitle(String title) {
-        return categoryRepositories.findCategoryByTitle(title);
-    }
+    List<CategoryResponse> getCategoryByTitle(String title);
 
-    // Xóa danh mục thuôc theo category_id
-    public void deleteCategoryById(Long id) {
-        categoryRepositories.deleteById(id);
-    }
 }
