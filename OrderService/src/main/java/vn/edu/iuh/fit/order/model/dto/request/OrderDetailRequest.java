@@ -8,8 +8,6 @@ import lombok.*;
 @Setter
 @Builder
 public class OrderDetailRequest {
-    private Long id;
-
     private int discount;
 
     private double price;
@@ -17,6 +15,4 @@ public class OrderDetailRequest {
     private int quantity;
 
     private Long medichine;
-
-    private Long orderId;
 }

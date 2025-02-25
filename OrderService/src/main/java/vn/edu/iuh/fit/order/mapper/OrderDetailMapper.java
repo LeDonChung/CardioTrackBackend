@@ -8,7 +8,6 @@ import vn.edu.iuh.fit.order.model.entities.OrderDetail;
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface OrderDetailMapper {
 
-    @Mapping(target = "order.id", source = "orderId")
     OrderDetail toEntity(OrderDetailRequest request);
 
     @Mapping(target = "orderId", source = "order.id")

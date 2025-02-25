@@ -26,15 +26,10 @@ public class OrderDetailServiceImpl implements OrderDetailService {
     @Override
     public OrderDetailResponse save(OrderDetailRequest request) {
         OrderDetail orderDetail = null;
-        // nếu thêm thì
-        if(request.getId() == null) {
-            orderDetail = orderDetailMapper.toEntity(request);
-            if(request.getOrderId() == null) {
-                orderDetail.setOrder(null);
-            }
-        } else {
 
-        }
+        orderDetail = orderDetailMapper.toEntity(request);
+
+
         orderDetail = orderDetailRepository.save(orderDetail);
         return orderDetailMapper.toResponse(orderDetail);
     }

@@ -1,0 +1,33 @@
+package vn.edu.iuh.fit.order.exceptions;
+
+import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import vn.edu.iuh.fit.order.model.dto.response.BaseResponse;
+
+import java.time.LocalDateTime;
+
+public class GlobalException extends ResponseEntityExceptionHandler {
+    @ExceptionHandler(ConfigDataResourceNotFoundException.class)
+    public ResponseEntity<BaseResponse<Object>> handlerResourceNotFound(ConfigDataResourceNotFoundException ex) {
+        BaseResponse<Object> baseResponse = BaseResponse
+                .builder()
+                .code(String.format(HttpStatus.NOT_FOUND.toString()))
+                .data(ex.getLocalizedMessage())
+                .success(false).build();
+        return new ResponseEntity<>(baseResponse, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(OrderException.class)
+    public ResponseEntity<ErrorDetail> handlerPostException(OrderException ex, WebRequest req) {
+        ErrorDetail errorDetail = ErrorDetail.builder()
+                .error(ex.getMessage())
+                .message(req.getDescription(false))
+                .timeStamp(LocalDateTime.now())
+                .build();
+        return new ResponseEntity<>(errorDetail, HttpStatus.BAD_REQUEST);
+    }
+}

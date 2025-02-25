@@ -3,6 +3,7 @@ package vn.edu.iuh.fit.order.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import vn.edu.iuh.fit.order.enums.OrderStatus;
 import vn.edu.iuh.fit.order.exceptions.OrderException;
 import vn.edu.iuh.fit.order.model.dto.request.OrderRequest;
 import vn.edu.iuh.fit.order.model.dto.response.BaseResponse;
@@ -23,6 +24,18 @@ public class OrderController {
                 BaseResponse
                         .<OrderResponse>builder()
                         .data(order)
+                        .success(true)
+                        .build()
+        );
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<BaseResponse<OrderResponse>> updateStatus(@PathVariable Long id, @RequestParam OrderStatus status) throws OrderException {
+        OrderResponse updatedOrder = orderService.changeStatus(id, status);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<OrderResponse>builder()
+                        .data(updatedOrder)
                         .success(true)
                         .build()
         );

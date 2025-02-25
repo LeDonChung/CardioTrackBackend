@@ -36,7 +36,7 @@ public class Order {
 
     private Long addressDetail;
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", fetch = FetchType.EAGER)
     private List<OrderDetail> orderDetails;
 
     // Getters and Setters

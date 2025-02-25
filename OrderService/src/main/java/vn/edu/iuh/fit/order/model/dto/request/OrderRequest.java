@@ -3,6 +3,8 @@ package vn.edu.iuh.fit.order.model.dto.request;
 import lombok.*;
 import vn.edu.iuh.fit.order.enums.OrderStatus;
 
+import java.util.List;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -23,6 +25,6 @@ public class OrderRequest {
 
     private Long addressDetail;
 
-    private Long orderDetailId;
+    private List<OrderDetailRequest> orderDetails;
 
 }
