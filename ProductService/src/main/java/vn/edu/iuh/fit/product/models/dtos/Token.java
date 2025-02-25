@@ -1,4 +1,4 @@
-package vn.edu.iuh.fit.product.model.dto;
+package vn.edu.iuh.fit.product.models.dtos;
 
 import lombok.Builder;
 import lombok.Getter;

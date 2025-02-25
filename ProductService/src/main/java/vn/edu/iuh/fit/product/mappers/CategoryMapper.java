@@ -1,9 +1,9 @@
-package vn.edu.iuh.fit.product.mapper;
+package vn.edu.iuh.fit.product.mappers;
 
 import org.mapstruct.*;
-import vn.edu.iuh.fit.product.model.dto.request.CategoryRequest;
-import vn.edu.iuh.fit.product.model.dto.response.CategoryResponse;
-import vn.edu.iuh.fit.product.model.entity.Category;
+import vn.edu.iuh.fit.product.models.dtos.requests.CategoryRequest;
+import vn.edu.iuh.fit.product.models.dtos.responses.CategoryResponse;
+import vn.edu.iuh.fit.product.models.entities.Category;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface CategoryMapper {

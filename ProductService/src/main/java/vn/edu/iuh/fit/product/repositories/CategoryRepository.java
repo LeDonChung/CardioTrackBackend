@@ -2,7 +2,7 @@ package vn.edu.iuh.fit.product.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import vn.edu.iuh.fit.product.model.entity.Category;
+import vn.edu.iuh.fit.product.models.entities.Category;
 
 import java.util.List;
 
