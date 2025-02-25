@@ -3,7 +3,6 @@ package vn.edu.iuh.fit.product.services;
 import vn.edu.iuh.fit.product.exceptions.MedicineException;
 import vn.edu.iuh.fit.product.models.dtos.requests.MedicineRequest;
 import vn.edu.iuh.fit.product.models.dtos.responses.MedicineReponse;
-import vn.edu.iuh.fit.product.models.entities.Medicine;
 
 import java.util.List;
 
