@@ -14,4 +14,6 @@ public class SystemConstraints {
     public static final String PHONE_EXISTS = "Số điện thoại đã được đăng ký.";
     public static final String USERNAME_IS_EXISTS = "Tên đăng nhập đã tồn tại.";
     public static final String CATEGORY_NOT_FOUND = "Không tìm thấy loại sản phẩm";
+    public static final String BRAND_NOT_FOUND = "Không tìm thấy nhãn hàng";
+    public static final String MEDICINE_NOT_FOUND = "Không tìm thấy sản phẩm";
 }

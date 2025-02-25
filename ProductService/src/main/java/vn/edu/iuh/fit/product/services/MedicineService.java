@@ -1,88 +1,54 @@
 package vn.edu.iuh.fit.product.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import vn.edu.iuh.fit.product.model.entities.Medicine;
-import vn.edu.iuh.fit.product.repositories.MedicineRepositories;
+import vn.edu.iuh.fit.product.exceptions.MedicineException;
+import vn.edu.iuh.fit.product.models.dtos.requests.MedicineRequest;
+import vn.edu.iuh.fit.product.models.dtos.responses.MedicineReponse;
+import vn.edu.iuh.fit.product.models.entities.Medicine;
 
 import java.util.List;
 
-@Service
-public class MedicineService {
-    @Autowired
-    private MedicineRepositories medicineRepositories;
+
+public interface MedicineService {
+    //Add - update medicine
+    MedicineReponse save(MedicineRequest medicineRequest) throws MedicineException;
 
     //get all medicines
-    public List<Medicine> getAllMedicines() {
-        return medicineRepositories.findAll();
-    }
-
-    //Add - update medicine
-    public void addMedicine(Medicine medicine) {
-        medicineRepositories.save(medicine);
-    }
+    List<MedicineReponse> getAllMedicines();
 
     //update status by id
-    public void updateStatusById(Long id, int status) {
-        Medicine medicine = medicineRepositories.findById(id).orElse(null);
-        if (medicine != null) {
-            medicine.setStatus(status);
-            medicineRepositories.save(medicine);
-        }
-    }
+    MedicineReponse updateStatusById(Long id, int status) throws MedicineException;
 
     //find by id
-    public Medicine getMedicineById(Long id) {
-        return medicineRepositories.findById(id).orElse(null);
-    }
-
-    //find by brand id
-    public List<Medicine> getAllMedicinesByBrandId(Long brandId) {
-        return medicineRepositories.findAllByBrandId(brandId);
-    }
+    MedicineReponse getMedicineById(Long id) throws MedicineException;
 
     //find by name
-    public List<Medicine> findMedicineByName(String name) {
-        return medicineRepositories.findMedicineByName(name);
-    }
+    List<MedicineReponse> findMedicineByName(String name);
+
+    //find by brand id
+    List<MedicineReponse> getAllMedicinesByBrandId(Long brandId);
+
 
     //find by description
-    public List<Medicine> findMedicineByDes(String des) {
-        return medicineRepositories.findMedicineByDes(des);
-    }
+    List<MedicineReponse> findMedicineByDes(String des);
 
     //find by short description
-    public List<Medicine> findMedicineByDesShort(String desShort) {
-        return medicineRepositories.findMedicineByDesShort(desShort);
-    }
+     List<MedicineReponse> findMedicineByDesShort(String desShort);
 
     //find by discount
-    public List<Medicine> findMedicineByDiscountBetween(int min, int max) {
-        return medicineRepositories.findMedicineByDiscountBetween(min, max);
-    }
+    List<MedicineReponse> findMedicineByDiscountBetween(int min, int max);
 
     //find by init
-    public List<Medicine> findMedicineByInit(String init) {
-        return medicineRepositories.findMedicineByInit(init);
-    }
+    List<MedicineReponse> findMedicineByInit(String init);
 
     //find by price between
-    public List<Medicine> findMedicineByPriceBetween(double min, double max) {
-        return medicineRepositories.findMedicineByPriceBetween(min, max);
-    }
+    List<MedicineReponse> findMedicineByPriceBetween(double min, double max);
 
     //find by price less than
-    public List<Medicine> findMedicineByPriceLessThan(double price) {
-        return medicineRepositories.findMedicineByPriceLessThan(price);
-    }
+    List<MedicineReponse> findMedicineByPriceLessThan(double price);
 
     //find by price greater than
-    public List<Medicine> findMedicineByPriceGreaterThan(double price) {
-        return medicineRepositories.findMedicineByPriceGreaterThan(price);
-    }
+    List<MedicineReponse> findMedicineByPriceGreaterThan(double price);
 
     //find by quantity
-    public List<Medicine> findMedicineByQuantity(int quantity) {
-        return medicineRepositories.findMedicineByQuantity(quantity);
-    }
+    List<MedicineReponse> findMedicineByQuantity(int quantity);
 }

@@ -3,11 +3,13 @@ package vn.edu.iuh.fit.product.repositories;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import org.springframework.data.jpa.repository.Query;
-import vn.edu.iuh.fit.product.models.entities.;
+import org.springframework.stereotype.Repository;
+import vn.edu.iuh.fit.product.models.entities.Medicine;
 
 import java.util.List;
 
-public interface MedicineRepositories extends JpaRepository<Medicine, Long> {
+@Repository
+public interface MedicineRepository extends JpaRepository<Medicine, Long> {
     List<Medicine> findAllByBrandId(Long brandId);
 
     @Query("SELECT m FROM Medicine m WHERE m.name LIKE %:name%")

@@ -30,6 +30,7 @@ public class CategoryController {
         );
     }
 
+    //Cập nhật danh mục thuốc
     @PutMapping
     public ResponseEntity<BaseResponse<CategoryResponse>> updateCategory(@RequestBody CategoryRequest request) throws CategoryException {
         CategoryResponse category = categoryService.save(request);
