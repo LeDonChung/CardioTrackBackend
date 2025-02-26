@@ -1,14 +1,29 @@
 package vn.edu.iuh.fit.order.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum OrderStatus {
-    PENDING,
-    CONFIRMED,
-    SHIPPED,
-    DELIVERED,
-    CANCELED,
-    RETURNED,
-    PROCESSING,
-    FAILED
+    PENDING("PENDING"),
+    CONFIRMED("CONFIRMED"),
+    SHIPPED("SHIPPED"),
+    DELIVERED("DELIVERED"),
+    CANCELED("CANCELED"),
+    RETURNED("RETURNED"),
+    PROCESSING("PROCESSING"),
+    FAILED("FAILED");
+
+    private final String value;
+
+
+    OrderStatus(String value) {
+        this.value = value;
+    }
+
+    @Override
+    public String toString() {
+        return value;
+    }
 }
 
 //Pending: Đang chờ xử lý, chưa được xác nhận.

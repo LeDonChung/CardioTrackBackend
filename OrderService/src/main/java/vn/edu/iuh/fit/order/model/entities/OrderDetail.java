@@ -20,7 +20,7 @@ public class OrderDetail {
 
     private int quantity;
 
-    private Long medichine;
+    private Long medicine;
 
     @ManyToOne
     @JoinColumn(name = "order_id")

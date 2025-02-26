@@ -5,13 +5,14 @@ import vn.edu.iuh.fit.order.model.dto.request.OrderRequest;
 import vn.edu.iuh.fit.order.model.dto.response.OrderResponse;
 import vn.edu.iuh.fit.order.model.entities.Order;
 
-@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
+@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING, uses = {OrderDetailMapper.class})
 public interface OrderMapper {
+    @Mapping(target = "addressId", ignore = true)
+    Order toEntity(OrderRequest orderRequest);
 
-    Order toEntity(OrderRequest request);
-
-    OrderResponse toResponse(Order post);
+    OrderResponse toDto(Order order);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    Order partialUpdate(OrderRequest request,@MappingTarget Order order);
+    @Mapping(target = "addressId", ignore = true)
+    Order partialUpdate(OrderRequest orderRequest, @MappingTarget Order order);
 }

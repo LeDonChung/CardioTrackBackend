@@ -24,4 +24,5 @@ public interface MedicineService {
 
     PageDTO<MedicineResponse> getPages(int page, int size, String sortBy, String sortName);
 
+    boolean isExists(Long id);
 }

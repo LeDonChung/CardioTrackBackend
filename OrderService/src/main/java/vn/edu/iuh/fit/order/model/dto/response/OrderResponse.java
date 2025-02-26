@@ -2,11 +2,15 @@ package vn.edu.iuh.fit.order.model.dto.response;
 
 import lombok.*;
 import vn.edu.iuh.fit.order.enums.OrderStatus;
+import vn.edu.iuh.fit.order.model.entities.OrderDetail;
 
-@NoArgsConstructor
+import java.time.LocalDate;
+import java.util.List;
+
 @AllArgsConstructor
-@Getter
+@NoArgsConstructor
 @Setter
+@Getter
 @Builder
 public class OrderResponse {
     private Long id;
@@ -17,12 +21,13 @@ public class OrderResponse {
 
     private OrderStatus status;
 
+    private LocalDate orderDate;
+
     private double feeShip;
 
     private Long customer;
 
-    private Long addressDetail;
+    private AddressResponse addressDetail;
 
-    private Long orderDetailId;
-
+    private List<OrderDetail> orderDetails;
 }

@@ -81,4 +81,16 @@ public class MedicineController {
                         .build()
         );
     }
+
+    @GetMapping("/exists/{id}")
+    public ResponseEntity<BaseResponse<Boolean>> isExists(@PathVariable Long id) {
+        boolean isExists = medicineService.isExists(id);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<Boolean>builder()
+                        .data(isExists)
+                        .success(true)
+                        .build()
+        );
+    }
 }
