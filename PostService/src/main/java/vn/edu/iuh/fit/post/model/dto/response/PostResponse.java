@@ -13,6 +13,6 @@ public class PostResponse {
     private Long id;
     private String title;
     private String content;
-    private String authorName; // Tên người đăng bài (Lấy từ UserService)
+    private Long authorId; // Tên người đăng bài (Lấy từ UserService)
     private String createdAt;
 }
