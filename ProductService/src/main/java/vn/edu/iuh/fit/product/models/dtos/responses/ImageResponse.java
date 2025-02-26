@@ -2,15 +2,12 @@ package vn.edu.iuh.fit.product.models.dtos.responses;
 
 import lombok.*;
 
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
+@NoArgsConstructor
 @Builder
-public class MedicineImageResponse {
+@AllArgsConstructor
+public class ImageResponse {
     private Long id;
-
     private String url;
-
-    private Long medicineId;
 }

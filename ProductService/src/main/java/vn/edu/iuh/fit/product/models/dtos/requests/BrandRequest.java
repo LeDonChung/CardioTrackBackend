@@ -17,6 +17,4 @@ public class BrandRequest {
     private String image;
 
     private String title;
-
-    private Set<Medicine> medicines = new LinkedHashSet<>();
 }

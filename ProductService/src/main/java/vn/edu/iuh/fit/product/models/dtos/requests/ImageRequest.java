@@ -7,7 +7,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
-public class UserRegisterRequest {
-    private String username;
-    private String password;
+public class ImageRequest {
+    private Long id;
+    private String url;
 }

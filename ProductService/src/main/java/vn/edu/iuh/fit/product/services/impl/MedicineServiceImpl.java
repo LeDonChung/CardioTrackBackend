@@ -1,13 +1,17 @@
 package vn.edu.iuh.fit.product.services.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import vn.edu.iuh.fit.product.exceptions.BrandException;
 import vn.edu.iuh.fit.product.exceptions.CategoryException;
 import vn.edu.iuh.fit.product.exceptions.MedicineException;
 import vn.edu.iuh.fit.product.mappers.MedicineMapper;
+import vn.edu.iuh.fit.product.models.dtos.PageDTO;
 import vn.edu.iuh.fit.product.models.dtos.requests.MedicineRequest;
-import vn.edu.iuh.fit.product.models.dtos.responses.MedicineReponse;
+import vn.edu.iuh.fit.product.models.dtos.responses.MedicineResponse;
 import vn.edu.iuh.fit.product.models.entities.Brand;
 import vn.edu.iuh.fit.product.models.entities.Category;
 import vn.edu.iuh.fit.product.models.entities.Medicine;
@@ -19,6 +23,8 @@ import vn.edu.iuh.fit.product.utils.SystemConstraints;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class MedicineServiceImpl implements MedicineService {
@@ -26,162 +32,81 @@ public class MedicineServiceImpl implements MedicineService {
     private MedicineRepository medicineRepository;
 
     @Autowired
-    private CategoryRepository categoryRepository;
-
-    @Autowired
-    private BrandRepository brandRepository;
-
-    @Autowired
     private MedicineMapper medicineMapper;
 
-    //Add - update medicine
+
     @Override
-    public MedicineReponse save(MedicineRequest medicineRequest) throws MedicineException {
+    public MedicineResponse save(MedicineRequest medicineRequest) throws MedicineException {
         Medicine medicine = null;
-        //Insert
         if(medicineRequest.getId() == null) {
             medicine = medicineMapper.toEntity(medicineRequest);
-            if(medicineRequest.getCategoryId() == null) {
-                throw new CategoryException(SystemConstraints.CATEGORY_NOT_FOUND);
-            }else{
-                Optional<Category> category = categoryRepository.findById(medicineRequest.getCategoryId());
-                if(category.isEmpty()) {
-                    throw new CategoryException(SystemConstraints.CATEGORY_NOT_FOUND);
-                }
-                else {
-                    medicine.setCategory(category.get());
-                }
-            }
-
-            if(medicineRequest.getBrandId() == null) {
-                throw new BrandException(SystemConstraints.BRAND_NOT_FOUND);
-            }else{
-                Optional<Brand> brand = brandRepository.findById(medicineRequest.getBrandId());
-                if(brand.isEmpty()) {
-                    throw new BrandException(SystemConstraints.BRAND_NOT_FOUND);
-                }
-                else {
-                    medicine.setBrand(brand.get());
-                }
-            }
-        }
-        // Update
-        else{
-            Optional<Medicine> oldMedicine = medicineRepository.findById(medicineRequest.getId());
-            if (oldMedicine.isEmpty()) {
+            medicine.setStatus(1);
+        } else {
+            Optional<Medicine> medicineOptional = medicineRepository.findById(medicineRequest.getId());
+            if (medicineOptional.isEmpty()) {
                 throw new MedicineException(SystemConstraints.MEDICINE_NOT_FOUND);
-            }else{
-                medicine = medicineMapper.partialUpdate(medicineRequest, oldMedicine.get());
-
-                //Update category and brand
-                Optional<Category> category = categoryRepository.findById(medicineRequest.getCategoryId());
-                medicine.setCategory(category.get());
-
-                Optional<Brand> brand = brandRepository.findById(medicineRequest.getBrandId());
-                medicine.setBrand(brand.get());
             }
+
+            medicine = medicineMapper.partialUpdate(medicineRequest, medicineOptional.get());
         }
 
+        // check brand throw -> brand not found
+        // check category throw -> category not found
+        // check tag throw -> tag not found
+        // check specification throw -> specification not found
         medicine = medicineRepository.save(medicine);
-        return medicineMapper.toResponse(medicine);
+
+        return medicineMapper.toDto(medicine);
     }
 
-    //update status by id
     @Override
-    public MedicineReponse updateStatusById(Long id, int status) {
-        Optional<Medicine> medicine = medicineRepository.findById(id);
-        if (medicine.isEmpty()) {
-            return null;
-        }
-        medicine.get().setStatus(status);
-        medicineRepository.save(medicine.get());
-        return medicineMapper.toResponse(medicine.get());
+    public List<MedicineResponse> getAllMedicines() {
+        return null;
     }
 
-    //get all medicines
     @Override
-    public List<MedicineReponse> getAllMedicines() {
-        List<Medicine> medicines = medicineRepository.findAll();
-        return medicines.stream().map(medicine -> medicineMapper.toResponse(medicine)).toList();
-    }
-
-    //find by id
-    @Override
-    public MedicineReponse getMedicineById(Long id) throws MedicineException {
-        Optional<Medicine> medicine = medicineRepository.findById(id);
-        if (medicine.isEmpty()) {
+    public MedicineResponse updateStatusById(Long id, int status) throws MedicineException {
+        Optional<Medicine> medicineOptional = medicineRepository.findById(id);
+        if (medicineOptional.isEmpty()) {
             throw new MedicineException(SystemConstraints.MEDICINE_NOT_FOUND);
         }
-        return medicineMapper.toResponse(medicine.get());
+
+        Medicine medicine = medicineOptional.get();
+
+        medicine.setStatus(status);
+
+        medicine = medicineRepository.save(medicine);
+
+        return medicineMapper.toDto(medicine);
     }
 
-    //find by name
     @Override
-    public List<MedicineReponse> findMedicineByName(String name) {
-        List<Medicine> medicines = medicineRepository.findMedicineByName(name);
-        return medicines.stream().map(medicine -> medicineMapper.toResponse(medicine)).toList();
+    public MedicineResponse getMedicineById(Long id) throws MedicineException {
+        Optional<Medicine> medicineOptional = medicineRepository.findById(id);
+        if (medicineOptional.isEmpty()) {
+            throw new MedicineException(SystemConstraints.MEDICINE_NOT_FOUND);
+        }
+
+        return medicineMapper.toDto(medicineOptional.get());
     }
 
-    //find by brand id
     @Override
-    public List<MedicineReponse> getAllMedicinesByBrandId(Long brandId) {
-        List<Medicine> medicines = medicineRepository.findAllByBrandId(brandId);
-        return medicines.stream().map(medicine -> medicineMapper.toResponse(medicine)).toList();
-    }
+    public PageDTO<MedicineResponse> getPages(int page, int size, String sortBy, String sortName) {
+        Pageable pageable = PageRequest.of(page, size);
+        if(sortBy != null && sortName != null) {
+            pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortName), sortBy));
+        }
 
-    //find by description
-    @Override
-    public List<MedicineReponse> findMedicineByDes(String des) {
-        List<Medicine> medicines = medicineRepository.findMedicineByDes(des);
-        return medicines.stream().map(medicine -> medicineMapper.toResponse(medicine)).toList();
-    }
+        Set<Medicine> medicines = medicineRepository.findAll(pageable).toSet();
 
-    //find by short description
-    @Override
-    public List<MedicineReponse> findMedicineByDesShort(String desShort) {
-        List<Medicine> medicines = medicineRepository.findMedicineByDesShort(desShort);
-        return medicines.stream().map(medicine -> medicineMapper.toResponse(medicine)).toList();
-    }
+        Set<MedicineResponse> medicineResponses = medicines.stream().map(medicine -> medicineMapper.toDto(medicine)).collect(Collectors.toSet());
 
-    //find by discount
-    @Override
-    public List<MedicineReponse> findMedicineByDiscountBetween(int min, int max) {
-        List<Medicine> medicines = medicineRepository.findMedicineByDiscountBetween(min, max);
-        return medicines.stream().map(medicine -> medicineMapper.toResponse(medicine)).toList();
-    }
-
-    //find by quantity
-    @Override
-    public List<MedicineReponse> findMedicineByQuantity(int quantity) {
-        List<Medicine> medicines = medicineRepository.findMedicineByQuantity(quantity);
-        return medicines.stream().map(medicine -> medicineMapper.toResponse(medicine)).toList();
-    }
-
-    //find by init
-    @Override
-    public List<MedicineReponse> findMedicineByInit(String init) {
-        List<Medicine> medicines = medicineRepository.findMedicineByInit(init);
-        return medicines.stream().map(medicine -> medicineMapper.toResponse(medicine)).toList();
-    }
-
-    //find by price between
-    @Override
-    public List<MedicineReponse> findMedicineByPriceBetween(double min, double max) {
-        List<Medicine> medicines = medicineRepository.findMedicineByPriceBetween(min, max);
-        return medicines.stream().map(medicine -> medicineMapper.toResponse(medicine)).toList();
-    }
-
-    //find by price less than
-    @Override
-    public List<MedicineReponse> findMedicineByPriceLessThan(double price) {
-        List<Medicine> medicines = medicineRepository.findMedicineByPriceLessThan(price);
-        return medicines.stream().map(medicine -> medicineMapper.toResponse(medicine)).toList();
-    }
-
-    //find by price greater than
-    @Override
-    public List<MedicineReponse> findMedicineByPriceGreaterThan(double price) {
-        List<Medicine> medicines = medicineRepository.findMedicineByPriceGreaterThan(price);
-        return medicines.stream().map(medicine -> medicineMapper.toResponse(medicine)).toList();
+        return PageDTO.<MedicineResponse>builder()
+                .page(page)
+                .size(size)
+                .sortBy(sortBy)
+                .sortName(sortName)
+                .data(medicineResponses)
+                .build();
     }
 }

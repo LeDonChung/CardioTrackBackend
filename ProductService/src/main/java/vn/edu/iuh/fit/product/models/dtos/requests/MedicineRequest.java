@@ -1,7 +1,8 @@
 package vn.edu.iuh.fit.product.models.dtos.requests;
 
+import jakarta.persistence.*;
 import lombok.*;
-import vn.edu.iuh.fit.product.models.entities.MedicinesImage;
+import vn.edu.iuh.fit.product.models.entities.*;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -13,39 +14,18 @@ import java.util.Set;
 @Builder
 public class MedicineRequest {
     private Long id;
-
     private String des;
-
     private String desShort;
-
     private Integer discount;
-
     private String init;
-
     private String name;
-
     private Double price;
-
     private String primaryImage;
-
-    private Integer quantity;
-
-    private Integer reviews;
-
     private String sku;
-
-    private String slug;
-
-    private String specifications;
-
-    private Integer star;
-
     private Integer status;
-
-    private Long brandId;
-
-    private Long categoryId;
-
-    private Set<MedicinesImage> medicinesImages = new LinkedHashSet<>();
-
+    private BrandRequest brand;
+    private Set<CategoryRequest> categories;
+    private Set<SpecificationRequest> specifications;
+    private Set<ImageRequest> images;
+    private Set<TagRequest> tags;
 }
