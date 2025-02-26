@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import vn.edu.iuh.fit.order.enums.OrderStatus;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -29,14 +30,17 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
+    @Column(name = "order_date")
+    private LocalDate orderDate;
+
     @Column(name = "fee_ship")
     private double feeShip;
 
     private Long customer;
 
-    private Long addressDetail;
+    private Long addressId;
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<OrderDetail> orderDetails;
 
     // Getters and Setters

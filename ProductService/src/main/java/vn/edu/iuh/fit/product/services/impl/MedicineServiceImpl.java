@@ -109,4 +109,9 @@ public class MedicineServiceImpl implements MedicineService {
                 .data(medicineResponses)
                 .build();
     }
+
+    @Override
+    public boolean isExists(Long id) {
+        return medicineRepository.existsById(id);
+    }
 }

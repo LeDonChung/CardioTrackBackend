@@ -16,7 +16,7 @@ public class OrderDetailRequest {
 
     private int quantity;
 
-    private Long medichine;
+    private Long medicine;
 
     private Long orderId;
 }

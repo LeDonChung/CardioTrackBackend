@@ -3,6 +3,9 @@ package vn.edu.iuh.fit.order.model.dto.request;
 import lombok.*;
 import vn.edu.iuh.fit.order.enums.OrderStatus;
 
+import java.time.LocalDate;
+import java.util.Set;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -17,12 +20,14 @@ public class OrderRequest {
 
     private OrderStatus status;
 
+    private LocalDate orderDate;
+
     private double feeShip;
 
     private Long customer;
 
-    private Long addressDetail;
+    private AddressRequest addressDetail;
 
-    private Long orderDetailId;
+    private Set<OrderDetailRequest> orderDetails;
 
 }

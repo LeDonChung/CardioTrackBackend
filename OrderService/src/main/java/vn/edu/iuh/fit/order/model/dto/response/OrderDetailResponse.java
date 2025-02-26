@@ -16,7 +16,7 @@ public class OrderDetailResponse {
 
     private int quantity;
 
-    private Long medichine;
+    private Long medicine;
 
     private Long orderId;
 }
