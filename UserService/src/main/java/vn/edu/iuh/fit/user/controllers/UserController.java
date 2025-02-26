@@ -13,6 +13,7 @@ import vn.edu.iuh.fit.user.model.dto.request.UserRegisterRequest;
 import vn.edu.iuh.fit.user.model.dto.response.BaseResponse;
 import vn.edu.iuh.fit.user.model.dto.response.UserResponse;
 import vn.edu.iuh.fit.user.services.UserService;
+import vn.edu.iuh.fit.user.utils.SystemConstraints;
 
 import java.util.Objects;
 
@@ -22,12 +23,19 @@ import java.util.Objects;
 public class UserController {
     @Autowired
     private UserService userService;
-    @Autowired
-    private JwtService jwtService;
-
     @PostMapping("/register")
     public ResponseEntity<BaseResponse<UserResponse>> register(@RequestBody UserRegisterRequest request) throws UserException {
-        log.info("Register request: " + request);
+        log.info("Register user: " + request);
+        // Kiểm tra mật khẩu và xác nhận mật khẩu có trùng nhau không
+        if (!Objects.equals(request.getPassword(), request.getRePassword())) {
+            throw new UserException("Mật khẩu và xác nhận mật khẩu không trùng khớp.");
+        }
+
+        if(!userService.verifyOtp(request.getUsername(), request.getOtp())){
+            throw new UserException(SystemConstraints.PLS_VERIFY_OTP);
+        }
+
+
         UserResponse result = userService.register(request);
 
         return ResponseEntity.ok(
@@ -43,7 +51,6 @@ public class UserController {
     @PostMapping("/validate-token")
     public ResponseEntity<BaseResponse<UserResponse>> validationToken(@RequestParam("token") String token) {
         UserResponse user = userService.getMe(token);
-        log.info("User: " + user);
         return new ResponseEntity<>(
                 BaseResponse
                         .<UserResponse>builder()
@@ -54,5 +61,45 @@ public class UserController {
                 HttpStatus.OK
         );
     }
+
+    @PostMapping("/generation-otp")
+    public ResponseEntity<BaseResponse<Boolean>> generationOtp(@RequestParam("phoneNumber") String phoneNumber) throws UserException {
+        Boolean result = userService.sendOtp(phoneNumber);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<Boolean>builder()
+                        .data(result)
+                        .code(HttpStatus.OK.name())
+                        .success(true)
+                        .build()
+        );
+    }
+
+    @PostMapping("/verify-otp")
+    public ResponseEntity<BaseResponse<Boolean>> verifyOtp(@RequestParam("phoneNumber") String phoneNumber, @RequestParam("otp") String otp) throws UserException {
+        Boolean result = userService.verifyOtp(phoneNumber, otp);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<Boolean>builder()
+                        .data(result)
+                        .code(HttpStatus.OK.name())
+                        .success(true)
+                        .build()
+        );
+    }
+
+    @GetMapping("/find-id-by-phone-number")
+    public ResponseEntity<BaseResponse<Long>> findIdByPhoneNumber(@RequestParam("phoneNumber") String phoneNumber) {
+        Long result = userService.findIdByPhoneNumber(phoneNumber);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<Long>builder()
+                        .data(result)
+                        .code(HttpStatus.OK.name())
+                        .success(true)
+                        .build()
+        );
+    }
+
 
 }

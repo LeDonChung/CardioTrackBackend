@@ -5,7 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import vn.edu.iuh.fit.user.model.enums.Gender;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -23,6 +25,16 @@ public class User {
     private String username;
 
     private String password;
+
+    private String fullName;
+
+    private Gender gender;
+
+    private LocalDate dob;
+
+    private Boolean enabled;
+
+    private Boolean verify;
 
     @ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     @JoinTable(name = "users_roles",

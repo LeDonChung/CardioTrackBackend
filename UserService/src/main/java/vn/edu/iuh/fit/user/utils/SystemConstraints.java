@@ -12,5 +12,7 @@ public class SystemConstraints {
     public static final String PHONE_IS_NOT_VERIFIED = "Số điện thoại chưa được xác thực.";
     public static final String PASSWORD_NOT_MATCH = "Mật khẩu không trùng khớp.";
     public static final String PHONE_EXISTS = "Số điện thoại đã được đăng ký.";
-    public static final String USERNAME_IS_EXISTS = "Tên đăng nhập đã tồn tại.";
+    public static final String USERNAME_IS_EXISTS = "Số điện thoại đã được đăng ký.";
+    public static final String USER_NOT_FOUND = "Người dùng không tồn tại.";
+    public static final String PLS_VERIFY_OTP = "Vui lòng xác thực OTP.";
 }
