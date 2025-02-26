@@ -47,7 +47,11 @@ public class GatewayConfig {
                 .route("product-service", r -> r.path("/api/v1/product/**")
                         .uri("lb://product-service"))
                 .route("category-service", r -> r.path("/api/v1/category/**")
-                        .uri("lb://product-service")) // Thêm route này
+                        .uri("lb://product-service"))
+                .route("category-service", r -> r.path("/api/v1/brand/**")
+                        .uri("lb://product-service"))
+                .route("medicine-service", r -> r.path("/api/v1/medicine/**")
+                        .uri("lb://product-service"))
                 .route("post-service", r -> r.path("/api/v1/post/**")
                         .uri("lb://post-service"))
                 .route("notification-service", r -> r.path("/api/v1/notification/**")
