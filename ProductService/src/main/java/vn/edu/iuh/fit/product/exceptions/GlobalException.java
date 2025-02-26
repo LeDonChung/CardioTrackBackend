@@ -23,7 +23,7 @@ public class GlobalException extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(CategoryException.class)
-    public ResponseEntity<ErrorDetail> handlerPostException(CategoryException ex, WebRequest req) {
+    public ResponseEntity<ErrorDetail> handlerCategoryException(CategoryException ex, WebRequest req) {
         ErrorDetail errorDetail = ErrorDetail.builder()
                 .error(ex.getMessage())
                 .message(req.getDescription(false))
@@ -31,6 +31,14 @@ public class GlobalException extends ResponseEntityExceptionHandler {
                 .build();
         return new ResponseEntity<>(errorDetail, HttpStatus.BAD_REQUEST);
     }
-
+    @ExceptionHandler(MedicineException.class)
+    public ResponseEntity<ErrorDetail> handlerMedicineException(MedicineException ex, WebRequest req) {
+        ErrorDetail errorDetail = ErrorDetail.builder()
+                .error(ex.getMessage())
+                .message(req.getDescription(false))
+                .timeStamp(LocalDateTime.now())
+                .build();
+        return new ResponseEntity<>(errorDetail, HttpStatus.BAD_REQUEST);
+    }
 
 }
