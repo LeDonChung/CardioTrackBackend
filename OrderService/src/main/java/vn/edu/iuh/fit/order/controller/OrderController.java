@@ -1,0 +1,32 @@
+package vn.edu.iuh.fit.order.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import vn.edu.iuh.fit.order.exceptions.OrderException;
+import vn.edu.iuh.fit.order.model.dto.request.OrderRequest;
+import vn.edu.iuh.fit.order.model.dto.response.BaseResponse;
+import vn.edu.iuh.fit.order.model.dto.response.OrderResponse;
+import vn.edu.iuh.fit.order.model.entities.Order;
+import vn.edu.iuh.fit.order.services.OrderService;
+
+@RestController
+@RequestMapping("/api/v1/order")
+public class OrderController {
+    @Autowired
+    private OrderService orderService;
+
+    @PostMapping
+    public ResponseEntity<BaseResponse<OrderResponse>> addOrder(@RequestBody OrderRequest request) throws OrderException {
+        OrderResponse order = orderService.save(request);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<OrderResponse>builder()
+                        .data(order)
+                        .success(true)
+                        .build()
+        );
+    }
+
+
+}
