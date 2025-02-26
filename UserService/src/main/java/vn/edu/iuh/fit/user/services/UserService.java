@@ -8,4 +8,10 @@ public interface UserService {
     UserResponse register(UserRegisterRequest request) throws UserException;
 
     UserResponse getMe(String substring);
+
+    Boolean sendOtp(String phoneNumber) throws UserException;
+
+    Boolean verifyOtp(String phoneNumber, String otp) throws UserException;
+
+    Long findIdByPhoneNumber(String phoneNumber);
 }
