@@ -1,4 +1,4 @@
-package vn.edu.iuh.fit.product.model.entity;
+package vn.edu.iuh.fit.product.models.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -11,10 +11,10 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Brand {
+public class Tag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "brand_id", nullable = false)
+    @Column(name = "tag_id", nullable = false)
     private Long id;
 
     //Thêm thuộc tính

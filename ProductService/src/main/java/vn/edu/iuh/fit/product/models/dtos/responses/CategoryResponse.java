@@ -1,4 +1,4 @@
-package vn.edu.iuh.fit.product.model.dto.response;
+package vn.edu.iuh.fit.product.models.dtos.responses;
 
 import lombok.*;
 
