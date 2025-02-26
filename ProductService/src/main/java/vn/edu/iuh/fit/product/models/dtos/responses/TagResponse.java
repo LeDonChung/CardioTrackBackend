@@ -4,10 +4,13 @@ import lombok.*;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor
-public class UserResponse {
-    private String username;
-    private String password;
+public class TagResponse {
+    private Long id;
+
+    private String title;
+
+    private String des;
 }

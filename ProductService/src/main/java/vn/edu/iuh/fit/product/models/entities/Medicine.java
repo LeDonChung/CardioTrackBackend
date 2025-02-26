@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Getter
@@ -18,11 +17,11 @@ public class Medicine {
     private Long id;
 
     @Lob
-    @Column(name = "des")
+    @Column(name = "des", columnDefinition = "TEXT")
     private String des;
 
     @Lob
-    @Column(name = "des_short")
+    @Column(name = "des_short", columnDefinition = "TEXT")
     private String desShort;
 
     @Column(name = "discount", nullable = false)
@@ -40,35 +39,47 @@ public class Medicine {
     @Column(name = "primary_image")
     private String primaryImage;
 
-    @Column(name = "quantity", nullable = false)
-    private Integer quantity;
-
-    @Column(name = "reviews", nullable = false)
-    private Integer reviews;
 
     @Column(name = "sku")
     private String sku;
 
-    @Column(name = "slug")
-    private String slug;
-
-    @Column(name = "specifications")
-    private String specifications;
-
-    @Column(name = "star", nullable = false)
-    private Integer star;
-
     @Column(name = "status", nullable = false)
     private Integer status;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     @JoinColumn(name = "brand_id")
     private Brand brand;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "category_id")
-    private Category category;
 
-    @OneToMany(mappedBy = "medicine")
-    private Set<MedicinesImage> medicinesImages = new LinkedHashSet<>();
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
+    @JoinTable(
+            name = "categories_medicines",
+            joinColumns = @JoinColumn(name = "medicine_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id")
+    )
+    private Set<Category> categories;
+
+    @ManyToMany(cascade = {CascadeType.REFRESH})
+    @JoinTable(
+            name = "specifications_medicines",
+            joinColumns = @JoinColumn(name = "medicine_id"),
+            inverseJoinColumns = @JoinColumn(name = "specification_id")
+    )
+    private Set<Specification> specifications;
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "images_medicines",
+            joinColumns = @JoinColumn(name = "medicine_id"),
+            inverseJoinColumns = @JoinColumn(name = "image_id")
+    )
+    private Set<Image> images;
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
+    @JoinTable(
+            name = "tags_medicines",
+            joinColumns = @JoinColumn(name = "medicine_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
+    private Set<Tag> tags;
 
 }

@@ -11,19 +11,13 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "tags")
-public class Tag {
+@Table(name = "groups")
+public class Group {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "tag_id", nullable = false)
     private Long id;
 
-    private String title;
-
+    @Column(name = "group_name")
+    private String groupName;
     private String des;
-
-    @ManyToOne
-    @JoinColumn(name = "group_id")
-    private Group group;
-
 }
