@@ -1,7 +1,9 @@
 package vn.edu.iuh.fit.user.services;
 
 import vn.edu.iuh.fit.user.exceptions.UserException;
+import vn.edu.iuh.fit.user.model.dto.request.AddressRequest;
 import vn.edu.iuh.fit.user.model.dto.request.UserRegisterRequest;
+import vn.edu.iuh.fit.user.model.dto.response.AddressResponse;
 import vn.edu.iuh.fit.user.model.dto.response.UserResponse;
 
 public interface UserService {
@@ -14,4 +16,8 @@ public interface UserService {
     Boolean verifyOtp(String phoneNumber, String otp) throws UserException;
 
     Long findIdByPhoneNumber(String phoneNumber);
+
+    AddressResponse addAddress(AddressRequest address) throws UserException;
+
+    UserResponse getUserById(Long id);
 }
