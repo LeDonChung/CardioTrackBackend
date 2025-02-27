@@ -9,7 +9,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.web.bind.annotation.*;
 import vn.edu.iuh.fit.user.exceptions.UserException;
 import vn.edu.iuh.fit.user.jwt.JwtService;
+import vn.edu.iuh.fit.user.model.dto.request.AddressRequest;
 import vn.edu.iuh.fit.user.model.dto.request.UserRegisterRequest;
+import vn.edu.iuh.fit.user.model.dto.response.AddressResponse;
 import vn.edu.iuh.fit.user.model.dto.response.BaseResponse;
 import vn.edu.iuh.fit.user.model.dto.response.UserResponse;
 import vn.edu.iuh.fit.user.services.UserService;
@@ -31,9 +33,9 @@ public class UserController {
             throw new UserException("Mật khẩu và xác nhận mật khẩu không trùng khớp.");
         }
 
-        if(!userService.verifyOtp(request.getUsername(), request.getOtp())){
-            throw new UserException(SystemConstraints.PLS_VERIFY_OTP);
-        }
+//        if(!userService.verifyOtp(request.getUsername(), request.getOtp())){
+//            throw new UserException(SystemConstraints.PLS_VERIFY_OTP);
+//        }
 
 
         UserResponse result = userService.register(request);
@@ -85,6 +87,46 @@ public class UserController {
                         .code(HttpStatus.OK.name())
                         .success(true)
                         .build()
+        );
+    }
+
+    @GetMapping("/find-id-by-phone-number")
+    public ResponseEntity<BaseResponse<Long>> findIdByPhoneNumber(@RequestParam("phoneNumber") String phoneNumber) {
+        Long result = userService.findIdByPhoneNumber(phoneNumber);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<Long>builder()
+                        .data(result)
+                        .code(HttpStatus.OK.name())
+                        .success(true)
+                        .build()
+        );
+    }
+    @PostMapping("/address")
+    public ResponseEntity<BaseResponse<AddressResponse>> addAddress(@RequestBody AddressRequest address) throws UserException {
+        AddressResponse a = userService.addAddress(address);
+        return new ResponseEntity<>(
+                BaseResponse
+                        .<AddressResponse>builder()
+                        .code(String.valueOf(HttpStatus.OK.value()))
+                        .success(true)
+                        .data(a)
+                        .build(),
+                HttpStatus.OK
+        );
+    }
+
+    @GetMapping("/get-by-id/{id}")
+    public ResponseEntity<BaseResponse<UserResponse>> getUserById(@PathVariable("id") Long id) {
+        UserResponse user = userService.getUserById(id);
+        return new ResponseEntity<>(
+                BaseResponse
+                        .<UserResponse>builder()
+                        .code(String.valueOf(HttpStatus.OK.value()))
+                        .success(true)
+                        .data(user)
+                        .build(),
+                HttpStatus.OK
         );
     }
 
