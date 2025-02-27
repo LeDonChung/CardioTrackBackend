@@ -3,13 +3,12 @@ package vn.edu.iuh.fit.product.models.dtos.responses;
 import lombok.*;
 
 import java.util.List;
-
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @Builder
-public class CategoryResponse {
+public class CategoryProminentResponse {
     private Long id;
 
     private String fullPathSlug;
@@ -22,5 +21,5 @@ public class CategoryResponse {
 
     private Long parentId;
 
-    private List<CategoryResponse> children;
+    private int num;
 }
