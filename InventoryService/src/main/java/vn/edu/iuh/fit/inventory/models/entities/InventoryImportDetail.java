@@ -1,0 +1,32 @@
+package vn.edu.iuh.fit.inventory.models.entities;
+
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.sql.Timestamp;
+
+@Getter
+@Setter
+@Entity
+@Table(name = "iventory_import_details")
+public class InventoryImportDetail {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "import_id")
+    private InventoryImport inventoryImport;
+
+    private Long medicine;
+
+    private Long quantity;
+
+    private double price;
+
+    private double discount;
+
+    @Column(name="expiration_date")
+    private Timestamp expirationDate;
+}
