@@ -2,6 +2,7 @@ package vn.edu.iuh.fit.product.services;
 
 import vn.edu.iuh.fit.product.exceptions.CategoryException;
 import vn.edu.iuh.fit.product.models.dtos.requests.CategoryRequest;
+import vn.edu.iuh.fit.product.models.dtos.responses.CategoryProminentResponse;
 import vn.edu.iuh.fit.product.models.dtos.responses.CategoryResponse;
 
 import java.util.List;
@@ -24,4 +25,8 @@ public interface CategoryService {
     // Lấy tất cả danh mục theo level
     List<CategoryResponse> getCategoryByLevel(int level);
 
+    // Lấy tất cả danh mục
+    List<CategoryResponse> getAllCategories();
+
+    List<CategoryProminentResponse> getProminent();
 }

@@ -2,6 +2,7 @@ package vn.edu.iuh.fit.product.mappers;
 
 import org.mapstruct.*;
 import vn.edu.iuh.fit.product.models.dtos.requests.TagRequest;
+import vn.edu.iuh.fit.product.models.dtos.responses.TagByObjectResponse;
 import vn.edu.iuh.fit.product.models.dtos.responses.TagResponse;
 import vn.edu.iuh.fit.product.models.entities.Tag;
 
@@ -10,6 +11,8 @@ public interface TagMapper {
     Tag toEntity(TagRequest tagRequest);
 
     TagResponse toDto(Tag tag);
+
+    TagByObjectResponse toDtoByObject(Tag tag);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     Tag partialUpdate(TagRequest tagRequest, @MappingTarget Tag tag);
