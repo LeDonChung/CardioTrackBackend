@@ -52,6 +52,22 @@ public class UserController {
 
     @PostMapping("/validate-token")
     public ResponseEntity<BaseResponse<UserResponse>> validationToken(@RequestParam("token") String token) {
+        System.out.println("🔍 Nhận request validate token: " + token); // ✅ Debug log
+        UserResponse user = userService.getMe(token);
+        return new ResponseEntity<>(
+                BaseResponse
+                        .<UserResponse>builder()
+                        .code(String.valueOf(HttpStatus.OK.value()))
+                        .success(true)
+                        .data(user)
+                        .build(),
+                HttpStatus.OK
+        );
+    }
+
+    @GetMapping("/info")
+    public ResponseEntity<BaseResponse<UserResponse>> getInfo(@RequestParam("token") String token) {
+        System.out.println("🔍 Nhận request validate token: " + token); // ✅ Debug log
         UserResponse user = userService.getMe(token);
         return new ResponseEntity<>(
                 BaseResponse

@@ -120,7 +120,7 @@ public class JwtServiceImpl implements JwtService {
     }
 
     @Override
-    public String getUsernameFromToken(String token) {
+        public String getUsernameFromToken(String token) {
         return extractClaims(token, Claims::getSubject);
     }
 
