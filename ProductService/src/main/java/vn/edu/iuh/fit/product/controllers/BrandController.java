@@ -41,13 +41,17 @@ public class BrandController {
     //Xóa thương hiệu
     //Tìm thương hiệu theo brand_id
     //Danh sách thương hiệu
-    @GetMapping
+    @GetMapping("/get-all")
     public ResponseEntity<BaseResponse<List<BrandResponse>>> getAllBrand() throws BrandException {
         List<BrandResponse> brands = brandService.getAllBrand();
         return ResponseEntity.ok(
                 BaseResponse
                         .<List<BrandResponse>>builder()
                         .data(brands)
+                        .success(true)
+                        .build()
+        );
+    }
 
     @GetMapping
     public ResponseEntity<BaseResponse<PageDTO<BrandResponse>>> getAll(@RequestParam(defaultValue = "0") int page,
