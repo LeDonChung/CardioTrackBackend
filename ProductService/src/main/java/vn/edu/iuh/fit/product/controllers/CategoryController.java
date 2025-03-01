@@ -94,4 +94,17 @@ public class CategoryController {
                         .build()
         );
     }
+
+    // Tìm danh mục theo level
+    @GetMapping("/get-by-level")
+    public ResponseEntity<BaseResponse<List<CategoryResponse>>> getCategoryByLevel(@RequestParam int level) {
+        List<CategoryResponse> categories = categoryService.getCategoryByLevel(level);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<List<CategoryResponse>>builder()
+                        .data(categories)
+                        .success(true)
+                        .build()
+        );
+    }
 }
