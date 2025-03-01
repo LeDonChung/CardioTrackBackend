@@ -15,6 +15,7 @@ import vn.edu.iuh.fit.product.models.dtos.responses.MedicineResponse;
 import vn.edu.iuh.fit.product.models.entities.Medicine;
 import vn.edu.iuh.fit.product.services.BrandService;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -40,6 +41,13 @@ public class BrandController {
     //Xóa thương hiệu
     //Tìm thương hiệu theo brand_id
     //Danh sách thương hiệu
+    @GetMapping
+    public ResponseEntity<BaseResponse<List<BrandResponse>>> getAllBrand() throws BrandException {
+        List<BrandResponse> brands = brandService.getAllBrand();
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<List<BrandResponse>>builder()
+                        .data(brands)
 
     @GetMapping
     public ResponseEntity<BaseResponse<PageDTO<BrandResponse>>> getAll(@RequestParam(defaultValue = "0") int page,
