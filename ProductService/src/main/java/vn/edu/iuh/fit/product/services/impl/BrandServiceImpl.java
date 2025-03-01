@@ -11,6 +11,7 @@ import vn.edu.iuh.fit.product.repositories.BrandRepository;
 import vn.edu.iuh.fit.product.services.BrandService;
 import vn.edu.iuh.fit.product.utils.SystemConstraints;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -47,5 +48,11 @@ public class BrandServiceImpl implements BrandService {
             throw new BrandException(SystemConstraints.BRAND_NOT_FOUND);
         }
         return brandMapper.toResponse(brand.get());
+    }
+
+    @Override
+    public List<BrandResponse> getAllBrand() throws BrandException {
+        List<Brand> brands = brandRepository.findAll();
+        return brands.stream().map(brandMapper::toResponse).toList();
     }
 }

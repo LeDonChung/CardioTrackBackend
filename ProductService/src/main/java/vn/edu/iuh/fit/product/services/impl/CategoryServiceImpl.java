@@ -88,4 +88,10 @@ public class CategoryServiceImpl implements CategoryService {
         return categories.stream().map(category -> categoryMapper.toResponse(category)).toList();
     }
 
+    @Override
+    public List<CategoryResponse> getCategoryByLevel(int level) {
+        List<Category> categories = categoryRepositories.findCategoryByLevel(level);
+        return categories.stream().map(category -> categoryMapper.toResponse(category)).toList();
+    }
+
 }

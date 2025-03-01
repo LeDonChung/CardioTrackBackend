@@ -21,4 +21,7 @@ public interface CategoryService {
     // Lấy tất cả danh mục con Theo title
     List<CategoryResponse> getCategoryByTitle(String title);
 
+    // Lấy tất cả danh mục theo level
+    List<CategoryResponse> getCategoryByLevel(int level);
+
 }
