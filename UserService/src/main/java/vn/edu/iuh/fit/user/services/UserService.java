@@ -6,6 +6,8 @@ import vn.edu.iuh.fit.user.model.dto.request.UserRegisterRequest;
 import vn.edu.iuh.fit.user.model.dto.response.AddressResponse;
 import vn.edu.iuh.fit.user.model.dto.response.UserResponse;
 
+import java.util.List;
+
 public interface UserService {
     UserResponse register(UserRegisterRequest request) throws UserException;
 
@@ -20,4 +22,8 @@ public interface UserService {
     AddressResponse addAddress(AddressRequest address) throws UserException;
 
     UserResponse getUserById(Long id);
+
+
+    List<AddressResponse> getAddressesByUserId(Long userId);
+
 }
