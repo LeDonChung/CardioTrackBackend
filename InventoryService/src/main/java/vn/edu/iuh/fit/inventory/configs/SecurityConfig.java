@@ -46,9 +46,7 @@ public class SecurityConfig {
                         customizer.authenticationEntryPoint((request, response, authException) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED)))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(customizer -> customizer
-                        .requestMatchers("/api/v1/category/**").permitAll()
-                        .requestMatchers("/api/v1/brand/**").permitAll()
-                        .requestMatchers("/api/v1/tag/**").permitAll()
+                        .requestMatchers("/api/v1/inventory/**").permitAll()
                         .requestMatchers("/api/v1/medicine/exists/**").permitAll()
                         //
                         .anyRequest().authenticated()

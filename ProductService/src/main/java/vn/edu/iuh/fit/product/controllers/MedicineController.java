@@ -56,7 +56,7 @@ public class MedicineController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BaseResponse<MedicineResponse>> getById(@PathVariable Long id) throws MedicineException {
+    public ResponseEntity<BaseResponse<MedicineResponse>> getMedicineById(@PathVariable Long id) throws MedicineException {
         MedicineResponse medicineResponse = medicineService.getMedicineById(id);
         return ResponseEntity.ok(
                 BaseResponse

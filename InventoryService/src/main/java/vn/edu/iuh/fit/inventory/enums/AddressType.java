@@ -1,16 +1,15 @@
 package vn.edu.iuh.fit.inventory.enums;
 
-import lombok.Getter;
+import lombok.*;
 
 @Getter
-public enum UserInventoryRole {
-    MANAGEMENT("ADMIN"),
-    STAFF("STAFF"),
-    VIEWER("VIEWER");
+public enum AddressType {
+    HOME("HOME"),
+    OTHER("OTHER");
 
     private final String value;
 
-    UserInventoryRole(String value) {
+    AddressType(String value) {
         this.value = value;
     }
 
@@ -18,4 +17,6 @@ public enum UserInventoryRole {
     public String toString() {
         return value;
     }
+
+
 }

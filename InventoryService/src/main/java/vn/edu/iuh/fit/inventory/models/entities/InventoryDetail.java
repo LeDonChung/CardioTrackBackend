@@ -4,11 +4,13 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.sql.Timestamp;
+
 
 @Getter
 @Setter
 @Entity
-@Table(name = "iventory_details")
+@Table(name = "inventory_details")
 public class InventoryDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,8 +30,8 @@ public class InventoryDetail {
 
     private Long quantity;
 
-    private Long price;
+    private double price;
 
     @Column(name = "expiration_date")
-    private String expirationDate;
+    private Timestamp expirationDate;
 }
