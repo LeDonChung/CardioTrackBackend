@@ -53,6 +53,8 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(customizer -> customizer
                         .requestMatchers("/api/v1/category/**").permitAll()
+                        .requestMatchers("/api/v1/brand/**").permitAll()
+                        .requestMatchers("/api/v1/tag/**").permitAll()
                         .requestMatchers("/api/v1/medicine/exists/**").permitAll()
                         .requestMatchers("/api/v1/medicine/**").permitAll()
                         .anyRequest().authenticated()

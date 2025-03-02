@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import vn.edu.iuh.fit.product.exceptions.CategoryException;
 import vn.edu.iuh.fit.product.models.dtos.requests.CategoryRequest;
 import vn.edu.iuh.fit.product.models.dtos.responses.BaseResponse;
+import vn.edu.iuh.fit.product.models.dtos.responses.CategoryProminentResponse;
 import vn.edu.iuh.fit.product.models.dtos.responses.CategoryResponse;
 import vn.edu.iuh.fit.product.services.CategoryService;
 
@@ -102,6 +103,30 @@ public class CategoryController {
         return ResponseEntity.ok(
                 BaseResponse
                         .<List<CategoryResponse>>builder()
+                        .data(categories)
+                        .success(true)
+                        .build()
+        );
+    }
+    @GetMapping("/get-all")
+    public ResponseEntity<BaseResponse<List<CategoryResponse>>> getAllCategories() {
+        List<CategoryResponse> categories = categoryService.getAllCategories();
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<List<CategoryResponse>>builder()
+                        .data(categories)
+                        .success(true)
+                        .build()
+        );
+    }
+
+
+    @GetMapping("/get-prominent")
+    public ResponseEntity<BaseResponse<List<CategoryProminentResponse>>> getProminent() {
+        List<CategoryProminentResponse> categories = categoryService.getProminent();
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<List<CategoryProminentResponse>>builder()
                         .data(categories)
                         .success(true)
                         .build()
