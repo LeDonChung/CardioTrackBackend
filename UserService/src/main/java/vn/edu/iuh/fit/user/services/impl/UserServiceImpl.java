@@ -25,8 +25,10 @@ import vn.edu.iuh.fit.user.services.OTPService;
 import vn.edu.iuh.fit.user.services.UserService;
 import vn.edu.iuh.fit.user.utils.SystemConstraints;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -152,4 +154,14 @@ public class UserServiceImpl implements UserService {
         Optional<User> userOptional = userRepository.findById(id);
         return userOptional.map(user -> userMapper.toUserResponse(user)).orElse(null);
     }
+
+    //hàm tín viết
+    @Override
+    public List<AddressResponse> getAddressesByUserId(Long userId) {
+        List<AddressDetail> addressDetails = addressDetailRepository.findByUserId(userId);
+        return addressDetails.stream()
+                .map(UserServiceImpl::getAddressResponse) // Chuyển đổi sang DTO
+                .collect(Collectors.toList());
+    }
+
 }

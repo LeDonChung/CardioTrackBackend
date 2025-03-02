@@ -24,7 +24,9 @@ public class GatewayConfig {
     // Define the list of public endpoints
     private static final List<String> PUBLIC_ENDPOINTS = List.of(
             "/api/v1/auth/register",
-            "/api/v1/auth/login"
+            "/api/v1/auth/login",
+            "/api/v1/user/info",
+            "/api/v1/user/find-id-by-phone-number/**"
     );
 
     /**
@@ -46,6 +48,8 @@ public class GatewayConfig {
                         .uri("lb://user-service"))
                 .route("product-service", r -> r.path("/api/v1/product/**")
                         .uri("lb://product-service"))
+                .route("address-service", r -> r.path("/api/v1/address/**")
+                        .uri("lb://user-service"))
                 .route("order-service", r -> r.path("/api/v1/order/**")
                         .uri("lb://order-service"))
                 .route("category-service", r -> r.path("/api/v1/category/**")

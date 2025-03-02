@@ -17,6 +17,7 @@ import vn.edu.iuh.fit.user.model.dto.response.UserResponse;
 import vn.edu.iuh.fit.user.services.UserService;
 import vn.edu.iuh.fit.user.utils.SystemConstraints;
 
+import java.util.List;
 import java.util.Objects;
 
 @RestController
@@ -145,6 +146,18 @@ public class UserController {
                 HttpStatus.OK
         );
     }
+//tìm địa chỉ user
+@GetMapping("/addresses/{id}")
+public ResponseEntity<BaseResponse<List<AddressResponse>>> getUserAddresses(@PathVariable("id") Long id) {
+    List<AddressResponse> addresses = userService.getAddressesByUserId(id);
+    return ResponseEntity.ok(
+            BaseResponse.<List<AddressResponse>>builder()
+                    .code(String.valueOf(HttpStatus.OK.value()))
+                    .success(true)
+                    .data(addresses)
+                    .build()
+    );
+}
 
 
 }
