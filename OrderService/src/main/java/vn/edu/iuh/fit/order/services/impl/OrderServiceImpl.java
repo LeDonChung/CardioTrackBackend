@@ -64,12 +64,22 @@ public class OrderServiceImpl implements OrderService {
         order.setCustomer(request.getCustomer());
         order.setStatus(OrderStatus.PENDING);
 
+        // Set order id for each order detail
+
+        Order finalOrder = order;
+
+        order.getOrderDetails().forEach(orderDetail -> {
+            orderDetail.setOrder(finalOrder);
+        });
+
         order = orderRepository.save(order);
 
         AddressRequest addressRequest = request.getAddressDetail();
         addressRequest.setOrderId(order.getId());
         AddressResponse addressResponse = userServiceClient.addAddress(addressRequest).getBody().getData();
         order.setAddressId(addressResponse.getId());
+
+
 
         orderRepository.save(order);
 
