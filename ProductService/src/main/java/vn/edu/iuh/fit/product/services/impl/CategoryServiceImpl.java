@@ -5,9 +5,11 @@ import org.springframework.stereotype.Service;
 import vn.edu.iuh.fit.product.exceptions.CategoryException;
 import vn.edu.iuh.fit.product.mappers.CategoryMapper;
 import vn.edu.iuh.fit.product.models.dtos.requests.CategoryRequest;
+import vn.edu.iuh.fit.product.models.dtos.responses.CategoryProminentResponse;
 import vn.edu.iuh.fit.product.models.dtos.responses.CategoryResponse;
 import vn.edu.iuh.fit.product.models.entities.Category;
 import vn.edu.iuh.fit.product.repositories.CategoryRepository;
+import vn.edu.iuh.fit.product.repositories.MedicineRepository;
 import vn.edu.iuh.fit.product.services.CategoryService;
 import vn.edu.iuh.fit.product.utils.SystemConstraints;
 
@@ -21,6 +23,9 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Autowired
     private CategoryMapper categoryMapper;
+    @Autowired
+    private MedicineRepository medicineRepository;
+
     //Thêm - cập nhật loại sản phẩm
     @Override
     public CategoryResponse save(CategoryRequest request) throws CategoryException {
@@ -92,6 +97,26 @@ public class CategoryServiceImpl implements CategoryService {
     public List<CategoryResponse> getCategoryByLevel(int level) {
         List<Category> categories = categoryRepositories.findCategoryByLevel(level);
         return categories.stream().map(category -> categoryMapper.toResponse(category)).toList();
+    }
+
+    public List<CategoryResponse> getAllCategories() {
+        List<Category> categories = categoryRepositories.findAll();
+        return categories.stream().map(category -> categoryMapper.toResponse(category)).toList();
+    }
+
+    @Override
+    public List<CategoryProminentResponse> getProminent() {
+        List<Category> categories = categoryRepositories.findAll().get(0).getChildren();
+        return categories.stream().map(category -> {
+            CategoryProminentResponse categoryProminentResponse = new CategoryProminentResponse();
+            categoryProminentResponse.setId(category.getId());
+            categoryProminentResponse.setTitle(category.getTitle());
+            categoryProminentResponse.setIcon(category.getIcon());
+            categoryProminentResponse.setFullPathSlug(category.getFullPathSlug());
+            categoryProminentResponse.setLevel(category.getLevel());
+            categoryProminentResponse.setNum(medicineRepository.countProductByCategory(category.getId()));
+            return categoryProminentResponse;
+        }).toList();
     }
 
 }

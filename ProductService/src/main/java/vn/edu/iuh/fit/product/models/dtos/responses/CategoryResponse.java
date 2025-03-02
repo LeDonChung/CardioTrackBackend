@@ -2,6 +2,8 @@ package vn.edu.iuh.fit.product.models.dtos.responses;
 
 import lombok.*;
 
+import java.util.List;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -19,4 +21,6 @@ public class CategoryResponse {
     private String title;
 
     private Long parentId;
+
+    private List<CategoryResponse> children;
 }
