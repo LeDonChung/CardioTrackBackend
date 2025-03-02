@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.sql.Timestamp;
+
 @Getter
 @Setter
 @Entity
@@ -19,12 +21,12 @@ public class PurchaseOrderDetail {
     @JoinColumn(name = "purchase_order_id")
     private PurchaseOrder purchaseOrder;
 
-    private int quantity;
+    private Long quantity;
 
     private double price;
 
     private double discount;
 
     @Column(name="expiration_date")
-    private String expirationDate;
+    private Timestamp expirationDate;
 }

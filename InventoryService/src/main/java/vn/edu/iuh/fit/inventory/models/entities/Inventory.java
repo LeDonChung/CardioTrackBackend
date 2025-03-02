@@ -33,6 +33,6 @@ public class Inventory {
 
 
     @OneToMany(mappedBy = "inventory")
-    private Set<Shelf> Shelfs = new LinkedHashSet<>();
+    private Set<Shelf> shelfs = new LinkedHashSet<>();
 
 }

@@ -9,7 +9,7 @@ import java.sql.Timestamp;
 @Getter
 @Setter
 @Entity
-@Table(name = "iventory_import_details")
+@Table(name = "inventory_import_details")
 public class InventoryImportDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
