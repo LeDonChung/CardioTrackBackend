@@ -71,6 +71,8 @@ public class OrderServiceImpl implements OrderService {
         AddressResponse addressResponse = userServiceClient.addAddress(addressRequest).getBody().getData();
         order.setAddressId(addressResponse.getId());
 
+        orderRepository.save(order);
+
         OrderResponse response = orderMapper.toDto(order);
         response.setAddressDetail(addressResponse);
         return response;
