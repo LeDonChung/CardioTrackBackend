@@ -15,7 +15,7 @@ public class PostDetailResponse {
     private Long id;
     private String title;
     private String content;
-    private String authorName;
+    private Long authorId;
     private String createdAt;
     private List<CommentResponse> comments; // Danh sách bình luận của bài viết
 }

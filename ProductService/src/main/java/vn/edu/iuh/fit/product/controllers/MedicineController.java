@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import vn.edu.iuh.fit.product.exceptions.MedicineException;
 import vn.edu.iuh.fit.product.models.dtos.PageDTO;
 import vn.edu.iuh.fit.product.models.dtos.requests.MedicineRequest;
+import vn.edu.iuh.fit.product.models.dtos.requests.MedicineSearchRequest;
 import vn.edu.iuh.fit.product.models.dtos.responses.BaseResponse;
 import vn.edu.iuh.fit.product.models.dtos.responses.MedicineResponse;
 import vn.edu.iuh.fit.product.services.MedicineService;
@@ -89,6 +90,23 @@ public class MedicineController {
                 BaseResponse
                         .<Boolean>builder()
                         .data(isExists)
+                        .success(true)
+                        .build()
+        );
+    }
+
+    @PostMapping("/search")
+    public ResponseEntity<BaseResponse<PageDTO<MedicineResponse>>> search(@RequestBody MedicineSearchRequest request,
+                                                                          @RequestParam(defaultValue = "0") int page,
+                                                                          @RequestParam(defaultValue = "16") int size,
+                                                                          @RequestParam(defaultValue = "price") String sortBy,
+                                                                          @RequestParam(defaultValue = "desc") String sortName
+    ) {
+        PageDTO<MedicineResponse> medicineResponses = medicineService.search(request, page, size, sortBy, sortName);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<PageDTO<MedicineResponse>>builder()
+                        .data(medicineResponses)
                         .success(true)
                         .build()
         );
