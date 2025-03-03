@@ -11,6 +11,7 @@ import java.util.List;
 @Setter
 @Builder
 public class MedicineSearchRequest {
+    private String key;
     private List<Long> categories;
     private List<Long> brands;
     private Double priceFrom;

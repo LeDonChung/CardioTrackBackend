@@ -1,9 +1,6 @@
 package vn.edu.iuh.fit.product.repositories.specifications;
 
-import jakarta.persistence.criteria.Expression;
-import jakarta.persistence.criteria.Join;
-import jakarta.persistence.criteria.Order;
-import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.*;
 import org.springframework.data.jpa.domain.Specification;
 import vn.edu.iuh.fit.product.models.dtos.requests.MedicineSearchRequest;
 import vn.edu.iuh.fit.product.models.entities.Brand;
@@ -20,6 +17,33 @@ public class MedicineFilterSpecification {
 
             // Select distinct
             query.distinct(true);
+
+
+            // Tìm kiếm theo key (name, brand title, category name)
+            if (request.getKey() != null && !request.getKey().isEmpty()) {
+                String searchPattern = "%" + request.getKey().toLowerCase() + "%";
+
+                // Predicate tìm theo name của Medicine
+                Predicate medicineNamePredicate = criteriaBuilder.like(
+                        criteriaBuilder.lower(root.get("name")), searchPattern
+                );
+
+                // Join Brand để tìm theo title của Brand
+                Join<Medicine, Brand> brandJoin = root.join("brand", JoinType.LEFT);
+                Predicate brandTitlePredicate = criteriaBuilder.like(
+                        criteriaBuilder.lower(brandJoin.get("title")), searchPattern
+                );
+
+                // Join Category để tìm theo name của Category
+                Join<Medicine, Category> categoryJoin = root.join("categories", JoinType.LEFT);
+                Predicate categoryNamePredicate = criteriaBuilder.like(
+                        criteriaBuilder.lower(categoryJoin.get("title")), searchPattern
+                );
+
+                // Kết hợp các điều kiện bằng OR
+                predicates.add(criteriaBuilder.or(medicineNamePredicate, brandTitlePredicate, categoryNamePredicate));
+            }
+
 
             // Filter theo Categories (Nhiều - Nhiều)
             if (request.getCategories() != null && !request.getCategories().isEmpty()) {
