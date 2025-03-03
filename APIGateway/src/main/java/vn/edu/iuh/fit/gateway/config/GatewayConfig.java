@@ -27,6 +27,7 @@ public class GatewayConfig {
             "/api/v1/auth/login",
             "/api/v1/user/info",
             "/api/v1/user/find-id-by-phone-number/**"
+
     );
 
     /**
@@ -43,8 +44,6 @@ public class GatewayConfig {
                                 .setPublicEndpoints(PUBLIC_ENDPOINTS))))
                         .uri("lb://auth-service"))
                 .route("user-service", r -> r.path("/api/v1/user/**")
-                        .filters(f -> f.filter(jwtAuthFilter.apply(new JwtAuthenticationFilter.Config()
-                                .setPublicEndpoints(PUBLIC_ENDPOINTS))))
                         .uri("lb://user-service"))
                 .route("product-service", r -> r.path("/api/v1/product/**")
                         .uri("lb://product-service"))

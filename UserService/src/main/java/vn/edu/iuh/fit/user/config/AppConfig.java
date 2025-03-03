@@ -85,7 +85,7 @@ public class AppConfig {
                 .authorizeHttpRequests()
                 .requestMatchers("/api/v1/user/register").permitAll()
                 .requestMatchers("/api/v1/user/login", "/api/v1/user/verify-otp", "/api/v1/user/generation-otp", "/api/v1/user/find-id-by-phone-number").permitAll()
-                .requestMatchers("/api/v1/user/address", "/api/v1/user/get-by-id/**", "/api/v1/user/info/**","/api/v1/user/addresses/**", "/api/v1/address/**").permitAll()
+                .requestMatchers("/api/v1/user/address", "/api/v1/user/get-by-id/**", "/api/v1/user/info/**","/api/v1/user/addresses/**", "/api/v1/address/**","/api/v1/user/update-user/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .authenticationManager(manager)
