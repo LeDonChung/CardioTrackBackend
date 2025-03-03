@@ -17,6 +17,8 @@ public class PurchaseOrderDetail {
 
     private Long medicine;
 
+    private Long category;
+
     @ManyToOne
     @JoinColumn(name = "purchase_order_id")
     private PurchaseOrder purchaseOrder;

@@ -21,6 +21,8 @@ public class InventoryImportDetail {
 
     private Long medicine;
 
+    private Long category;
+
     private Long quantity;
 
     private double price;
