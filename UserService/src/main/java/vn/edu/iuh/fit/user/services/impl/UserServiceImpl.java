@@ -11,12 +11,14 @@ import vn.edu.iuh.fit.user.jwt.JwtService;
 import vn.edu.iuh.fit.user.mappers.UserMapper;
 import vn.edu.iuh.fit.user.model.dto.request.AddressRequest;
 import vn.edu.iuh.fit.user.model.dto.request.UserRegisterRequest;
+import vn.edu.iuh.fit.user.model.dto.request.UserUpdateRequest;
 import vn.edu.iuh.fit.user.model.dto.response.AddressResponse;
 import vn.edu.iuh.fit.user.model.dto.response.UserResponse;
 import vn.edu.iuh.fit.user.model.entity.Address;
 import vn.edu.iuh.fit.user.model.entity.AddressDetail;
 import vn.edu.iuh.fit.user.model.entity.Role;
 import vn.edu.iuh.fit.user.model.entity.User;
+import vn.edu.iuh.fit.user.model.enums.Gender;
 import vn.edu.iuh.fit.user.repositories.AddressDetailRepository;
 import vn.edu.iuh.fit.user.repositories.AddressRepository;
 import vn.edu.iuh.fit.user.repositories.RoleRepository;
@@ -25,8 +27,10 @@ import vn.edu.iuh.fit.user.services.OTPService;
 import vn.edu.iuh.fit.user.services.UserService;
 import vn.edu.iuh.fit.user.utils.SystemConstraints;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -152,4 +156,66 @@ public class UserServiceImpl implements UserService {
         Optional<User> userOptional = userRepository.findById(id);
         return userOptional.map(user -> userMapper.toUserResponse(user)).orElse(null);
     }
+
+    //hàm tín viết
+    @Override
+    public List<AddressResponse> getAddressesByUserId(Long userId) {
+        List<AddressDetail> addressDetails = addressDetailRepository.findByUserId(userId);
+        return addressDetails.stream()
+                .map(UserServiceImpl::getAddressResponse) // Chuyển đổi sang DTO
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public UserResponse updateUserById(Long id, UserUpdateRequest userUpdateRequest) throws UserException {
+        Optional<User> userOptional = userRepository.findById(id);
+        if(userOptional.isEmpty()) {
+            throw new UserException(SystemConstraints.USER_NOT_FOUND);
+        }
+        User user = userOptional.get();
+        user.setFullName(userUpdateRequest.getFullName());
+        user.setGender(userUpdateRequest.getGender());
+        user.setDob(userUpdateRequest.getDob());
+        user.setUsername(userUpdateRequest.getUsername());
+        user = userRepository.save(user);
+        return userMapper.toUserResponse(user);
+    }
+
+    @Override
+    public Boolean deleteAddressById(Long id) throws UserException {
+        Optional<AddressDetail> addressDetailOptional = addressDetailRepository.findById(id);
+        if(addressDetailOptional.isEmpty()) {
+            throw new UserException(SystemConstraints.ADDRESS_NOT_FOUND);
+        }
+        addressDetailRepository.deleteById(id);
+        return true;
+    }
+
+    @Override
+    public AddressResponse updateAddressById(Long id, AddressRequest request) throws UserException {
+        Optional<AddressDetail> addressDetailOptional = addressDetailRepository.findById(id);
+        if(addressDetailOptional.isEmpty()) {
+            throw new UserException(SystemConstraints.ADDRESS_NOT_FOUND);
+        }
+        AddressDetail addressDetail = addressDetailOptional.get();
+        Address address = addressDetail.getAddress();
+        address.setDistrict(request.getDistrict());
+        address.setProvince(request.getProvince());
+        address.setWard(request.getWard());
+        address.setStreet(request.getStreet());
+        address = addressRepository.save(address);
+
+        addressDetail.setAddress(address);
+        addressDetail.setFullName(request.getFullName());
+        addressDetail.setPhoneNumber(request.getPhoneNumber());
+        addressDetail.setAddressType(request.getAddressType());
+        addressDetail.setOrderId(request.getOrderId() != null ? request.getOrderId() : null);
+
+
+        addressDetail = addressDetailRepository.save(addressDetail);
+
+        return getAddressResponse(addressDetail);
+    }
+
+
 }

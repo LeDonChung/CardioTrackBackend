@@ -17,6 +17,7 @@ import vn.edu.iuh.fit.product.repositories.BrandRepository;
 import vn.edu.iuh.fit.product.services.BrandService;
 import vn.edu.iuh.fit.product.utils.SystemConstraints;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -58,6 +59,10 @@ public class BrandServiceImpl implements BrandService {
     }
 
     @Override
+    public List<BrandResponse> getAllBrand() throws BrandException {
+        List<Brand> brands = brandRepository.findAll();
+        return brands.stream().map(brandMapper::toResponse).toList();
+}
     public PageDTO<BrandResponse> getAll(int page, int size, String sortBy, String sortName) {
         Pageable pageable = PageRequest.of(page, size);
         if(sortBy != null && sortName != null) {
