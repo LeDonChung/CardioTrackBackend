@@ -12,6 +12,7 @@ import java.util.Set;
 public class PageDTO <T>{
     private int page;
     private int size;
+    private int totalPage;
     private String sortBy;
     private String sortName;
     private Set<T> data;
