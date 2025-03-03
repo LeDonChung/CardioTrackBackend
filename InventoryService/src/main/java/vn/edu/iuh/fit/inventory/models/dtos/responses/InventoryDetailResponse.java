@@ -19,6 +19,8 @@ public class InventoryDetailResponse {
 
     private Long medicine;
 
+    private Long category;
+
     private Long inventoryId;
 
     private Long shelfId;

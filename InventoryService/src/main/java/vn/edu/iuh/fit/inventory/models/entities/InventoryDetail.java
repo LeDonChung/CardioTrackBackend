@@ -18,6 +18,8 @@ public class InventoryDetail {
 
     private Long medicine;
 
+    private Long category;
+
     @ManyToOne
     @JoinColumn(name = "inventory_id")
     private Inventory inventory;
