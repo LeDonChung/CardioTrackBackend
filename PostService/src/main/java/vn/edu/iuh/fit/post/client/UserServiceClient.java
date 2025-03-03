@@ -12,4 +12,5 @@ public interface UserServiceClient {
     @GetMapping("/find-id-by-phone-number")
     ResponseEntity<BaseResponse<Long>> findIdByPhoneNumber(@RequestParam("phoneNumber") String phoneNumber);
 
+
 }
