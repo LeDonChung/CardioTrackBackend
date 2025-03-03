@@ -3,6 +3,7 @@ package vn.edu.iuh.fit.product.services;
 import vn.edu.iuh.fit.product.exceptions.MedicineException;
 import vn.edu.iuh.fit.product.models.dtos.PageDTO;
 import vn.edu.iuh.fit.product.models.dtos.requests.MedicineRequest;
+import vn.edu.iuh.fit.product.models.dtos.requests.MedicineSearchRequest;
 import vn.edu.iuh.fit.product.models.dtos.responses.MedicineResponse;
 
 import java.util.List;
@@ -25,4 +26,6 @@ public interface MedicineService {
     PageDTO<MedicineResponse> getPages(int page, int size, String sortBy, String sortName);
 
     boolean isExists(Long id);
+
+    PageDTO<MedicineResponse> search(MedicineSearchRequest request, int page, int size, String sortBy, String sortName);
 }

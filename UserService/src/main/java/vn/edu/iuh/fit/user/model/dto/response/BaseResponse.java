@@ -13,4 +13,7 @@ public class BaseResponse<T> {
     private T data;
     private boolean success;
     private String code;
+    public BaseResponse(T data) {
+        this.data = data;
+    }
 }
