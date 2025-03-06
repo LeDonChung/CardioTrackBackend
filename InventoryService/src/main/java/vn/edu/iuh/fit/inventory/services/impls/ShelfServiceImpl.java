@@ -77,22 +77,4 @@ public class ShelfServiceImpl implements ShelfService {
         sheltRepository.deleteById(id);
     }
 
-    @Override
-    public PageDTO<ShelfResponse> findShelfByStatus(String status, int page, int size, String sortBy, String sortName) {
-        Pageable pageable = PageRequest.of(page, size);
-
-        if(sortBy != null && sortName != null) {
-            pageable = PageRequest.of(page, size);
-        }
-        Set<Shelf> shelfResponses = sheltRepository.findShelfByStatus(status, pageable).toSet();
-        Set<ShelfResponse> shelfResponseSet = shelfResponses.stream().map(shelf -> sheftMapper.toDto(shelf)).collect(Collectors.toSet());
-        return PageDTO.<ShelfResponse>builder()
-                .page(page)
-                .size(size)
-                .sortBy(sortBy)
-                .sortName(sortName)
-                .data(shelfResponseSet)
-                .build();
-
-    }
 }
