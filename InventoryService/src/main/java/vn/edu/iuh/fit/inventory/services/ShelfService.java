@@ -1,5 +1,6 @@
 package vn.edu.iuh.fit.inventory.services;
 
+import org.springframework.security.core.parameters.P;
 import vn.edu.iuh.fit.inventory.models.dtos.PageDTO;
 import vn.edu.iuh.fit.inventory.models.dtos.requests.ShelfRequest;
 import vn.edu.iuh.fit.inventory.models.dtos.responses.ShelfResponse;
@@ -16,5 +17,5 @@ public interface ShelfService {
 
     void deleteShelfById(Long id);
 
-    List<ShelfResponse> findShelfByLocation(String location);
+    PageDTO<ShelfResponse> findShelfByStatus(String status, int page, int size, String sortBy, String sortName);
 }

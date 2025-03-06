@@ -1,6 +1,7 @@
 package vn.edu.iuh.fit.inventory.services.impls;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -77,8 +78,21 @@ public class ShelfServiceImpl implements ShelfService {
     }
 
     @Override
-    public List<ShelfResponse> findShelfByLocation(String location) {
-        List<Shelf> shelves = sheltRepository.findShelfByLocation(location);
-        return shelves.stream().map(sheftMapper::toDto).collect(Collectors.toList());
+    public PageDTO<ShelfResponse> findShelfByStatus(String status, int page, int size, String sortBy, String sortName) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        if(sortBy != null && sortName != null) {
+            pageable = PageRequest.of(page, size);
+        }
+        Set<Shelf> shelfResponses = sheltRepository.findShelfByStatus(status, pageable).toSet();
+        Set<ShelfResponse> shelfResponseSet = shelfResponses.stream().map(shelf -> sheftMapper.toDto(shelf)).collect(Collectors.toSet());
+        return PageDTO.<ShelfResponse>builder()
+                .page(page)
+                .size(size)
+                .sortBy(sortBy)
+                .sortName(sortName)
+                .data(shelfResponseSet)
+                .build();
+
     }
 }
