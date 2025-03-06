@@ -46,6 +46,10 @@ dependencies {
     // https://mvnrepository.com/artifact/org.mapstruct/mapstruct
     implementation 'org.mapstruct:mapstruct:1.6.2'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.2'
+
+    // https://mvnrepository.com/artifact/vn.payos/payos-java
+    implementation group: 'vn.payos', name: 'payos-java', version: '1.0.1'
+
 }
 
 dependencyManagement {
