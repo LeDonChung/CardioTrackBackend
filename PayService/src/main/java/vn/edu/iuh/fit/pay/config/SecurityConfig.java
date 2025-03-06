@@ -1,4 +1,4 @@
-package vn.edu.iuh.fit.product.config;
+package vn.edu.iuh.fit.pay.config;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -14,17 +14,11 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import vn.edu.iuh.fit.product.config.filter.JwtTokenAuthenticationFilter;
-
-import java.util.List;
+import vn.edu.iuh.fit.pay.config.filter.JwtTokenAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -57,7 +51,6 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/tag/**").permitAll()
                         .requestMatchers("/api/v1/medicine/exists/**").permitAll()
                         .requestMatchers("/api/v1/medicine/**").permitAll()
-                        .requestMatchers("/api/v1/pay/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(customizer -> customizer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
