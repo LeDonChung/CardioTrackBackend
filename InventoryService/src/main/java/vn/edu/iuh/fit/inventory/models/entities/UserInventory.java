@@ -1,5 +1,6 @@
 package vn.edu.iuh.fit.inventory.models.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,6 +19,7 @@ public class UserInventory {
 
     @ManyToOne
     @JoinColumn(name = "inventory_id")
+    @JsonIgnore
     private Inventory inventory;
 
     @Column(name = "role")

@@ -1,5 +1,6 @@
 package vn.edu.iuh.fit.inventory.models.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,6 +21,7 @@ public class PurchaseOrder {
 
     @ManyToOne
     @JoinColumn(name = "supplier_id")
+    @JsonIgnore
     private Supplier supplier;
 
     @Column(name = "order_date")
@@ -29,5 +31,6 @@ public class PurchaseOrder {
     private PurchaseOrderStatus status;
 
     @OneToMany(mappedBy = "purchaseOrder")
+    @JsonIgnore
     private Set<PurchaseOrderDetail> purchaseOrderDetails;
 }

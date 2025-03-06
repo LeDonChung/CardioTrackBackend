@@ -27,6 +27,7 @@ public class InventoryImportServiceImpl implements InventoryImportService {
     @Override
     public InventoryImportResponse save(InventoryImportRequest request) throws InventoryImportException {
         InventoryImport inventoryImport = inventoryImportMapper.toEntity(request);
+        inventoryImport.setStatus(InventoryImportStatus.PENDING);
 
         InventoryImport finalInventoryImport = inventoryImport;
         inventoryImport.getInventoryImportDetails().forEach(inventoryImportDetail -> {

@@ -1,5 +1,6 @@
 package vn.edu.iuh.fit.inventory.models.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -37,5 +38,6 @@ public class InventoryImport {
     private Inventory inventory;
 
     @OneToMany(mappedBy = "inventoryImport", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonIgnore
     private Set<InventoryImportDetail> inventoryImportDetails;
 }

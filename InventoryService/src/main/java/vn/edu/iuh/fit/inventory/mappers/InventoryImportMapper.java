@@ -9,11 +9,13 @@ import vn.edu.iuh.fit.inventory.models.entities.InventoryImport;
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
 public interface InventoryImportMapper {
     @Mapping(target = "inventory.id", source = "inventory")
+    @Mapping(target = "supplier.id", source = "supplier")
     InventoryImport toEntity(InventoryImportRequest inventoryImportRequest);
 
     @Mapping(target = "inventory", source = "inventory.id")
+    @Mapping(target = "supplier", source = "supplier.id")
     InventoryImportResponse toDto(InventoryImport inventoryImport);
 
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    InventoryImport partialUpdate(InventoryImportRequest inventoryImportRequest, @MappingTarget InventoryImport inventoryImport);
+//    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+//    InventoryImport partialUpdate(InventoryImportRequest inventoryImportRequest, @MappingTarget InventoryImport inventoryImport);
 }
