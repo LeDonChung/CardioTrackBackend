@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vn.edu.iuh.fit.inventory.models.dtos.PageDTO;
 import vn.edu.iuh.fit.inventory.models.dtos.responses.BaseResponse;
+import vn.edu.iuh.fit.inventory.models.dtos.responses.CategoryResponse;
 import vn.edu.iuh.fit.inventory.models.dtos.responses.InventoryDetailResponse;
 import vn.edu.iuh.fit.inventory.models.dtos.responses.MedicineResponse;
 import vn.edu.iuh.fit.inventory.services.InventoryDetailService;
@@ -52,6 +53,19 @@ public class InventoryDetailController {
                 BaseResponse
                         .<MedicineResponse>builder()
                         .data(medicineResponse)
+                        .success(true)
+                        .build()
+        );
+    }
+
+    //Get category_detail from product-service
+    @GetMapping("/category-detail/{id}")
+    public ResponseEntity<BaseResponse<CategoryResponse>> getCategoryDetails(@PathVariable Long id) {
+        CategoryResponse categoryResponse = inventoryDetailService.getCategoryDetails(id);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<CategoryResponse>builder()
+                        .data(categoryResponse)
                         .success(true)
                         .build()
         );

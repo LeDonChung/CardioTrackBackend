@@ -6,11 +6,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import vn.edu.iuh.fit.inventory.clients.CategoryClient;
 import vn.edu.iuh.fit.inventory.clients.ProductServiceClient;
 import vn.edu.iuh.fit.inventory.exceptions.InventoryDetailException;
 import vn.edu.iuh.fit.inventory.mappers.InventoryDetailMapper;
 import vn.edu.iuh.fit.inventory.models.dtos.PageDTO;
 import vn.edu.iuh.fit.inventory.models.dtos.responses.BaseResponse;
+import vn.edu.iuh.fit.inventory.models.dtos.responses.CategoryResponse;
 import vn.edu.iuh.fit.inventory.models.dtos.responses.InventoryDetailResponse;
 import vn.edu.iuh.fit.inventory.models.dtos.responses.MedicineResponse;
 import vn.edu.iuh.fit.inventory.models.entities.InventoryDetail;
@@ -32,6 +34,9 @@ public class InvenotoryDetailServiceImpl implements InventoryDetailService {
 
     @Autowired
     private ProductServiceClient productServiceClient;
+
+    @Autowired
+    private CategoryClient categoryClient;
 
     //get all inventory detail
     @Override
@@ -76,6 +81,18 @@ public class InvenotoryDetailServiceImpl implements InventoryDetailService {
         } else {
             //ném exception
             throw new InventoryDetailException(SystemConstraints.MEDICINE_NOT_FOUND);
+        }
+    }
+
+    //Lấy thông tin chi tiết của category từ product-service
+    public CategoryResponse getCategoryDetails(Long id) {
+        ResponseEntity<BaseResponse<CategoryResponse>> response = categoryClient.getCategoryById(id);
+
+        if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+            return response.getBody().getData();
+        } else {
+            //ném exception
+            throw new InventoryDetailException(SystemConstraints.CATEGORY_NOT_FOUND);
         }
     }
 
