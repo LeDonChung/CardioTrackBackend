@@ -9,7 +9,7 @@ import vn.edu.iuh.fit.inventory.models.entities.Shelf;
 public interface ShelfMapper {
     Shelf toEntity(ShelfRequest request);
 
-    @Mapping(target = "inventory.id", source = "inventory")
+    //@Mapping(target = "inventory.id", source = "inventory")
     ShelfResponse toDto(Shelf shelf);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)

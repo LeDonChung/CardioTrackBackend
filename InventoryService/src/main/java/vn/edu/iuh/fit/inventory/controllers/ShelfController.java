@@ -46,8 +46,6 @@ public class ShelfController {
         );
     }
 
-
-
     // Get shelf by id
     @GetMapping("/id")
     public ResponseEntity<BaseResponse<ShelfResponse>> getShelfById(@RequestParam Long id) {
