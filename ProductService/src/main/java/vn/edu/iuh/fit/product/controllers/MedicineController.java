@@ -111,4 +111,17 @@ public class MedicineController {
                         .build()
         );
     }
+
+
+    @GetMapping("/get-all")
+    public ResponseEntity<BaseResponse<List<MedicineResponse>>> getAll() {
+        List<MedicineResponse> medicineResponses = medicineService.getAll();
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<List<MedicineResponse>>builder()
+                        .data(medicineResponses)
+                        .success(true)
+                        .build()
+        );
+    }
 }
