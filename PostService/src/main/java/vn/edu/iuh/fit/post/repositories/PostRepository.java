@@ -10,4 +10,6 @@ import java.util.List;
 public interface PostRepository extends JpaRepository<Post, Long> {
     //  Tìm kiếm bài viết có tiêu đề gần đúng
     List<Post> findByTitleContainingIgnoreCase(String title);
+
+    List<Post> findByAuthorId(Long authorId);
 }

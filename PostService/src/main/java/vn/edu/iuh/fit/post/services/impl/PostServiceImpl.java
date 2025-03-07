@@ -97,5 +97,29 @@ public class PostServiceImpl implements PostService {
                 .toList();
     }
 
+    @Override
+    public List<PostResponse> getPosts() throws PostException {
+        List<Post> posts = postRepository.findAll();
+        if (posts.isEmpty()) {
+            throw new PostException("Không có bài viết nào.");
+        }
+        return posts.stream()
+                .map(postMapper::toResponse)
+                .toList();
+    }
+
+    @Override
+    public List<PostResponse> getMyPosts(Long authorId) throws PostException {
+        authorId = userServiceClient.findIdByPhoneNumber(jwtService.getCurrentUser()).getBody().getData();
+
+        List<Post> posts = postRepository.findByAuthorId(authorId);
+        if (posts.isEmpty()) {
+            throw new PostException("Không có bài viết nào.");
+        }
+        return posts.stream()
+                .map(postMapper::toResponse)
+                .toList();
+    }
+
 
 }
