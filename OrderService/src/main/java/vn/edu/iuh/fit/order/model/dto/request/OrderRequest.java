@@ -2,6 +2,7 @@ package vn.edu.iuh.fit.order.model.dto.request;
 
 import lombok.*;
 import vn.edu.iuh.fit.order.enums.OrderStatus;
+import vn.edu.iuh.fit.order.enums.PaymentMethod;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -19,6 +20,8 @@ public class OrderRequest {
     private boolean exportInvoice;
 
     private OrderStatus status;
+
+    private PaymentMethod paymentMethod;
 
     private LocalDate orderDate;
 
