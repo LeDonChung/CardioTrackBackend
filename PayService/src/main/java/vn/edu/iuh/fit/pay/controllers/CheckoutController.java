@@ -6,12 +6,15 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vn.edu.iuh.fit.pay.dto.PaymentRequest;
+import vn.edu.iuh.fit.pay.dto.ProductRequest;
 import vn.payos.PayOS;
 import vn.payos.type.CheckoutResponseData;
 import vn.payos.type.ItemData;
 import vn.payos.type.PaymentData;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -27,24 +30,26 @@ public class CheckoutController {
     @PostMapping("/create-payment-link")
     public ResponseEntity<?> createPaymentLink(@RequestBody PaymentRequest request) {
         try {
-            final String productName = request.getProductName();
+            final List<ProductRequest> products = request.getProducts();
             final String description = request.getDescription();
             final String returnUrl = request.getReturnUrl();
             final String cancelUrl = request.getCancelUrl();
             final int price = request.getAmount();
+            final Long orderCode = request.getOrderCode();
 
-            // Gen order code
-            String currentTimeString = String.valueOf(new Date().getTime());
-            long orderCode = Long.parseLong(currentTimeString.substring(currentTimeString.length() - 6));
+            List<ItemData> items = new ArrayList<>();
 
-            ItemData item = ItemData.builder().name(productName).quantity(1).price(price).build();
+            for (ProductRequest product : products) {
+                ItemData item = ItemData.builder().name(product.getName()).quantity(product.getQuantity()).price(product.getPrice()).build();
+                items.add(item);
+            }
             PaymentData paymentData = PaymentData.builder()
                     .orderCode(orderCode)
                     .amount(price)
                     .description(description)
                     .returnUrl(returnUrl)
                     .cancelUrl(cancelUrl)
-                    .item(item)
+                    .items(items)
                     .build();
 
             CheckoutResponseData data = payOS.createPaymentLink(paymentData);
