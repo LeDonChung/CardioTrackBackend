@@ -49,6 +49,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/inventory/**").permitAll()
                         .requestMatchers("/api/v1/medicine/exists/**").permitAll()
                         .requestMatchers("/api/v1/inventory-import/**").permitAll()
+                        .requestMatchers("/api/v1/purchase-order/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(customizer -> customizer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
