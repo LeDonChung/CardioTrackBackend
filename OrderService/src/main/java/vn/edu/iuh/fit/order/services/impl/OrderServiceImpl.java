@@ -18,6 +18,7 @@ import vn.edu.iuh.fit.order.repositories.OrderRepository;
 import vn.edu.iuh.fit.order.services.OrderService;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -98,5 +99,10 @@ public class OrderServiceImpl implements OrderService {
             return orderMapper.toDto(orderEntity);
         }
         throw new OrderException("Đơn hàng không tồn tại.");
+    }
+
+    @Override
+    public List<OrderResponse> recommend() {
+        return orderRepository.findAll().stream().map(orderMapper::toDto).toList();
     }
 }
