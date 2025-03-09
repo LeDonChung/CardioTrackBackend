@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vn.edu.iuh.fit.inventory.enums.InventoryImportStatus;
 import vn.edu.iuh.fit.inventory.exceptions.InventoryImportException;
+import vn.edu.iuh.fit.inventory.models.dtos.PageDTO;
 import vn.edu.iuh.fit.inventory.models.dtos.requests.InventoryImportRequest;
 import vn.edu.iuh.fit.inventory.models.dtos.responses.BaseResponse;
 import vn.edu.iuh.fit.inventory.models.dtos.responses.InventoryImportResponse;
@@ -38,6 +39,22 @@ public class InventoryImportController {
                 BaseResponse
                         .<InventoryImportResponse>builder()
                         .data(inventoryImport)
+                        .success(true)
+                        .build()
+        );
+    }
+
+    // Lấy tất cả phiếu nhập
+    @GetMapping
+    public ResponseEntity<BaseResponse<PageDTO<InventoryImportResponse>>> getPagesInventoryImport(@RequestParam(defaultValue = "1") int page,
+                                                                                                  @RequestParam(defaultValue = "10") int size,
+                                                                                                  @RequestParam(required = false) String sortBy,
+                                                                                                  @RequestParam(required = false) String sortName) {
+        PageDTO<InventoryImportResponse> pageDTO = inventoryImportService.getPagesInventoryImport(page, size, sortBy, sortName);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<PageDTO<InventoryImportResponse>>builder()
+                        .data(pageDTO)
                         .success(true)
                         .build()
         );
