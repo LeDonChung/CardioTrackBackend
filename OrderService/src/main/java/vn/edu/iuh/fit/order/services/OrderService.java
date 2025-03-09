@@ -6,6 +6,8 @@ import vn.edu.iuh.fit.order.model.dto.request.OrderRequest;
 import vn.edu.iuh.fit.order.model.dto.response.OrderResponse;
 import vn.edu.iuh.fit.order.model.entities.Order;
 
+import java.util.List;
+
 public interface OrderService {
 
     //Thêm Order
@@ -13,4 +15,6 @@ public interface OrderService {
 
     //Thay đổi trạng thái Order
     OrderResponse changeStatus(Long id, OrderStatus order) throws OrderException;
+
+    List<OrderResponse> recommend();
 }
