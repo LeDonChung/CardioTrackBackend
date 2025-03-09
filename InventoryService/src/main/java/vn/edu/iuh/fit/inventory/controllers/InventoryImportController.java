@@ -18,7 +18,7 @@ public class InventoryImportController {
     private InventoryImportService inventoryImportService;
 
     // Thêm phiếu nhập
-    @PostMapping
+    @PostMapping("/add")
     public ResponseEntity<BaseResponse<InventoryImportResponse>> addOrder(@RequestBody InventoryImportRequest request) throws InventoryImportException {
         InventoryImportResponse inventoryImport = inventoryImportService.save(request);
         return ResponseEntity.ok(
@@ -46,7 +46,7 @@ public class InventoryImportController {
 
     // Lấy tất cả phiếu nhập
     @GetMapping
-    public ResponseEntity<BaseResponse<PageDTO<InventoryImportResponse>>> getPagesInventoryImport(@RequestParam(defaultValue = "1") int page,
+    public ResponseEntity<BaseResponse<PageDTO<InventoryImportResponse>>> getPagesInventoryImport(@RequestParam(defaultValue = "0") int page,
                                                                                                   @RequestParam(defaultValue = "10") int size,
                                                                                                   @RequestParam(required = false) String sortBy,
                                                                                                   @RequestParam(required = false) String sortName) {
