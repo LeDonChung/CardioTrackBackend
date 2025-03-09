@@ -23,5 +23,5 @@ public class InventoryImportResponse {
     private String notes;
     private Long supplier;
     private Long inventory;
-    private Set<InventoryImportDetail> inventoryImportDetails;
+//    private Set<InventoryImportDetail> inventoryImportDetails;
 }

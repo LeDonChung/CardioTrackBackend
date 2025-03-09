@@ -6,7 +6,7 @@ import lombok.Getter;
 public enum InventoryImportStatus {
     PENDING("PENDING"),
     IMPORTED("IMPORTED"),
-    CANCELED( "CANCELED");
+    CANCELLED( "CANCELLED");
 
     private final String value;
 

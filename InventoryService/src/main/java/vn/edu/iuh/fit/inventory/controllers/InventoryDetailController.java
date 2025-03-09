@@ -18,7 +18,7 @@ public class InventoryDetailController {
 
     //Get all inventory_detail
     @GetMapping
-    public ResponseEntity<BaseResponse<PageDTO<InventoryDetailResponse>>> getPages(@RequestParam(defaultValue = "1") int page,
+    public ResponseEntity<BaseResponse<PageDTO<InventoryDetailResponse>>> getPages(@RequestParam(defaultValue = "0") int page,
                                                                                    @RequestParam(defaultValue = "10") int size,
                                                                                    @RequestParam(required = false) String sortBy,
                                                                                    @RequestParam(required = false) String sorName) {
