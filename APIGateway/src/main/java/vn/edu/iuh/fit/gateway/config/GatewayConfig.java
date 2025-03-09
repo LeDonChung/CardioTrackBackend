@@ -69,6 +69,8 @@ public class GatewayConfig {
                         .uri("lb://inventory-service"))
                 .route("inventory-import-service", r -> r.path("/api/v1/inventory-import/**")
                         .uri("lb://inventory-service"))
+                .route("recommend-service", r -> r.path("/api/v1/recommend/**")
+                        .uri("lb://recommend-service"))
                 .build();
     }
 

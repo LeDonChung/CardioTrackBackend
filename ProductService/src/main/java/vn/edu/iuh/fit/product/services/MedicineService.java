@@ -28,4 +28,6 @@ public interface MedicineService {
     boolean isExists(Long id);
 
     PageDTO<MedicineResponse> search(MedicineSearchRequest request, int page, int size, String sortBy, String sortName);
+
+    List<MedicineResponse> getAll();
 }
