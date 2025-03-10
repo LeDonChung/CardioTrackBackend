@@ -18,4 +18,9 @@ public interface PostService {
 
     //  Tìm kiếm bài viết theo tiêu đề gần đúng
     List<PostResponse> searchPosts(String title) throws PostException;
+
+    //lấy danh sách bài viet
+    List<PostResponse> getPosts() throws PostException;
+    // lấy danh sách bài viết của tôi
+    List<PostResponse> getMyPosts(Long authorId) throws PostException;
 }

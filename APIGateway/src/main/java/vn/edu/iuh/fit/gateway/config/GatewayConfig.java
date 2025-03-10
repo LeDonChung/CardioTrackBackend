@@ -63,6 +63,8 @@ public class GatewayConfig {
                         .uri("lb://product-service"))
                 .route("post-service", r -> r.path("/api/v1/post/**")
                         .uri("lb://post-service"))
+                .route("post-service", r -> r.path("/api/v1/comment/**")
+                        .uri("lb://post-service"))
                 .route("notification-service", r -> r.path("/api/v1/notification/**")
                         .uri("lb://notification-service"))
                 .route("inventory-service", r -> r.path("/api/v1/inventory/**")
@@ -75,6 +77,10 @@ public class GatewayConfig {
                         .uri("lb://inventory-service"))
                 .route("purchase-order-service", r -> r.path("/api/v1/purchase-order/**")
                         .uri("lb://inventory-service"))
+                .route("pay-service", r -> r.path("/api/v1/pay/**")
+                        .uri("lb://pay-service"))
+                .route("recommend-service", r -> r.path("/api/v1/recommend/**")
+                        .uri("lb://recommend-service"))
                 .build();
     }
 
