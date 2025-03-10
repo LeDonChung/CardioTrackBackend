@@ -8,6 +8,8 @@ import vn.edu.iuh.fit.order.model.dto.response.OrderResponse2;
 
 import java.util.List;
 
+import java.util.List;
+
 public interface OrderService {
 
     //Thêm Order
@@ -19,5 +21,5 @@ public interface OrderService {
     //hiển thị chi tiết đơn hàng của user
     List<OrderResponse> getOrdersByUserId(Long id) throws OrderException;
 
-
+    List<OrderResponse> recommend();
 }

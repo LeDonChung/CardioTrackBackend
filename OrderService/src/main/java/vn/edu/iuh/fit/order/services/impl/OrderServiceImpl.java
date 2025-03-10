@@ -154,4 +154,7 @@ public class OrderServiceImpl implements OrderService {
 
 
 
+    public List<OrderResponse> recommend() {
+        return orderRepository.findAll().stream().map(orderMapper::toDto).toList();
+    }
 }

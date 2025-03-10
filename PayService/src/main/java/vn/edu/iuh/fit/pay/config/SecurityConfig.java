@@ -1,4 +1,4 @@
-package vn.edu.iuh.fit.order.config;
+package vn.edu.iuh.fit.pay.config;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -18,12 +18,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import vn.edu.iuh.fit.order.config.filter.JwtTokenAuthenticationFilter;
-
-import java.util.List;
+import vn.edu.iuh.fit.pay.config.filter.JwtTokenAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -51,8 +46,12 @@ public class SecurityConfig {
                         customizer.authenticationEntryPoint((request, response, authException) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED)))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(customizer -> customizer
-                        .requestMatchers("/api/v1/order/home").permitAll()
-                        .requestMatchers("/api/v1/order/recommend").permitAll()
+                        .requestMatchers("/api/v1/category/**").permitAll()
+                        .requestMatchers("/api/v1/brand/**").permitAll()
+                        .requestMatchers("/api/v1/tag/**").permitAll()
+                        .requestMatchers("/api/v1/medicine/exists/**").permitAll()
+                        .requestMatchers("/api/v1/medicine/**").permitAll()
+                        .requestMatchers("/api/v1/pay/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(customizer -> customizer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

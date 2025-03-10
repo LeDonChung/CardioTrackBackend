@@ -56,6 +56,15 @@ public class OrderController {
                 BaseResponse
                         .<List<OrderResponse>>builder()
                         .data(orderResponses)
+          )
+      }
+    @GetMapping("/recommend")
+    public ResponseEntity<BaseResponse<List<OrderResponse>>> recommend() throws OrderException {
+        List<OrderResponse> order = orderService.recommend();
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<List<OrderResponse>>builder()
+                        .data(order)
                         .success(true)
                         .build()
         );
