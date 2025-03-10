@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import vn.edu.iuh.fit.order.enums.OrderStatus;
+import vn.edu.iuh.fit.order.enums.PaymentMethod;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -40,6 +41,10 @@ public class Order {
     private Long customer;
 
     private Long addressId;
+
+    @Column(name = "payment_method")
+    @Enumerated(EnumType.STRING)
+    private PaymentMethod paymentMethod;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
