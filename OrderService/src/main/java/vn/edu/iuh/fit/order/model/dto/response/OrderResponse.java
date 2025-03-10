@@ -30,4 +30,16 @@ public class OrderResponse {
     private AddressResponse addressDetail;
 
     private List<OrderDetail> orderDetails;
+
+    private String nameProduct;  // Tên sản phẩm
+
+    private String imageUrl;     // Hình ảnh sản phẩm
+
+    private Long productId;      // ID của sản phẩm
+
+    private String init; // Mã sản phẩm
+
+
+
+
 }
