@@ -10,5 +10,6 @@ import vn.edu.iuh.fit.inventory.models.entities.PurchaseOrder;
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
 public interface PurchaseOrderMapper {
     @Mapping(target = "supplierName", source = "supplier.name")
+    @Mapping(target = "supplierId", source = "supplier.id")
     PurchaseOrderResponse toDto(PurchaseOrder purchaseOrder);
 }

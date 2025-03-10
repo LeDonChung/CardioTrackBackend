@@ -17,6 +17,7 @@ import java.util.Set;
 @Builder
 public class PurchaseOrderResponse {
     private Long id;
+    private Long supplierId;
     private String supplierName;
     private Timestamp orderDate;
     private PurchaseOrderStatus status;
