@@ -21,7 +21,7 @@ public class InventoryImportResponse {
     private Timestamp importDate;
     private InventoryImportStatus status;
     private String notes;
-    private Supplier supplier;
-    private Inventory inventory;
-    private Set<InventoryImportDetail> inventoryImportDetails;
+    private Long supplier;
+    private Long inventory;
+//    private Set<InventoryImportDetail> inventoryImportDetails;
 }

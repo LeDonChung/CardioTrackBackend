@@ -2,6 +2,7 @@ package vn.edu.iuh.fit.inventory.services;
 
 import vn.edu.iuh.fit.inventory.enums.InventoryImportStatus;
 import vn.edu.iuh.fit.inventory.exceptions.InventoryImportException;
+import vn.edu.iuh.fit.inventory.models.dtos.PageDTO;
 import vn.edu.iuh.fit.inventory.models.dtos.requests.InventoryImportRequest;
 import vn.edu.iuh.fit.inventory.models.dtos.responses.InventoryImportResponse;
 
@@ -11,4 +12,7 @@ public interface InventoryImportService {
 
     //Thay đổi trạng thái của phiếu nhập
     InventoryImportResponse changeStatus(Long id, InventoryImportStatus invenotryImport) throws InventoryImportException;
+
+    // Lấy tất cả phiếu nhập
+    PageDTO<InventoryImportResponse> getPagesInventoryImport(int page, int size, String sortBy, String sortName);
 }

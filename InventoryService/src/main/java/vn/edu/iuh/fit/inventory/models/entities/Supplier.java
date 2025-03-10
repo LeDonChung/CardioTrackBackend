@@ -1,5 +1,6 @@
 package vn.edu.iuh.fit.inventory.models.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,8 +27,10 @@ public class Supplier {
     private String contactInfo;
 
     @OneToMany(mappedBy = "supplier")
+    @JsonIgnore
     private Set<PurchaseOrder> purchaseOrders;
 
     @OneToMany(mappedBy = "supplier")
+    @JsonIgnore
     private Set<InventoryImport> inventoryImports;
 }
