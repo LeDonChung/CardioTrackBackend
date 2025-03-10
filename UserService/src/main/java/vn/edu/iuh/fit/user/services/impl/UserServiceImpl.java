@@ -84,7 +84,16 @@ public class UserServiceImpl implements UserService {
         }
         String username = jwtService.getUsernameFromToken(token);
         Optional<User> userOptional = userRepository.findByUsername(username);
-        return userOptional.map(user -> userMapper.toUserResponse(user)).orElse(null);
+        return userOptional.map(user -> {
+            // Lấy tên các roles của người dùng và chuyển thành Set<String>
+            Set<String> roleNames = user.getRoles().stream()
+                    .map(Role::getName)
+                    .collect(Collectors.toSet());
+
+            UserResponse userResponse = userMapper.toUserResponse(user);
+            userResponse.setRoleNames(roleNames);  // Gán roleNames vào UserResponse
+            return userResponse;
+        }).orElse(null);
     }
 
     @Override

@@ -73,4 +73,21 @@ public class PostController {
 
 
     }
+
+    //hiển thị danh sách bài viết
+    @GetMapping("/all-post")
+    public ResponseEntity<BaseResponse<List<PostResponse>>> listPost() throws PostException {
+        List<PostResponse> postResponses = postService.getPosts();
+        return ResponseEntity.ok(
+                new BaseResponse<>(postResponses, true, HttpStatus.OK.name())
+        );
+    }
+    //hiển thị danh sách bài viết của tôi
+    @GetMapping("/my-post/{authorId}")
+    public ResponseEntity<BaseResponse<List<PostResponse>>> myPosts(@PathVariable Long authorId) throws PostException {
+        List<PostResponse> postResponses = postService.getMyPosts(authorId);
+        return ResponseEntity.ok(
+                new BaseResponse<>(postResponses, true, HttpStatus.OK.name())
+        );
+    }
 }

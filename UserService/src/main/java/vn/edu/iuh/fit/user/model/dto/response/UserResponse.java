@@ -7,6 +7,7 @@ import lombok.Setter;
 import vn.edu.iuh.fit.user.model.enums.Gender;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -27,4 +28,6 @@ public class UserResponse {
     private Boolean enabled;
 
     private Boolean verify;
+
+    private Set<String> roleNames;
 }
