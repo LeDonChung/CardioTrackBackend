@@ -2,10 +2,9 @@ package vn.edu.iuh.fit.inventory.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import vn.edu.iuh.fit.inventory.enums.PurchaseOrderStatus;
+import vn.edu.iuh.fit.inventory.exceptions.PurchaseOrderException;
 import vn.edu.iuh.fit.inventory.models.dtos.responses.BaseResponse;
 import vn.edu.iuh.fit.inventory.models.dtos.responses.PurchaseOrderDetailResponse;
 import vn.edu.iuh.fit.inventory.models.dtos.responses.PurchaseOrderResponse;
@@ -44,6 +43,19 @@ public class PurchaseOrderController {
                 BaseResponse
                         .<List<PurchaseOrderDetailResponse>>builder()
                         .data(purchaseOrderDetailResponses)
+                        .success(true)
+                        .build()
+        );
+    }
+
+    // Thay đổi trạng thái của đơn mua hàng
+    @PutMapping("/change-status/{id}")
+    public ResponseEntity<BaseResponse<PurchaseOrderResponse>> changeStatus(@PathVariable Long id, @RequestParam PurchaseOrderStatus status) throws PurchaseOrderException {
+        PurchaseOrderResponse purchaseOrderResponse = purchaseOrderService.changeStatus(id, status);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<PurchaseOrderResponse>builder()
+                        .data(purchaseOrderResponse)
                         .success(true)
                         .build()
         );
