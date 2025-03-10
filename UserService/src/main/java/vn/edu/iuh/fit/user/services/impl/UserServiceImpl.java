@@ -1,6 +1,5 @@
 package vn.edu.iuh.fit.user.services.impl;
 
-import com.netflix.discovery.converters.Auto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,7 +17,6 @@ import vn.edu.iuh.fit.user.model.entity.Address;
 import vn.edu.iuh.fit.user.model.entity.AddressDetail;
 import vn.edu.iuh.fit.user.model.entity.Role;
 import vn.edu.iuh.fit.user.model.entity.User;
-import vn.edu.iuh.fit.user.model.enums.Gender;
 import vn.edu.iuh.fit.user.repositories.AddressDetailRepository;
 import vn.edu.iuh.fit.user.repositories.AddressRepository;
 import vn.edu.iuh.fit.user.repositories.RoleRepository;
@@ -224,6 +222,24 @@ public class UserServiceImpl implements UserService {
         addressDetail = addressDetailRepository.save(addressDetail);
 
         return getAddressResponse(addressDetail);
+    }
+
+    @Override
+    public AddressResponse getAddressById_Address(Long id) throws UserException {
+        //lấy địa chỉ theo id Address
+        Optional<Address> addressOptional = addressRepository.findById(id);
+        if(addressOptional.isEmpty()) {
+            throw new UserException(SystemConstraints.ADDRESS_NOT_FOUND);
+        }
+        Address address = addressOptional.get();
+        AddressResponse addressResponse = new AddressResponse();
+        addressResponse.setId(address.getId());
+        addressResponse.setDistrict(address.getDistrict());
+        addressResponse.setProvince(address.getProvince());
+        addressResponse.setWard(address.getWard());
+        addressResponse.setStreet(address.getStreet());
+        return addressResponse;
+
     }
 
 

@@ -104,6 +104,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<OrderResponse> getOrdersByUserId(Long userId) throws OrderException {
+        // Tìm đơn hàng theo customer_id
         List<Order> orders = orderRepository.findByCustomer(userId);
 
         if (orders == null || orders.isEmpty()) {
@@ -115,15 +116,14 @@ public class OrderServiceImpl implements OrderService {
         for (Order order : orders) {
             OrderResponse response = orderMapper.toDto(order);
 
-            List<AddressResponse> addressResponses = userServiceClient.getUserAddresses(userId).getBody().getData();
+            // Lấy địa chỉ từ address_id trong bảng order
+            if (order.getAddressId() != null) {
+                AddressResponse orderAddress = userServiceClient.getAddressById(order.getAddressId()).getBody();
 
-            AddressResponse orderAddress = addressResponses.stream()
-                    .filter(address -> address.getOrderId().equals(order.getId()))
-                    .findFirst()
-                    .orElse(null);
-
-            if (orderAddress != null) {
-                response.setAddressDetail(orderAddress);
+                // Nếu địa chỉ tồn tại, gán vào response
+                if (orderAddress != null) {
+                    response.setAddressDetail(orderAddress);
+                }
             }
 
             // Lấy thông tin chi tiết sản phẩm từ ProductServiceClient
@@ -142,13 +142,13 @@ public class OrderServiceImpl implements OrderService {
                 }
             }
 
-
-
             orderResponses.add(response);
         }
 
         return orderResponses;
     }
+
+
 
 
 
