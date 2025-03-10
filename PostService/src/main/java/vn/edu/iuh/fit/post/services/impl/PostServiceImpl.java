@@ -8,6 +8,7 @@ import vn.edu.iuh.fit.post.jwt.JwtService;
 import vn.edu.iuh.fit.post.mappers.PostMapper;
 import vn.edu.iuh.fit.post.model.dto.response.PostResponse;
 import vn.edu.iuh.fit.post.model.dto.request.PostRequest;
+import vn.edu.iuh.fit.post.model.dto.response.UserResponse;
 import vn.edu.iuh.fit.post.model.entity.Post;
 import vn.edu.iuh.fit.post.repositories.PostRepository;
 import vn.edu.iuh.fit.post.services.PostService;
@@ -40,6 +41,7 @@ public class PostServiceImpl implements PostService {
 
 
         Post savedPost = postRepository.save(post);
+
 
         return postMapper.toResponse(savedPost);
     }
@@ -104,7 +106,13 @@ public class PostServiceImpl implements PostService {
             throw new PostException("Không có bài viết nào.");
         }
         return posts.stream()
-                .map(postMapper::toResponse)
+                .map(post -> {
+                    // Gọi UserServiceClient để lấy thông tin người tạo bài viết (UserResponse)
+                    UserResponse userResponse = userServiceClient.findUserById(post.getAuthorId()).getBody().getData();
+                    PostResponse postResponse = postMapper.toResponse(post);
+                    postResponse.setFullName(userResponse.getFullName());  // Gán username vào PostResponse
+                    return postResponse;
+                })
                 .toList();
     }
 
@@ -117,7 +125,13 @@ public class PostServiceImpl implements PostService {
             throw new PostException("Không có bài viết nào.");
         }
         return posts.stream()
-                .map(postMapper::toResponse)
+                .map(post -> {
+                    // Gọi UserServiceClient để lấy thông tin người tạo bài viết (UserResponse)
+                    UserResponse userResponse = userServiceClient.findUserById(post.getAuthorId()).getBody().getData();
+                    PostResponse postResponse = postMapper.toResponse(post);
+                    postResponse.setFullName(userResponse.getFullName());  // Gán username vào PostResponse
+                    return postResponse;
+                })
                 .toList();
     }
 
