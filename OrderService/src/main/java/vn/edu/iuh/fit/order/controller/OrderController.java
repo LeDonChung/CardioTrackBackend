@@ -11,6 +11,8 @@ import vn.edu.iuh.fit.order.model.dto.response.BaseResponse;
 import vn.edu.iuh.fit.order.model.dto.response.OrderResponse;
 import vn.edu.iuh.fit.order.services.OrderService;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/order")
 public class OrderController {
@@ -35,6 +37,18 @@ public class OrderController {
         return ResponseEntity.ok(
                 BaseResponse
                         .<OrderResponse>builder()
+                        .data(order)
+                        .success(true)
+                        .build()
+        );
+    }
+
+    @GetMapping("/recommend")
+    public ResponseEntity<BaseResponse<List<OrderResponse>>> recommend() throws OrderException {
+        List<OrderResponse> order = orderService.recommend();
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<List<OrderResponse>>builder()
                         .data(order)
                         .success(true)
                         .build()
