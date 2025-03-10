@@ -138,4 +138,9 @@ public class MedicineServiceImpl implements MedicineService {
                 .totalPage(pageMedicine.getTotalPages())
                 .build();
     }
+
+    @Override
+    public List<MedicineResponse> getAll() {
+        return medicineRepository.findAll().stream().map(medicineMapper::toDto).collect(Collectors.toList());
+    }
 }
