@@ -1,5 +1,6 @@
 package vn.edu.iuh.fit.inventory.models.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,6 +18,7 @@ public class InventoryImportDetail {
 
     @ManyToOne
     @JoinColumn(name = "import_id")
+    @JsonIgnore
     private InventoryImport inventoryImport;
 
     private Long medicine;

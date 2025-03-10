@@ -20,7 +20,7 @@ public class InventoryImportRequest {
     private Timestamp importDate;
     private InventoryImportStatus status;
     private String notes;
-    private Supplier supplier;
-    private Inventory inventory;
+    private Long supplier;
+    private Long inventory;
     private Set<InventoryImportDetail> inventoryImportDetails;
 }
