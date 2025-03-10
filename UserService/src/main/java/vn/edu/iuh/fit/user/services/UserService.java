@@ -6,6 +6,7 @@ import vn.edu.iuh.fit.user.model.dto.request.UserRegisterRequest;
 import vn.edu.iuh.fit.user.model.dto.request.UserUpdateRequest;
 import vn.edu.iuh.fit.user.model.dto.response.AddressResponse;
 import vn.edu.iuh.fit.user.model.dto.response.UserResponse;
+import vn.edu.iuh.fit.user.model.entity.Address;
 
 import java.util.List;
 
@@ -27,6 +28,8 @@ public interface UserService {
 
     List<AddressResponse> getAddressesByUserId(Long userId);
 
+
+
     //hàm update user từ user id
     UserResponse updateUserById(Long id, UserUpdateRequest request) throws UserException;
     //hàm xoa địa chỉ theo id address
@@ -34,4 +37,6 @@ public interface UserService {
     //hàm update address theo id address
     AddressResponse updateAddressById(Long id, AddressRequest request) throws UserException;
 
+    //hàm lấy địa chỉ theo id address
+    AddressResponse getAddressById_Address(Long id) throws UserException;
 }

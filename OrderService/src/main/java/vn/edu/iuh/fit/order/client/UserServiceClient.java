@@ -23,4 +23,7 @@ public interface UserServiceClient {
 
     @GetMapping("/addresses/{id}")
     ResponseEntity<BaseResponse<List<AddressResponse>>> getUserAddresses(@PathVariable("id") Long id);
+
+    @GetMapping("/address-byid/{addressId}")
+    ResponseEntity<AddressResponse> getAddressById(@PathVariable Long addressId);
 }

@@ -12,6 +12,7 @@ import vn.edu.iuh.fit.user.model.dto.request.UserUpdateRequest;
 import vn.edu.iuh.fit.user.model.dto.response.AddressResponse;
 import vn.edu.iuh.fit.user.model.dto.response.BaseResponse;
 import vn.edu.iuh.fit.user.model.dto.response.UserResponse;
+import vn.edu.iuh.fit.user.model.entity.Address;
 import vn.edu.iuh.fit.user.services.UserService;
 
 import java.util.List;
@@ -170,6 +171,15 @@ public ResponseEntity<BaseResponse<List<AddressResponse>>> getUserAddresses(@Pat
                         .build(),
                 HttpStatus.OK
 
+        );
+    }
+
+    @GetMapping("/address-byid/{addressId}")
+    public ResponseEntity<AddressResponse> getAddressById(@PathVariable Long addressId) throws UserException {
+        AddressResponse address = userService.getAddressById_Address(addressId);
+        return new ResponseEntity<>(
+                address,
+                HttpStatus.OK
         );
     }
 
