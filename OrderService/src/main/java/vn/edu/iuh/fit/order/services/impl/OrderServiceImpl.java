@@ -10,14 +10,15 @@ import vn.edu.iuh.fit.order.exceptions.OrderException;
 import vn.edu.iuh.fit.order.mapper.OrderMapper;
 import vn.edu.iuh.fit.order.model.dto.request.AddressRequest;
 import vn.edu.iuh.fit.order.model.dto.request.OrderRequest;
-import vn.edu.iuh.fit.order.model.dto.response.AddressResponse;
-import vn.edu.iuh.fit.order.model.dto.response.OrderResponse;
-import vn.edu.iuh.fit.order.model.dto.response.UserResponse;
+import vn.edu.iuh.fit.order.model.dto.response.*;
 import vn.edu.iuh.fit.order.model.entities.Order;
+import vn.edu.iuh.fit.order.model.entities.OrderDetail;
 import vn.edu.iuh.fit.order.repositories.OrderRepository;
 import vn.edu.iuh.fit.order.services.OrderService;
+import vn.edu.iuh.fit.order.utils.SystemConstraints;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -102,6 +103,57 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public List<OrderResponse> getOrdersByUserId(Long userId) throws OrderException {
+        List<Order> orders = orderRepository.findByCustomer(userId);
+
+        if (orders == null || orders.isEmpty()) {
+            throw new OrderException("Không có đơn hàng nào.");
+        }
+
+        List<OrderResponse> orderResponses = new ArrayList<>();
+
+        for (Order order : orders) {
+            OrderResponse response = orderMapper.toDto(order);
+
+            List<AddressResponse> addressResponses = userServiceClient.getUserAddresses(userId).getBody().getData();
+
+            AddressResponse orderAddress = addressResponses.stream()
+                    .filter(address -> address.getOrderId().equals(order.getId()))
+                    .findFirst()
+                    .orElse(null);
+
+            if (orderAddress != null) {
+                response.setAddressDetail(orderAddress);
+            }
+
+            // Lấy thông tin chi tiết sản phẩm từ ProductServiceClient
+            for (OrderDetail orderDetail : order.getOrderDetails()) {
+                if (orderDetail.getMedicine() != null) {
+                    // Lấy sản phẩm từ ProductServiceClient
+                    ProductResponse productResponse = productServiceClient.getById(orderDetail.getMedicine()).getBody().getData();
+
+                    // Gán thông tin sản phẩm vào response
+                    if (productResponse != null) {
+                        response.setProductId(productResponse.getId());
+                        response.setNameProduct(productResponse.getName());
+                        response.setImageUrl(productResponse.getPrimaryImage());
+                        response.setInit(productResponse.getInit());
+                    }
+                }
+            }
+
+
+
+            orderResponses.add(response);
+        }
+
+        return orderResponses;
+    }
+
+
+
+
+
     public List<OrderResponse> recommend() {
         return orderRepository.findAll().stream().map(orderMapper::toDto).toList();
     }
