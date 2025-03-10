@@ -70,4 +70,17 @@ public class InventoryDetailController {
                         .build()
         );
     }
+
+    //Get quantity of product by category_id
+    @GetMapping("/quantity/{categoryId}")
+    public ResponseEntity<BaseResponse<Integer>> getQuantityCategoryProductInventory(@PathVariable Long categoryId) {
+        int quantity = inventoryDetailService.getQuantityCategoryProductInventory(categoryId);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<Integer>builder()
+                        .data(quantity)
+                        .success(true)
+                        .build()
+        );
+    }
 }

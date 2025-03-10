@@ -96,5 +96,9 @@ public class InvenotoryDetailServiceImpl implements InventoryDetailService {
         }
     }
 
-    //Tìm tổng số lượng của 1 thuốc trong kho (1 thuốc có thể nằm trên nhiều kệ)
+    //Lấy số lượng sản phẩm theo categoryId
+    @Override
+    public int getQuantityCategoryProductInventory(Long categoryId) {
+        return inventoryDetailRepository.getQuantityCategoryProductInventory(categoryId);
+    }
 }
