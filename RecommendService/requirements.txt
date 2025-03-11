@@ -1,0 +1,10 @@
+requests
+pandas
+flask
+scikit-learn
+redis
+pickle-mixin
+numpy
+apscheduler
+mlxtend
+py_eureka_client
