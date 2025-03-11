@@ -1,6 +1,7 @@
 package vn.edu.iuh.fit.inventory.services.impls;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -11,17 +12,14 @@ import vn.edu.iuh.fit.inventory.clients.ProductServiceClient;
 import vn.edu.iuh.fit.inventory.exceptions.InventoryDetailException;
 import vn.edu.iuh.fit.inventory.mappers.InventoryDetailMapper;
 import vn.edu.iuh.fit.inventory.models.dtos.PageDTO;
-import vn.edu.iuh.fit.inventory.models.dtos.responses.BaseResponse;
-import vn.edu.iuh.fit.inventory.models.dtos.responses.CategoryResponse;
-import vn.edu.iuh.fit.inventory.models.dtos.responses.InventoryDetailResponse;
-import vn.edu.iuh.fit.inventory.models.dtos.responses.MedicineResponse;
+import vn.edu.iuh.fit.inventory.models.dtos.responses.*;
 import vn.edu.iuh.fit.inventory.models.entities.InventoryDetail;
 import vn.edu.iuh.fit.inventory.repositories.InventoryDetailRepository;
 import vn.edu.iuh.fit.inventory.services.InventoryDetailService;
 import vn.edu.iuh.fit.inventory.utils.SystemConstraints;
 
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,14 +40,19 @@ public class InvenotoryDetailServiceImpl implements InventoryDetailService {
     @Override
     public PageDTO<InventoryDetailResponse> getPagesInventoryDetail(int page, int size, String sortBy, String sortName) {
         Pageable pageable = PageRequest.of(page, size);
-        if(sortBy != null && sortName != null) {
+        if (sortBy != null && sortName != null) {
             pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortName), sortBy));
         }
 
-        Set<InventoryDetail> inventoryDetails = inventoryDetailRepository.findAll(pageable).toSet();
+        // Lấy dữ liệu phân trang từ repository
+        Page<InventoryDetail> inventoryDetailsPage = inventoryDetailRepository.findAll(pageable);
+        List<InventoryDetail> inventoryDetails = inventoryDetailsPage.getContent();
 
-        Set<InventoryDetailResponse> inventoryDetailResponses = inventoryDetails.stream().map(inventoryDetail -> inventoryDetailMapper.toDto(inventoryDetail)).collect(Collectors.toSet());
+        List<InventoryDetailResponse> inventoryDetailResponses = inventoryDetails.stream()
+                .map(inventoryDetail -> inventoryDetailMapper.toDto(inventoryDetail))
+                .collect(Collectors.toList());
 
+        // Tạo và trả về PageDTO với thông tin phân trang
         return PageDTO.<InventoryDetailResponse>builder()
                 .page(page)
                 .size(size)

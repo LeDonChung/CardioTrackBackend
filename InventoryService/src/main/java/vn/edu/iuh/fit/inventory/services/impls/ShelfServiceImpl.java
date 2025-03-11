@@ -4,12 +4,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import vn.edu.iuh.fit.inventory.exceptions.ShelfException;
 import vn.edu.iuh.fit.inventory.mappers.ShelfMapper;
 import vn.edu.iuh.fit.inventory.models.dtos.PageDTO;
 import vn.edu.iuh.fit.inventory.models.dtos.requests.ShelfRequest;
+import vn.edu.iuh.fit.inventory.models.dtos.responses.InventoryDetailResponse;
 import vn.edu.iuh.fit.inventory.models.dtos.responses.ShelfResponse;
+import vn.edu.iuh.fit.inventory.models.entities.InventoryDetail;
 import vn.edu.iuh.fit.inventory.models.entities.Shelf;
 import vn.edu.iuh.fit.inventory.repositories.ShelfRepository;
 import vn.edu.iuh.fit.inventory.services.ShelfService;
@@ -30,11 +33,19 @@ public class ShelfServiceImpl implements ShelfService {
     @Override
     public PageDTO<ShelfResponse> getPagesSheft(int page, int size, String sortBy, String sortName) {
         Pageable pageable = PageRequest.of(page, size);
-        if(sortBy != null && sortName != null) {
-            pageable = PageRequest.of(page, size);
+        if (sortBy != null && sortName != null) {
+            pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortName), sortBy));
         }
-        Set<Shelf> shelfResponsestResponses = sheltRepository.findAll(pageable).toSet();
-        Set<ShelfResponse> shelfResponses = shelfResponsestResponses.stream().map(shelf -> sheftMapper.toDto((Shelf) shelf)).collect(Collectors.toSet());
+
+        // Lấy dữ liệu phân trang từ repository
+        Page<Shelf> shelfPage = sheltRepository.findAll(pageable);
+        List<Shelf> shelfs = shelfPage.getContent();
+
+        List<ShelfResponse> shelfResponses = shelfs.stream()
+                .map(shelf -> sheftMapper.toDto(shelf))
+                .collect(Collectors.toList());
+
+        // Tạo và trả về PageDTO với thông tin phân trang
         return PageDTO.<ShelfResponse>builder()
                 .page(page)
                 .size(size)

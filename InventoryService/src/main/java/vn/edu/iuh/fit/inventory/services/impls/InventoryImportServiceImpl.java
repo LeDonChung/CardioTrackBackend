@@ -16,7 +16,19 @@ import vn.edu.iuh.fit.inventory.repositories.InventoryImportRepository;
 import vn.edu.iuh.fit.inventory.services.InventoryImportService;
 import vn.edu.iuh.fit.inventory.utils.SystemConstraints;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -59,15 +71,22 @@ public class InventoryImportServiceImpl implements InventoryImportService {
 
     @Override
     public PageDTO<InventoryImportResponse> getPagesInventoryImport(int page, int size, String sortBy, String sortName) {
+        // Tạo Pageable với thông tin phân trang và sắp xếp
         Pageable pageable = PageRequest.of(page, size);
-        if(sortBy != null && sortName != null) {
+        if (sortBy != null && sortName != null) {
             pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortName), sortBy));
         }
 
-        Set<InventoryImport> inventoryImports = inventoryImportRepository.findAll(pageable).toSet();
+        // Lấy dữ liệu phân trang từ repository
+        Page<InventoryImport> inventoryImportsPage = inventoryImportRepository.findAll(pageable);
+        List<InventoryImport> inventoryImports = inventoryImportsPage.getContent();
 
-        Set<InventoryImportResponse> inventoryImportResponses = inventoryImports.stream().map(inventoryImport -> inventoryImportMapper.toDto(inventoryImport)).collect(Collectors.toSet());
+        // Chuyển đổi từ InventoryImport sang InventoryImportResponse
+        List<InventoryImportResponse> inventoryImportResponses = inventoryImports.stream()
+                .map(inventoryImport -> inventoryImportMapper.toDto(inventoryImport))
+                .collect(Collectors.toList());
 
+        // Tạo và trả về PageDTO với thông tin phân trang
         return PageDTO.<InventoryImportResponse>builder()
                 .page(page)
                 .size(size)
@@ -76,4 +95,5 @@ public class InventoryImportServiceImpl implements InventoryImportService {
                 .data(inventoryImportResponses)
                 .build();
     }
+
 }

@@ -1,6 +1,7 @@
 package vn.edu.iuh.fit.inventory.models.dtos;
 import lombok.*;
 
+import java.util.List;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -13,5 +14,5 @@ public class PageDTO <T>{
     private int size;
     private String sortBy;
     private String sortName;
-    private Set<T> data;
+    private List<T> data;
 }
