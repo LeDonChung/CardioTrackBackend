@@ -8,7 +8,10 @@ import vn.edu.iuh.fit.post.exceptions.PostException;
 import vn.edu.iuh.fit.post.model.dto.request.CommentRequest;
 import vn.edu.iuh.fit.post.model.dto.response.BaseResponse;
 import vn.edu.iuh.fit.post.model.dto.response.CommentResponse;
+import vn.edu.iuh.fit.post.model.dto.response.PostResponse;
 import vn.edu.iuh.fit.post.services.CommentService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/comment")
@@ -51,6 +54,16 @@ public class CommentController {
 
         return ResponseEntity.ok(
                 new BaseResponse<>(null, true, "Deleted successfully")
+        );
+    }
+
+    //danh sach comment
+    @GetMapping("/get-comments/{postId}")
+    public ResponseEntity<BaseResponse<List<CommentResponse>>> getAllComment(
+            @PathVariable Long postId) throws PostException {
+        List<CommentResponse> commentResponses = commentService.getAllComment(postId);
+        return ResponseEntity.ok(
+                new BaseResponse<>(commentResponses, true, HttpStatus.OK.name())
         );
     }
 }

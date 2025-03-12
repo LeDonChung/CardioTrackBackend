@@ -22,4 +22,6 @@ public class PostResponse {
 
     private UserResponse userResponse;
 
+    private  int soluongbinhluan;
+
 }

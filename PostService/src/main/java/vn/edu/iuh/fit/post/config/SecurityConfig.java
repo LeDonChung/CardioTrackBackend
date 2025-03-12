@@ -51,7 +51,7 @@ public class SecurityConfig {
                         customizer.authenticationEntryPoint((request, response, authException) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED)))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(customizer -> customizer
-                        .requestMatchers("/api/v1/post/all-post").permitAll()  // Cho phép tất cả truy cập vào endpoint lấy danh sách bài viết
+                        .requestMatchers("/api/v1/post/all-post","/api/v1/comment/get-comments/**").permitAll()  // Cho phép tất cả truy cập vào endpoint lấy danh sách bài viết
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(customizer -> customizer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

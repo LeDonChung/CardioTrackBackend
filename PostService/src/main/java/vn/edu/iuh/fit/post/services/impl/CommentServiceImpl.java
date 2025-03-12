@@ -9,6 +9,8 @@ import vn.edu.iuh.fit.post.mappers.CommentMapper;
 import vn.edu.iuh.fit.post.mappers.PostMapper;
 import vn.edu.iuh.fit.post.model.dto.request.CommentRequest;
 import vn.edu.iuh.fit.post.model.dto.response.CommentResponse;
+import vn.edu.iuh.fit.post.model.dto.response.PostResponse;
+import vn.edu.iuh.fit.post.model.dto.response.UserResponse;
 import vn.edu.iuh.fit.post.model.entity.Comment;
 import vn.edu.iuh.fit.post.model.entity.Post;
 import vn.edu.iuh.fit.post.repositories.CommentRepository;
@@ -17,6 +19,8 @@ import vn.edu.iuh.fit.post.services.CommentService;
 import vn.edu.iuh.fit.post.utils.SystemConstraints;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
 
 @Service
 public class CommentServiceImpl implements CommentService {
@@ -78,4 +82,27 @@ public class CommentServiceImpl implements CommentService {
         // Xóa bình luận
         commentRepository.delete(comment);
     }
+
+    @Override
+    public List<CommentResponse> getAllComment(Long postId) throws PostException {
+        // Kiểm tra xem bài viết có tồn tại không
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new PostException(SystemConstraints.POST_NOT_FOUND));
+
+        // Lấy tất cả bình luận của bài viết
+        List<Comment> comments = post.getComments();
+
+        return comments.stream()
+                .map(comment -> {
+                    UserResponse userResponse = userServiceClient.findUserById(post.getAuthorId()).getBody().getData();
+                    CommentResponse commentResponse = commentMapper.toResponse(comment);
+                    PostResponse postResponse = postMapper.toResponse(post);
+                    commentResponse.setFullName(userResponse.getFullName());
+                    return commentResponse;
+                })
+                .toList();
+    }
 }
+
+
+

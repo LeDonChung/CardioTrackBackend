@@ -111,6 +111,8 @@ public class PostServiceImpl implements PostService {
                     UserResponse userResponse = userServiceClient.findUserById(post.getAuthorId()).getBody().getData();
                     PostResponse postResponse = postMapper.toResponse(post);
                     postResponse.setFullName(userResponse.getFullName());  // Gán username vào PostResponse
+                    int soluongComment = post.getComments().size();  // Tính số lượng bình luận
+                    postResponse.setSoluongbinhluan(soluongComment);
                     return postResponse;
                 })
                 .toList();

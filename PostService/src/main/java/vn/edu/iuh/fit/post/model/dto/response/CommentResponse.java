@@ -13,6 +13,8 @@ public class CommentResponse {
     private Long id;
     private String content;
     private String authorId;  // Lấy từ UserService
+    private String fullName;
     private String createdAt;
     private Long postId;
+
 }

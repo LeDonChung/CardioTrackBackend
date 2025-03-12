@@ -9,9 +9,13 @@ import vn.edu.iuh.fit.post.model.dto.response.PostResponse;
 import vn.edu.iuh.fit.post.model.entity.Comment;
 import vn.edu.iuh.fit.post.model.entity.Post;
 
+import java.util.List;
+
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface CommentMapper {
     Comment toEntity(CommentRequest request); // Chuyển CommentRequest -> Comment Entity
 
-    CommentResponse toResponse(Comment post); // Chuyển Comment Entity -> CommentResponse DTO
+    CommentResponse toResponse(Comment comment); // Chuyển Comment Entity -> CommentResponse DTO
+
+
 }
