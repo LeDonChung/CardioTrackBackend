@@ -22,7 +22,7 @@ public class ChatController {
     private MessageService messageService;
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
-    private final Set<String> onlineUsers = ConcurrentHashMap.newKeySet();
+    private final Set<Long> onlineUsers = ConcurrentHashMap.newKeySet();
 
     @MessageMapping("/chat")
     @SendTo("/topic/messages")
@@ -35,7 +35,7 @@ public class ChatController {
 
     @MessageMapping("/user-connected")
     public void userConnected(MessageRequest message) {
-        String username = message.getSender().getUsername();
+        Long username = message.getSender().getId();
         if (username != null) {
             onlineUsers.add(username);
             System.out.println("✅ Người dùng online: " + onlineUsers);
@@ -46,7 +46,7 @@ public class ChatController {
 
     @MessageMapping("/user-disconnected")
     public void userDisconnected(MessageRequest message) {
-        String username = message.getSender().getUsername();
+        Long username = message.getSender().getId();
         if (username != null) {
             onlineUsers.remove(username);
             System.out.println("❌ Người dùng online: " + onlineUsers);
