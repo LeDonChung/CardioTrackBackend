@@ -40,8 +40,6 @@ public class GatewayConfig {
     public RouteLocator routes(RouteLocatorBuilder builder) {
         return builder.routes()
                 .route("auth-service", r -> r.path("/api/v1/auth/**")
-                        .filters(f -> f.filter(jwtAuthFilter.apply(new JwtAuthenticationFilter.Config()
-                                .setPublicEndpoints(PUBLIC_ENDPOINTS))))
                         .uri("lb://auth-service"))
                 .route("user-service", r -> r.path("/api/v1/user/**")
                         .uri("lb://user-service"))
@@ -81,6 +79,8 @@ public class GatewayConfig {
                         .uri("lb://pay-service"))
                 .route("recommend-service", r -> r.path("/api/v1/recommend/**")
                         .uri("lb://recommend-service"))
+                .route("chat-service", r -> r.path("/api/messages/**")
+                        .uri("lb://chat-service"))
                 .build();
     }
 
