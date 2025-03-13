@@ -1,0 +1,95 @@
+version: '3.8'
+
+services:
+  discovery-service:
+    build: ./DiscoveryService
+    container_name: discovery-service
+    ports:
+      - "8761:8761"
+    environment: 
+      - SPRING_APPLICATION_NAME=discovery-service
+      - SERVER_PORT=8761
+    networks:
+      - my-network
+
+  api-gateway:
+    build: ./APIGateway
+    container_name: api-gateway
+    depends_on:
+      - discovery-service
+    ports:
+      - "8888:8888"
+    environment:
+      - SPRING_APPLICATION_NAME=api-gateway
+      - SERVER_PORT=8888
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka/
+    networks:
+      - my-network
+
+  auth-service:
+    build: ./AuthService
+    container_name: auth-service
+    depends_on:
+      - discovery-service
+    ports:
+      - "9090:9090"
+    environment:
+      - SPRING_APPLICATION_NAME=auth-service
+      - SERVER_PORT=9090
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka/
+    networks:
+      - my-network
+
+  user-service:
+    build: ./UserService
+    container_name: user-service
+    depends_on:
+      - discovery-service
+    ports:
+      - "9091:9091"
+    environment:
+      - SPRING_APPLICATION_NAME=user-service
+      - SERVER_PORT=9091
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka
+      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.mariadb.jdbc.Driver
+      - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb-user:3306/tcuser
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=sapassword
+      - SPRING_JPA_SHOW_SQL=true
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_DATA_REDIS_HOST=redis
+      - SPRING_DATA_REDIS_PORT=6379
+      - SPRING_DATA_REDIS_TIMEOUT=5000
+    networks:
+      - my-network
+
+  mariadb-user:
+    image: mariadb:latest
+    container_name: mariadb-user
+    environment:
+      - MYSQL_ROOT_PASSWORD=sapassword
+      - MYSQL_DATABASE=tcuser
+    ports:
+      - "3306:3306"
+    volumes:
+      - mariadb-user-data:/var/lib/mysql
+    networks:
+      - my-network
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data  # Volume lưu trữ dữ liệu Redis nếu cần
+    networks:
+      - my-network
+
+volumes:
+  mariadb-user-data:  # Volume cho MariaDB User Service
+  redis-data:         # Volume cho Redis
+
+networks:
+  my-network:
+    driver: bridge
