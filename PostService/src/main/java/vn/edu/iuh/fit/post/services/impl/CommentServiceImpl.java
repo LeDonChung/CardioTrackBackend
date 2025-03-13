@@ -94,8 +94,8 @@ public class CommentServiceImpl implements CommentService {
 
         return comments.stream()
                 .map(comment -> {
-                    UserResponse userResponse = userServiceClient.findUserById(post.getAuthorId()).getBody().getData();
                     CommentResponse commentResponse = commentMapper.toResponse(comment);
+                    UserResponse userResponse = userServiceClient.findUserById(Long.valueOf(commentResponse.getAuthorId())).getBody().getData();
                     PostResponse postResponse = postMapper.toResponse(post);
                     commentResponse.setFullName(userResponse.getFullName());
                     return commentResponse;
