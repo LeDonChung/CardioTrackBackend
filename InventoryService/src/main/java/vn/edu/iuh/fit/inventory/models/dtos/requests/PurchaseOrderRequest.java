@@ -1,4 +1,4 @@
-package vn.edu.iuh.fit.inventory.models.dtos.responses;
+package vn.edu.iuh.fit.inventory.models.dtos.requests;
 
 import lombok.*;
 import vn.edu.iuh.fit.inventory.enums.PurchaseOrderStatus;
@@ -12,7 +12,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Builder
-public class PurchaseOrderResponse {
+public class PurchaseOrderRequest {
     private Long id;
     private Long supplierId;
     private String supplierName;

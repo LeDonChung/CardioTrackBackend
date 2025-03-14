@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vn.edu.iuh.fit.inventory.enums.PurchaseOrderStatus;
 import vn.edu.iuh.fit.inventory.exceptions.PurchaseOrderException;
+import vn.edu.iuh.fit.inventory.models.dtos.requests.PurchaseOrderRequest;
 import vn.edu.iuh.fit.inventory.models.dtos.responses.BaseResponse;
 import vn.edu.iuh.fit.inventory.models.dtos.responses.PurchaseOrderDetailResponse;
 import vn.edu.iuh.fit.inventory.models.dtos.responses.PurchaseOrderResponse;
@@ -21,6 +22,19 @@ public class PurchaseOrderController {
 
     @Autowired
     private PurchaseOrderDetailService purchaseOrderDetailService;
+
+    // Tạo mới phiếu mua hàng
+    @PostMapping("/add")
+    public ResponseEntity<BaseResponse<PurchaseOrderResponse>> save(@RequestBody PurchaseOrderRequest request) throws PurchaseOrderException {
+        PurchaseOrderResponse response = purchaseOrderService.save(request);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<PurchaseOrderResponse>builder()
+                        .data(response)
+                        .success(true)
+                        .build()
+        );
+    }
 
     // Get all pending purchase order
     @GetMapping("/pending")
