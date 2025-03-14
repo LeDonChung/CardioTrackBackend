@@ -9,7 +9,7 @@ import vn.edu.iuh.fit.inventory.models.entities.Shelf;
 import java.util.List;
 
 public interface ShelfService {
-    PageDTO<ShelfResponse> getPagesSheft(int page, int size, String sortBy, String sortName);
+    PageDTO<ShelfResponse> getPagesShelf(int page, int size, String sortBy, String sortName);
 
     ShelfResponse save(ShelfRequest request);
 

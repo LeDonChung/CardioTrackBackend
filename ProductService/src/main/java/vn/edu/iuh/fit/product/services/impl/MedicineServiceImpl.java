@@ -144,4 +144,6 @@ public class MedicineServiceImpl implements MedicineService {
     public List<MedicineResponse> getAll() {
         return medicineRepository.findAll().stream().map(medicineMapper::toDto).collect(Collectors.toList());
     }
+
+
 }
