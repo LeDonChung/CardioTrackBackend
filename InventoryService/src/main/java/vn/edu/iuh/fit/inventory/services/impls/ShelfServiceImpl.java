@@ -31,7 +31,7 @@ public class ShelfServiceImpl implements ShelfService {
     private ShelfMapper sheftMapper;
 
     @Override
-    public PageDTO<ShelfResponse> getPagesSheft(int page, int size, String sortBy, String sortName) {
+    public PageDTO<ShelfResponse> getPagesShelf(int page, int size, String sortBy, String sortName) {
         Pageable pageable = PageRequest.of(page, size);
         if (sortBy != null && sortName != null) {
             pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortName), sortBy));
@@ -39,9 +39,8 @@ public class ShelfServiceImpl implements ShelfService {
 
         // Lấy dữ liệu phân trang từ repository
         Page<Shelf> shelfPage = sheltRepository.findAll(pageable);
-        List<Shelf> shelfs = shelfPage.getContent();
-
-        List<ShelfResponse> shelfResponses = shelfs.stream()
+        List<Shelf> shelves = shelfPage.getContent();
+        List<ShelfResponse> shelfResponses = shelves.stream()
                 .map(shelf -> sheftMapper.toDto(shelf))
                 .collect(Collectors.toList());
 
@@ -50,6 +49,7 @@ public class ShelfServiceImpl implements ShelfService {
                 .page(page)
                 .size(size)
                 .sortBy(sortBy)
+                .totalPage(shelfPage.getTotalPages())
                 .sortName(sortName)
                 .data(shelfResponses)
                 .build();
