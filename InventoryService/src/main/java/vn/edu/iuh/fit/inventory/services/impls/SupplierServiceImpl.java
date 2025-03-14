@@ -59,11 +59,10 @@ public class SupplierServiceImpl implements SupplierService {
     }
 
     @Override
-    public SupplierResponse getSupplierByName(String name) throws SupplierException {
-        Optional<Supplier> supplierOptional = supplierRepository.getSupplierByName(name);
-        if(supplierOptional.isPresent()) {
-            return supplierMapper.toDto(supplierOptional.get());
-        }
-        throw new SupplierException(SystemConstraints.SUPPLIER_NOT_FOUND);
+    public List<SupplierResponse> getSupplierByName(String name) throws SupplierException {
+        List<Supplier> suppliers = supplierRepository.getSupplierByNameLike(name);
+
+        return suppliers.stream().map(supplier -> supplierMapper.toDto(supplier)).toList();
+
     }
 }

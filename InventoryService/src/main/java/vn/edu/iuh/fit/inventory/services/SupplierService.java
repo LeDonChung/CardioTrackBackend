@@ -17,7 +17,7 @@ public interface SupplierService {
     SupplierResponse getSupplierById(Long id) throws SupplierException;
 
     //Tìm nhà cung cấp theo tên
-    SupplierResponse getSupplierByName(String name) throws SupplierException;
+    List<SupplierResponse> getSupplierByName(String name) throws SupplierException;
 
     //Cập nhật nhà cung cấp
     //Xóa nhà cung cấp

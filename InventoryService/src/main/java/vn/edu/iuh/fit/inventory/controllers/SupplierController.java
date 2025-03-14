@@ -57,11 +57,11 @@ public class SupplierController {
     }
     // get supplier by name
     @GetMapping("/getSupplierByName")
-    public ResponseEntity<BaseResponse<SupplierResponse>> getSupplierByName(@RequestParam String name) {
-        SupplierResponse supplierResponse = supplierService.getSupplierByName(name);
+    public ResponseEntity<BaseResponse<List<SupplierResponse>>> getSupplierByName(@RequestParam String name) {
+        List<SupplierResponse> supplierResponse = supplierService.getSupplierByName(name);
         return ResponseEntity.ok(
                 BaseResponse
-                        .<SupplierResponse>builder()
+                        .<List<SupplierResponse>>builder()
                         .data(supplierResponse)
                         .success(true)
                         .build()
