@@ -26,6 +26,7 @@ import vn.edu.iuh.fit.user.services.UserService;
 import vn.edu.iuh.fit.user.utils.SystemConstraints;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -52,10 +53,36 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse register(UserRegisterRequest request) throws UserException {
 
+        // Kiểm tra mật khẩu và xác nhận mật khẩu có trùng nhau không
+        if (!Objects.equals(request.getPassword(), request.getRePassword())) {
+            throw new UserException("Mật khẩu và xác nhận mật khẩu không trùng khớp.");
+        }
+
+        // Kiểm tra số điện thoại hợp lệ
+        if (!request.getUsername().matches("^0\\d{9,10}$")) {
+            throw new UserException("Số điện thoại không hợp lệ.");
+        }
+
+        // Kiểm tra mật khẩu lớn hơn 5 ký tự
+        if (request.getPassword().length() < 6) {
+            throw new UserException("Mật khẩu phải lớn hơn 5 ký tự.");
+        }
+
+        // Kiểm tra họ tên có nhập không
+        if(request.getFullName() == null || request.getFullName().isEmpty()) {
+            throw new UserException("Vui lòng nhập họ và tên.");
+        }
+
+        if(request.getUsername().isEmpty()) {
+            throw new UserException("Vui lòng nhập số điện thoại.");
+        }
+
+        // Kiểm tra số điện thoại đã tồn tại chưa
         Optional<User> userOptional = userRepository.findByUsername(request.getUsername());
         if (userOptional.isPresent()) {
             throw new UserException(SystemConstraints.USERNAME_IS_EXISTS);
         }
+
 
         Role role = roleRepository.findByCode("USER");
 

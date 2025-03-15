@@ -27,10 +27,7 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<BaseResponse<UserResponse>> register(@RequestBody UserRegisterRequest request) throws UserException {
         log.info("Register user: " + request);
-        // Kiểm tra mật khẩu và xác nhận mật khẩu có trùng nhau không
-        if (!Objects.equals(request.getPassword(), request.getRePassword())) {
-            throw new UserException("Mật khẩu và xác nhận mật khẩu không trùng khớp.");
-        }
+
 
 //        if(!userService.verifyOtp(request.getUsername(), request.getOtp())){
 //            throw new UserException(SystemConstraints.PLS_VERIFY_OTP);
