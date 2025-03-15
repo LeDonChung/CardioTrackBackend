@@ -25,6 +25,8 @@ import vn.edu.iuh.fit.user.services.OTPService;
 import vn.edu.iuh.fit.user.services.UserService;
 import vn.edu.iuh.fit.user.utils.SystemConstraints;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -175,18 +177,55 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponse updateUserById(Long id, UserUpdateRequest userUpdateRequest) throws UserException {
+        // Kiểm tra xem người dùng có tồn tại trong cơ sở dữ liệu không
         Optional<User> userOptional = userRepository.findById(id);
         if(userOptional.isEmpty()) {
-            throw new UserException(SystemConstraints.USER_NOT_FOUND);
+            throw new UserException(SystemConstraints.USER_NOT_FOUND); // Nếu không tìm thấy user
         }
         User user = userOptional.get();
+
+        // Kiểm tra tên đầy đủ
+        if (userUpdateRequest.getFullName() == null || userUpdateRequest.getFullName().trim().isEmpty()) {
+            throw new UserException(SystemConstraints.FULL_NAME_NOT_EMPTY);
+        }
+
+        // Kiểm tra tên không chứa ký tự đặc biệt hoặc số
+        String namePattern = "^[a-zA-Zàáạảãàâầấẩẫăắằẳẵâờóọỏõờđèéẹẻẽêếềểễỉíìịĩóòọỏõôồốổỗơờớởỡơúùụủũưừứựửữýỳỷỹỵ\\s]+$";
+
+        if (!userUpdateRequest.getFullName().matches(namePattern)) {
+            throw new UserException(SystemConstraints.FULL_NAME_NOT_SPECIAL_CHARACTERS);
+        }
+
+        // Kiểm tra ngày sinh (dob)
+        if (userUpdateRequest.getDob() == null) {
+            throw new UserException(SystemConstraints.BIRTHDAY_NOT_EMPTY);
+        }
+
+        // Kiểm tra ngày sinh không lớn hơn ngày hiện tại
+        LocalDate dob = userUpdateRequest.getDob();
+        if (dob.isAfter(LocalDate.now())) {
+            throw new UserException(SystemConstraints.BIRTHDAY_NOT_GREATER_THAN_CURRENT_DATE);
+        }
+
+        // Kiểm tra tuổi của người dùng
+        int age = Period.between(dob, LocalDate.now()).getYears();
+        if (age < 14) {
+            throw new UserException(SystemConstraints.AGE_NOT_ENOUGH);
+        }
+
+        // Cập nhật thông tin người dùng
         user.setFullName(userUpdateRequest.getFullName());
         user.setGender(userUpdateRequest.getGender());
         user.setDob(userUpdateRequest.getDob());
         user.setUsername(userUpdateRequest.getUsername());
+
+        // Lưu thông tin mới vào cơ sở dữ liệu
         user = userRepository.save(user);
+
+        // Trả về dữ liệu đã cập nhật
         return userMapper.toUserResponse(user);
     }
+
 
     @Override
     public Boolean deleteAddressById(Long id) throws UserException {
