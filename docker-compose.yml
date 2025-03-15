@@ -31,6 +31,7 @@ services:
     container_name: auth-service
     depends_on:
       - discovery-service
+      - user-service
     ports:
       - "9090:9090"
     environment:
@@ -45,6 +46,8 @@ services:
     container_name: user-service
     depends_on:
       - discovery-service
+      - mariadb-user
+      - redis
     ports:
       - "9091:9091"
     environment:
@@ -83,6 +86,24 @@ services:
       - "6379:6379"
     volumes:
       - redis-data:/data  # Volume lưu trữ dữ liệu Redis nếu cần
+    networks:
+      - my-network
+
+  recommend-service:
+    build: ./RecommendService
+    container_name: recommend-service
+    ports:
+      - "9016:9016"
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka
+      - SERVICE_NAME=recommend-service
+      - SERVICE_PORT=9016
+    depends_on:
+      - redis
+      - api-gateway
+      - discovery-service
     networks:
       - my-network
 
