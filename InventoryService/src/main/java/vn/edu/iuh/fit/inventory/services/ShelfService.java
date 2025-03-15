@@ -17,4 +17,6 @@ public interface ShelfService {
 
     void deleteShelfById(Long id);
 
+    PageDTO<ShelfResponse> findLocationPage(int page, int size, String sortBy, String sortName, String location);
+
 }

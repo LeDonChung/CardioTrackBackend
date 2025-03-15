@@ -94,4 +94,27 @@ public class ShelfServiceImpl implements ShelfService {
         sheltRepository.deleteById(id);
     }
 
+    @Override
+    public PageDTO<ShelfResponse> findLocationPage(int page, int size, String sortBy, String sortName, String location) {
+        Pageable pageable = PageRequest.of(page, size);
+        if(sortBy != null && sortName != null) {
+            pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortName), sortBy));
+        }
+
+        Page<Shelf> shelfPage = sheltRepository.findByLocation(location, pageable);
+        List<Shelf> shelves = shelfPage.getContent();
+        List<ShelfResponse> shelfResponses = shelves.stream()
+                .map(shelf -> sheftMapper.toDto(shelf))
+                .collect(Collectors.toList());
+
+        return PageDTO.<ShelfResponse>builder()
+                .page(page)
+                .size(size)
+                .totalPage(shelfPage.getTotalPages())
+                .sortBy(sortBy)
+                .sortName(sortName)
+                .data(shelfResponses)
+                .build();
+    }
+
 }

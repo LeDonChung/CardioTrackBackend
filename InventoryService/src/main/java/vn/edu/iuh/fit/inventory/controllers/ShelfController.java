@@ -84,4 +84,21 @@ public class ShelfController {
                         .build()
         );
     }
+
+    // Get shelf by location
+    @GetMapping("/location")
+    public ResponseEntity<BaseResponse<PageDTO<ShelfResponse>>> findLocationPage(@RequestParam(defaultValue = "0") int page,
+                                                                                @RequestParam(defaultValue = "10") int size,
+                                                                                @RequestParam(required = false) String sortBy,
+                                                                                @RequestParam(required = false) String sortName,
+                                                                                @RequestParam String location) {
+        PageDTO<ShelfResponse> pageDTO = shelfService.findLocationPage(page, size, sortBy, sortName, location);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<PageDTO<ShelfResponse>>builder()
+                        .data(pageDTO)
+                        .success(true)
+                        .build()
+        );
+    }
 }
