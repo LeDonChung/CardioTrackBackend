@@ -37,4 +37,6 @@ public class Inventory {
     @JsonIgnore
     private Set<Shelf> shelfs = new LinkedHashSet<>();
 
+
+
 }

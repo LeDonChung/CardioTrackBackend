@@ -36,6 +36,6 @@ public class Shelf {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     @JoinColumn(name = "inventory_id")
-    @JsonIgnore
+//    @JsonIgnore
     private Inventory inventory;
 }

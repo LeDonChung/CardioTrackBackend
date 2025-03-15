@@ -6,12 +6,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import vn.edu.iuh.fit.inventory.enums.SheftStatus;
 import vn.edu.iuh.fit.inventory.exceptions.ShelfException;
 import vn.edu.iuh.fit.inventory.mappers.ShelfMapper;
 import vn.edu.iuh.fit.inventory.models.dtos.PageDTO;
 import vn.edu.iuh.fit.inventory.models.dtos.requests.ShelfRequest;
 import vn.edu.iuh.fit.inventory.models.dtos.responses.InventoryDetailResponse;
 import vn.edu.iuh.fit.inventory.models.dtos.responses.ShelfResponse;
+import vn.edu.iuh.fit.inventory.models.entities.Inventory;
 import vn.edu.iuh.fit.inventory.models.entities.InventoryDetail;
 import vn.edu.iuh.fit.inventory.models.entities.Shelf;
 import vn.edu.iuh.fit.inventory.repositories.ShelfRepository;
@@ -61,13 +63,17 @@ public class ShelfServiceImpl implements ShelfService {
 
         if(request.getId() == null) {
             shelf = sheftMapper.toEntity(request);
+            shelf.setTotalProduct(0L);
+            shelf.setStatus(SheftStatus.EMPTY);
+            Inventory inventory = new Inventory();
+            inventory.setId(1L);
+            shelf.setInventory(inventory);
         } else {
             Optional<Shelf> oldShelf = sheltRepository.findById(request.getId());
             if(oldShelf.isEmpty()) {
                 throw new ShelfException("Shelf not found");
-            } else {
-                shelf = sheftMapper.partialUpdate(request, oldShelf.get());
             }
+            shelf = sheftMapper.partialUpdate(request, oldShelf.get());
         }
 
         shelf = sheltRepository.save(shelf);

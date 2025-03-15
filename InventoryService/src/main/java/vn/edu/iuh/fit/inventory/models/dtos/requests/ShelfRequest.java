@@ -16,5 +16,5 @@ public class ShelfRequest {
     private Long capacity;
     private SheftStatus status;
     private String notes;
-    private Inventory inventory;
+    private InventoryRequest inventory;
 }

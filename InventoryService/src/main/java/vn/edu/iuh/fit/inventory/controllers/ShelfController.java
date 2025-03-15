@@ -9,6 +9,7 @@ import vn.edu.iuh.fit.inventory.mappers.ShelfMapper;
 import vn.edu.iuh.fit.inventory.models.dtos.PageDTO;
 import vn.edu.iuh.fit.inventory.models.dtos.requests.ShelfRequest;
 import vn.edu.iuh.fit.inventory.models.dtos.responses.BaseResponse;
+import vn.edu.iuh.fit.inventory.models.dtos.responses.InventoryResponse;
 import vn.edu.iuh.fit.inventory.models.dtos.responses.ShelfResponse;
 import vn.edu.iuh.fit.inventory.services.ShelfService;
 
@@ -36,6 +37,18 @@ public class ShelfController {
     //add shelf
     @PostMapping
     public ResponseEntity<BaseResponse<ShelfResponse>> save(@RequestBody ShelfRequest shelfRequest) throws ShelfException {
+        ShelfResponse shelfResponse = shelfService.save(shelfRequest);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<ShelfResponse>builder()
+                        .data(shelfResponse)
+                        .success(true)
+                        .build()
+        );
+    }
+    // Update shelf
+    @PutMapping
+    public ResponseEntity<BaseResponse<ShelfResponse>> update(@RequestBody ShelfRequest shelfRequest) throws ShelfException {
         ShelfResponse shelfResponse = shelfService.save(shelfRequest);
         return ResponseEntity.ok(
                 BaseResponse
