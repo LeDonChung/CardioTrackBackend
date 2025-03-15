@@ -15,4 +15,6 @@ public class SystemConstraints {
     public static final String USERNAME_IS_EXISTS = "Tên đăng nhập đã tồn tại.";
     public static final String NOT_AUTHOR = "Bạn không phải tác giả";
     public static final String POST_NOT_FOUND = "Không tìm thấy bài viết";
+    public static final String TITLE_NOT_EMPTY = "Tiêu đề không được để trống";
+    public static final String CONTENT_NOT_EMPTY = "Nội dung không được để trống";
 }

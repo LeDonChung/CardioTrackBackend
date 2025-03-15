@@ -32,6 +32,15 @@ public class PostServiceImpl implements PostService {
     @Override
     public PostResponse createPost(PostRequest postRequest) throws PostException {
 
+        // Kiểm tra tiêu đề và nội dung không được null hoặc rỗng
+        if (postRequest.getTitle() == null || postRequest.getTitle().trim().isEmpty()) {
+            throw new PostException(SystemConstraints.TITLE_NOT_EMPTY);
+        }
+        if (postRequest.getContent() == null || postRequest.getContent().trim().isEmpty()) {
+            throw new PostException(SystemConstraints.CONTENT_NOT_EMPTY);
+        }
+
+
         Long userId = userServiceClient.findIdByPhoneNumber(jwtService.getCurrentUser()).getBody().getData();
 
         Post post = postMapper.toEntity(postRequest);
