@@ -57,7 +57,7 @@ services:
       - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.mariadb.jdbc.Driver
       - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb-user:3306/tcuser
       - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=sapassword
+      - SPRING_DATASOURCE_PASSWORD=root
       - SPRING_JPA_SHOW_SQL=true
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
       - SPRING_DATA_REDIS_HOST=redis
@@ -66,16 +66,48 @@ services:
     networks:
       - my-network
 
+  product-service:
+    build: ./ProductService
+    container_name: product-service
+    depends_on:
+      - discovery-service
+    ports:
+      - "9092:9092"
+    environment:
+      - SPRING_APPLICATION_NAME=product-service
+      - SERVER_PORT=9092
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka
+      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.mariadb.jdbc.Driver
+      - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb-product:3306/tcproduct?useUnicode=true&characterEncoding=utf8&characterSetResults=utf8
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - SPRING_JPA_SHOW_SQL=true
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    networks:
+      - my-network
+
   mariadb-user:
     image: mariadb:latest
     container_name: mariadb-user
     environment:
-      - MYSQL_ROOT_PASSWORD=sapassword
+      - MYSQL_ROOT_PASSWORD=root
       - MYSQL_DATABASE=tcuser
     ports:
       - "3306:3306"
     volumes:
       - mariadb-user-data:/var/lib/mysql
+    networks:
+      - my-network
+  mariadb-product:
+    image: mariadb:latest
+    container_name: mariadb-product
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=tcproduct
+    ports:
+      - "3306:3306"
+    volumes:
+      - mariadb-product-data:/var/lib/mysql
     networks:
       - my-network
 
@@ -109,6 +141,7 @@ services:
 
 volumes:
   mariadb-user-data:  # Volume cho MariaDB User Service
+  mariadb-product-data:  # Volume cho MariaDB Product Service
   redis-data:         # Volume cho Redis
 
 networks:
