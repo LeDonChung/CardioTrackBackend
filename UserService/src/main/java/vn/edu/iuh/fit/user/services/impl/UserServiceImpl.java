@@ -17,6 +17,7 @@ import vn.edu.iuh.fit.user.model.entity.Address;
 import vn.edu.iuh.fit.user.model.entity.AddressDetail;
 import vn.edu.iuh.fit.user.model.entity.Role;
 import vn.edu.iuh.fit.user.model.entity.User;
+import vn.edu.iuh.fit.user.model.enums.Gender;
 import vn.edu.iuh.fit.user.repositories.AddressDetailRepository;
 import vn.edu.iuh.fit.user.repositories.AddressRepository;
 import vn.edu.iuh.fit.user.repositories.RoleRepository;
@@ -179,45 +180,47 @@ public class UserServiceImpl implements UserService {
     public UserResponse updateUserById(Long id, UserUpdateRequest userUpdateRequest) throws UserException {
         // Kiểm tra xem người dùng có tồn tại trong cơ sở dữ liệu không
         Optional<User> userOptional = userRepository.findById(id);
-        if(userOptional.isEmpty()) {
+        if (userOptional.isEmpty()) {
             throw new UserException(SystemConstraints.USER_NOT_FOUND); // Nếu không tìm thấy user
         }
         User user = userOptional.get();
 
-        // Kiểm tra tên đầy đủ
+        // Kiểm tra ngày sinh (dob) không lớn hơn ngày hiện tại trước khi kiểm tra tuổi
+        if (userUpdateRequest.getDob() == null) {
+            throw new UserException(SystemConstraints.BIRTHDAY_NOT_EMPTY);
+        }
+
+        LocalDate dob = userUpdateRequest.getDob();
+        if (dob.isAfter(LocalDate.now())) {
+            throw new UserException(SystemConstraints.BIRTHDAY_NOT_GREATER_THAN_CURRENT_DATE);
+        }
+
+        // Kiểm tra tuổi của người dùng sau khi chắc chắn ngày sinh hợp lệ
+        int age = Period.between(dob, LocalDate.now()).getYears();
+        if (age < 14) {
+            throw new UserException(SystemConstraints.AGE_NOT_ENOUGH);
+        }
+
+        // Kiểm tra tên đầy đủ không được rỗng
         if (userUpdateRequest.getFullName() == null || userUpdateRequest.getFullName().trim().isEmpty()) {
             throw new UserException(SystemConstraints.FULL_NAME_NOT_EMPTY);
         }
 
         // Kiểm tra tên không chứa ký tự đặc biệt hoặc số
         String namePattern = "^[a-zA-Zàáạảãàâầấẩẫăắằẳẵâờóọỏõờđèéẹẻẽêếềểễỉíìịĩóòọỏõôồốổỗơờớởỡơúùụủũưừứựửữýỳỷỹỵ\\s]+$";
-
         if (!userUpdateRequest.getFullName().matches(namePattern)) {
             throw new UserException(SystemConstraints.FULL_NAME_NOT_SPECIAL_CHARACTERS);
         }
 
-        // Kiểm tra ngày sinh (dob)
-        if (userUpdateRequest.getDob() == null) {
-            throw new UserException(SystemConstraints.BIRTHDAY_NOT_EMPTY);
-        }
-
-        // Kiểm tra ngày sinh không lớn hơn ngày hiện tại
-        LocalDate dob = userUpdateRequest.getDob();
-        if (dob.isAfter(LocalDate.now())) {
-            throw new UserException(SystemConstraints.BIRTHDAY_NOT_GREATER_THAN_CURRENT_DATE);
-        }
-
-        // Kiểm tra tuổi của người dùng
-        int age = Period.between(dob, LocalDate.now()).getYears();
-        if (age < 14) {
-            throw new UserException(SystemConstraints.AGE_NOT_ENOUGH);
-        }
-
         // Cập nhật thông tin người dùng
         user.setFullName(userUpdateRequest.getFullName());
-        user.setGender(userUpdateRequest.getGender());
         user.setDob(userUpdateRequest.getDob());
         user.setUsername(userUpdateRequest.getUsername());
+
+        // Chỉ cập nhật gender nếu người dùng có nhập
+        // Nếu gender null, gán mặc định là "Other"
+        user.setGender(userUpdateRequest.getGender() != null ? userUpdateRequest.getGender() : Gender.Other);
+
 
         // Lưu thông tin mới vào cơ sở dữ liệu
         user = userRepository.save(user);
@@ -225,6 +228,7 @@ public class UserServiceImpl implements UserService {
         // Trả về dữ liệu đã cập nhật
         return userMapper.toUserResponse(user);
     }
+
 
 
     @Override

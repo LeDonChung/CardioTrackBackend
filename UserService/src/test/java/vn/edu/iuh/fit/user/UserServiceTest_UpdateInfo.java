@@ -1,28 +1,29 @@
 package vn.edu.iuh.fit.user;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
+import java.time.LocalDate;
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mockito.junit.jupiter.MockitoExtension;
 import vn.edu.iuh.fit.user.exceptions.UserException;
 import vn.edu.iuh.fit.user.mappers.UserMapper;
 import vn.edu.iuh.fit.user.model.dto.request.UserUpdateRequest;
 import vn.edu.iuh.fit.user.model.dto.response.UserResponse;
 import vn.edu.iuh.fit.user.model.entity.User;
+import vn.edu.iuh.fit.user.model.enums.Gender;
 import vn.edu.iuh.fit.user.repositories.UserRepository;
 import vn.edu.iuh.fit.user.services.impl.UserServiceImpl;
+import vn.edu.iuh.fit.user.utils.SystemConstraints;
 
-import java.time.LocalDate;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class UserServiceTest_UpdateInfo {
 
     @Mock
@@ -38,66 +39,120 @@ public class UserServiceTest_UpdateInfo {
     private UserUpdateRequest userUpdateRequest;
 
     @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.openMocks(this);
-
-        // Khởi tạo đối tượng người dùng với id = 5
+    void setup() {
         user = new User();
         user.setId(5L);
-        user.setFullName("Test User");
-        user.setGender(vn.edu.iuh.fit.user.model.enums.Gender.Male);
-        user.setDob(LocalDate.parse("1990-01-01"));
+        user.setFullName("Old User");
+        user.setGender(Gender.Male);
+        user.setDob(LocalDate.of(1990, 1, 1));
 
-        // Khởi tạo yêu cầu cập nhật người dùng
         userUpdateRequest = new UserUpdateRequest();
-        userUpdateRequest.setFullName("Updated User");
-        userUpdateRequest.setGender(vn.edu.iuh.fit.user.model.enums.Gender.Female);
-        userUpdateRequest.setDob(LocalDate.parse("1995-01-01"));
+        userUpdateRequest.setUsername("updatedUser");
     }
 
     @Test
-    public void testUpdateUserById_Success() throws UserException {
-        // Mock trả về người dùng với id = 5
-        when(userRepository.findById(5L)).thenReturn(Optional.of(user));
+    void testUpdate_Success() throws Exception {
+        userUpdateRequest.setFullName("Tin Tran");
+        userUpdateRequest.setDob(LocalDate.of(1900, 1, 1));
+        userUpdateRequest.setGender(Gender.Male);
 
-        // Mock save trả về người dùng đã cập nhật
+        when(userRepository.findById(5L)).thenReturn(Optional.of(user));
         when(userRepository.save(any(User.class))).thenReturn(user);
 
-        // Mock phương thức chuyển đổi từ User sang UserResponse
-        UserResponse mockUserResponse = new UserResponse();
-        mockUserResponse.setFullName("Updated User");
-        mockUserResponse.setGender(vn.edu.iuh.fit.user.model.enums.Gender.Female);
-        mockUserResponse.setDob(LocalDate.parse("1995-01-01")); // Đảm bảo rằng ngày sinh được cập nhật
+        UserResponse expectedResponse = new UserResponse();
+        expectedResponse.setFullName("Tin Tran");
+        expectedResponse.setGender(Gender.Male);
+        expectedResponse.setDob(LocalDate.of(1900, 1, 1));
 
-        when(userMapper.toUserResponse(any(User.class))).thenReturn(mockUserResponse);
+        when(userMapper.toUserResponse(any(User.class))).thenReturn(expectedResponse);
 
-        // Gọi phương thức cập nhật người dùng
         UserResponse result = userService.updateUserById(5L, userUpdateRequest);
 
-        // Kiểm tra kết quả
-        assertNotNull(result, "Result should not be null");
-        assertEquals("Updated User", result.getFullName(), "Full name should be updated");
-        assertEquals(vn.edu.iuh.fit.user.model.enums.Gender.Female, result.getGender(), "Gender should be updated");
-        assertEquals(LocalDate.parse("1995-01-01"), result.getDob(), "Date of birth should be updated");  // Kiểm tra ngày sinh
+        assertEquals("Tin Tran", result.getFullName());
+        assertEquals(Gender.Male, result.getGender());
+    }
 
-        // Kiểm tra các phương thức đã được gọi
-        verify(userRepository).findById(5L);
-        verify(userRepository).save(any(User.class));
-        verify(userMapper).toUserResponse(any(User.class));
+    @Test
+    void testUpdate_Success_GenderNull() throws Exception {
+        userUpdateRequest.setFullName("Tin Tran");
+        userUpdateRequest.setDob(LocalDate.of(1900, 1, 1));
+        userUpdateRequest.setGender(null);
+
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
+        when(userRepository.save(any(User.class))).thenReturn(user);
+
+        UserResponse expectedResponse = new UserResponse();
+        expectedResponse.setFullName("Tin Tran");
+        expectedResponse.setGender(Gender.Other);
+        expectedResponse.setDob(LocalDate.of(1900, 1, 1));
+
+        when(userMapper.toUserResponse(any(User.class))).thenReturn(expectedResponse);
+
+        UserResponse result = userService.updateUserById(5L, userUpdateRequest);
+
+        assertEquals("Tin Tran", result.getFullName());
+        assertEquals(Gender.Other, result.getGender());
+    }
+
+    @Test
+    void testUpdate_FullNameEmpty() {
+        userUpdateRequest.setFullName(""); // Tên đầy đủ rỗng
+        userUpdateRequest.setDob(LocalDate.of(1900, 1, 1));
+        userUpdateRequest.setGender(Gender.Male);
+
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
+
+        UserException e = assertThrows(UserException.class, () ->
+                userService.updateUserById(5L, userUpdateRequest)
+        );
+
+        assertEquals(SystemConstraints.FULL_NAME_NOT_EMPTY, e.getMessage()); // ✅ Đúng kỳ vọng
     }
 
 
     @Test
-    public void testUpdateUserById_UserNotFound() {
-        // Mock trường hợp không tìm thấy người dùng
-        when(userRepository.findById(5L)).thenReturn(Optional.empty());
+    void testUpdate_DobInFuture() {
+        userUpdateRequest.setFullName("Tin Tran");
+        userUpdateRequest.setDob(LocalDate.of(2025, 4, 4)); // Ngày trong tương lai
 
-        // Gọi phương thức và kiểm tra ngoại lệ
-        assertThrows(UserException.class, () -> {
-            userService.updateUserById(5L, userUpdateRequest);
-        });
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
 
-        // Kiểm tra phương thức đã được gọi
-        verify(userRepository).findById(5L);
+        UserException e = assertThrows(UserException.class, () ->
+                userService.updateUserById(5L, userUpdateRequest)
+        );
+
+        assertEquals(SystemConstraints.BIRTHDAY_NOT_GREATER_THAN_CURRENT_DATE, e.getMessage()); // ✅ Đúng kỳ vọng
     }
+
+
+    @Test
+    void testUpdate_AgeNotEnough() {
+        userUpdateRequest.setFullName("Tin Tran");
+        userUpdateRequest.setDob(LocalDate.of(2020, 4, 4)); // Dưới 14 tuổi
+
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
+
+        UserException e = assertThrows(UserException.class, () ->
+                userService.updateUserById(5L, userUpdateRequest)
+        );
+
+        assertEquals(SystemConstraints.AGE_NOT_ENOUGH, e.getMessage()); // ✅ Đúng kỳ vọng
+    }
+
+
+    @Test
+    void testUpdate_FullNameSpecialCharacter() {
+        userUpdateRequest.setFullName("Tin Tran @3"); // Chứa ký tự đặc biệt
+        userUpdateRequest.setDob(LocalDate.of(1900, 1, 1));
+        userUpdateRequest.setGender(Gender.Male);
+
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
+
+        UserException e = assertThrows(UserException.class, () ->
+                userService.updateUserById(5L, userUpdateRequest)
+        );
+
+        assertEquals(SystemConstraints.FULL_NAME_NOT_SPECIAL_CHARACTERS, e.getMessage()); // ✅ Đúng kỳ vọng
+    }
+
 }
