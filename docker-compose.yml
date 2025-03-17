@@ -111,6 +111,62 @@ services:
     networks:
       - my-network
 
+  order-service:
+    build: ./OrderService
+    container_name: order-service
+    depends_on:
+      - discovery-service
+    ports:
+      - "9095:9095"
+    environment:
+      - SPRING_APPLICATION_NAME=order-service
+      - SERVER_PORT=9095
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka
+      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.mariadb.jdbc.Driver
+      - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb-order:3306/tcorder
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=sapassword
+      - SPRING_JPA_SHOW_SQL=true
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_DATA_REDIS_HOST=redis
+      - SPRING_DATA_REDIS_PORT=6379
+      - SPRING_DATA_REDIS_TIMEOUT=5000
+    networks:
+      - my-network
+
+  mariadb-order:
+    image: mariadb:latest
+    container_name: mariadb-order
+    environment:
+      - MYSQL_ROOT_PASSWORD=sapassword
+      - MYSQL_DATABASE=tcorder
+    ports:
+      - "3307:3306"
+    volumes:
+      - mariadb-order-data:/var/lib/mysql
+    networks:
+      - my-network
+
+  pay-service:
+    build: ./Payservice
+    container_name: pay-service
+    depends_on:
+      - discovery-service
+    ports:
+      - "9094:9094"
+    environment:
+      - SPRING_APPLICATION_NAME=Pay-Service
+      - SERVER_PORT=9094
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka
+      - EUREKA_CLIENT_FETCH_REGISTRY=true
+      - EUREKA_CLIENT_REGISTER_WITH_EUREKA=true
+      - EUREKA_CLIENT_ENABLED=true
+      - PAYOS_CLIENT_ID=123
+      - PAYOS_API_KEY=123
+      - PAYOS_CHECKSUM_KEY=123
+    networks:
+      - my-network    
+
   redis:
     image: redis:latest
     container_name: redis
@@ -203,6 +259,7 @@ volumes:
   mariadb-user-data:  # Volume cho MariaDB User Service
   mariadb-product-data:  # Volume cho MariaDB Product Service
   redis-data:         # Volume cho Redis
+  mariadb-order-data: # Volume cho MariaDB Order Service
   mongo-user-data:    # Volume cho MongoDB Chat App
 
 networks:
