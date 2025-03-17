@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vn.edu.iuh.fit.inventory.enums.PurchaseOrderStatus;
 import vn.edu.iuh.fit.inventory.exceptions.PurchaseOrderException;
+import vn.edu.iuh.fit.inventory.models.dtos.PageDTO;
 import vn.edu.iuh.fit.inventory.models.dtos.requests.PurchaseOrderRequest;
 import vn.edu.iuh.fit.inventory.models.dtos.responses.BaseResponse;
 import vn.edu.iuh.fit.inventory.models.dtos.responses.PurchaseOrderDetailResponse;
@@ -22,6 +23,22 @@ public class PurchaseOrderController {
 
     @Autowired
     private PurchaseOrderDetailService purchaseOrderDetailService;
+
+    // Lấy tất cả phiếu mua hàng
+    @GetMapping
+    public ResponseEntity<BaseResponse<PageDTO<PurchaseOrderResponse>>> getAllPurchaseOrder(@RequestParam(defaultValue = "0") int page,
+                                                                                            @RequestParam(defaultValue = "10") int size,
+                                                                                            @RequestParam(required = false) String sortBy,
+                                                                                            @RequestParam(required = false) String sorName) {
+        PageDTO<PurchaseOrderResponse> purchaseOrders = purchaseOrderService.getAllPurchaseOrder(page, size, sortBy, sorName);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<PageDTO<PurchaseOrderResponse>>builder()
+                        .data(purchaseOrders)
+                        .success(true)
+                        .build()
+        );
+    }
 
     // Tạo mới phiếu mua hàng
     @PostMapping("/add")
