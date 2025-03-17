@@ -66,6 +66,24 @@ services:
     networks:
       - my-network
 
+  inventory-service:
+    build: ./InventoryService
+    container_name: inventory-service
+    depends_on:
+      - discovery-service
+    ports:
+      - "9096:9096"
+    environment:
+      - SPRING_APPLICATION_NAME=inventory-service
+      - SERVER_PORT=9096
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka
+      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.mariadb.jdbc.Driver
+      - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb-user:3306/tcinventory
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=sapassword
+      - SPRING_JPA_SHOW_SQL=true
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_MAIN_ALLOW_BEAN_DEFINITION_OVERRIDING=true
   product-service:
     build: ./ProductService
     container_name: product-service
@@ -167,6 +185,21 @@ services:
     networks:
       - my-network    
 
+  mariadb-inventory:
+    image: mariadb:latest
+    container_name: mariadb-inventory
+    environment:
+      - MYSQL_ROOT_PASSWORD=sapassword
+      - MYSQL_DATABASE=tcinventory
+    ports:
+      - "3307:3306"
+    volumes:
+      - mariadb-inventory-data:/var/lib/mysql
+    networks:
+      - my-network
+
+
+
   redis:
     image: redis:latest
     container_name: redis
@@ -176,6 +209,8 @@ services:
       - redis-data:/data  # Volume lưu trữ dữ liệu Redis nếu cần
     networks:
       - my-network
+  
+  
 
   recommend-service:
     build: ./RecommendService
@@ -257,6 +292,7 @@ services:
 
 volumes:
   mariadb-user-data:  # Volume cho MariaDB User Service
+  mariadb-inventory-data:  # Volume cho MariaDB Inventory Service
   mariadb-product-data:  # Volume cho MariaDB Product Service
   redis-data:         # Volume cho Redis
   mariadb-order-data: # Volume cho MariaDB Order Service
