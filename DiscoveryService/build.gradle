@@ -38,3 +38,10 @@ dependencyManagement {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+bootJar {
+	mainClass = 'vn.edu.iuh.fit.discovery.DiscoveryServiceApplication'
+}
+build {
+	dependsOn bootJar
+}

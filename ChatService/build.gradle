@@ -48,3 +48,10 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+bootJar {
+    mainClass = 'vn.edu.iuh.fit.student.thanhtuyen.chatservice.ChatServiceApplication'
+}
+build {
+    dependsOn bootJar
+}

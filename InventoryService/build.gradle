@@ -67,3 +67,10 @@ dependencyManagement {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+bootJar {
+    mainClass = 'vn.edu.iuh.fit.inventory.InventoryServiceApplication'
+}
+build {
+    dependsOn bootJar
+}

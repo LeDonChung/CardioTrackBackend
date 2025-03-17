@@ -58,3 +58,10 @@ dependencyManagement {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+bootJar {
+	mainClass = 'vn.edu.iuh.fit.auth.AuthServiceApplication'
+}
+build {
+	dependsOn bootJar
+}
