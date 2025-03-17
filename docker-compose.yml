@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   discovery-service:
     build: ./DiscoveryService
@@ -67,11 +65,11 @@ services:
       - my-network
 
   post-service:
-    build: ./PostService  # Đảm bảo bạn đã thiết lập đúng đường dẫn build
+    build: ./PostService # Đảm bảo bạn đã thiết lập đúng đường dẫn build
     container_name: post-service
     depends_on:
       - discovery-service
-      - mariadb-post  # Cập nhật để sử dụng mariadb-post thay vì mariadb-user
+      - mariadb-post # Cập nhật để sử dụng mariadb-post thay vì mariadb-user
     ports:
       - "9099:9099"
     environment:
@@ -79,7 +77,12 @@ services:
       - SERVER_PORT=9099
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka
       - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.mariadb.jdbc.Driver
-      - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb-post:3306/tcpost  # Kết nối đến MariaDB container mới và cơ sở dữ liệu tcpost
+      - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb-post:3306/tcpost # Kết nối đến MariaDB container mới và cơ sở dữ liệu tcpost
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+    networks:
+      - my-network
+      
   inventory-service:
     build: ./InventoryService
     container_name: inventory-service
@@ -92,11 +95,12 @@ services:
       - SERVER_PORT=9096
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka
       - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.mariadb.jdbc.Driver
-      - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb-user:3306/tcinventory
+      - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb-inventory:3306/tcinventory
       - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=sapassword
+      - SPRING_DATASOURCE_PASSWORD=root
       - SPRING_JPA_SHOW_SQL=true
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_MAIN_ALLOW_BEAN_DEFINITION_OVERRIDING=true
     networks:
       - my-network
 
@@ -104,13 +108,15 @@ services:
     image: mariadb:latest
     container_name: mariadb-post
     environment:
-      - MYSQL_ROOT_PASSWORD=sapassword
-      - MYSQL_DATABASE=tcpost  # Cơ sở dữ liệu cho post-service
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=tcpost
     ports:
-      - "3308:3306"  # Có thể thay đổi cổng nếu cần
+      - "3301:3306"
     volumes:
       - mariadb-post-data:/var/lib/mysql
-      - SPRING_MAIN_ALLOW_BEAN_DEFINITION_OVERRIDING=true
+    networks:
+      - my-network
+
   product-service:
     build: ./ProductService
     container_name: product-service
@@ -138,11 +144,12 @@ services:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_DATABASE=tcuser
     ports:
-      - "3306:3306"
+      - "3302:3306"
     volumes:
       - mariadb-user-data:/var/lib/mysql
     networks:
       - my-network
+
   mariadb-product:
     image: mariadb:latest
     container_name: mariadb-product
@@ -150,7 +157,7 @@ services:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_DATABASE=tcproduct
     ports:
-      - "3306:3306"
+      - "3303:3306"
     volumes:
       - mariadb-product-data:/var/lib/mysql
     networks:
@@ -170,7 +177,7 @@ services:
       - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.mariadb.jdbc.Driver
       - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb-order:3306/tcorder
       - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=sapassword
+      - SPRING_DATASOURCE_PASSWORD=root
       - SPRING_JPA_SHOW_SQL=true
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
       - SPRING_DATA_REDIS_HOST=redis
@@ -183,10 +190,10 @@ services:
     image: mariadb:latest
     container_name: mariadb-order
     environment:
-      - MYSQL_ROOT_PASSWORD=sapassword
+      - MYSQL_ROOT_PASSWORD=root
       - MYSQL_DATABASE=tcorder
     ports:
-      - "3307:3306"
+      - "3304:3306"
     volumes:
       - mariadb-order-data:/var/lib/mysql
     networks:
@@ -210,22 +217,20 @@ services:
       - PAYOS_API_KEY=123
       - PAYOS_CHECKSUM_KEY=123
     networks:
-      - my-network    
+      - my-network
 
   mariadb-inventory:
     image: mariadb:latest
     container_name: mariadb-inventory
     environment:
-      - MYSQL_ROOT_PASSWORD=sapassword
+      - MYSQL_ROOT_PASSWORD=root
       - MYSQL_DATABASE=tcinventory
     ports:
-      - "3307:3306"
+      - "3305:3306"
     volumes:
       - mariadb-inventory-data:/var/lib/mysql
     networks:
       - my-network
-
-
 
   redis:
     image: redis:latest
@@ -233,11 +238,9 @@ services:
     ports:
       - "6379:6379"
     volumes:
-      - redis-data:/data  # Volume lưu trữ dữ liệu Redis nếu cần
+      - redis-data:/data # Volume lưu trữ dữ liệu Redis nếu cần
     networks:
       - my-network
-  
-  
 
   recommend-service:
     build: ./RecommendService
@@ -282,49 +285,50 @@ services:
       - my-network
 
   mongo-chat:
-     image: mongo:latest
-     container_name: mongo-chat
-     environment:
-       - MONGO_INITDB_DATABASE=chat_app
-     ports:
-       - "27017:27017"
-     volumes:
-       - mongo-user-data:/var/lib/mongo
-     networks:
-       - my-network
+    image: mongo:latest
+    container_name: mongo-chat
+    environment:
+      - MONGO_INITDB_DATABASE=chat_app
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-user-data:/var/lib/mongo
+    networks:
+      - my-network
 
   chat-service:
-     build: ./ChatService
-     container_name: chat-service
-     depends_on:
-       - discovery-service
-       - user-service
-       - auth-service
-       - api-gateway
-       - mongo-chat
-     ports:
-       - "9097:9097"
-     environment:
-       - SPRING_APPLICATION_NAME=chat-service
-       - SERVER_PORT=9097
-       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka/
-       - SPRING_DATA_MONGODB_URI=mongodb://mongo-chat:27017/chat_app
-       - SPRING_DATA_MONGODB_PORT=27017
-       - SPRING_DATA_MONGODB_DATABASE=chat_app
-       - SPRING_DATA_REDIS_HOST=redis
-       - SPRING_DATA_REDIS_PORT=6379
-       - SPRING_DATA_REDIS_TIMEOUT=5000
-     networks:
-        - my-network
+    build: ./ChatService
+    container_name: chat-service
+    depends_on:
+      - discovery-service
+      - user-service
+      - auth-service
+      - api-gateway
+      - mongo-chat
+    ports:
+      - "9097:9097"
+    environment:
+      - SPRING_APPLICATION_NAME=chat-service
+      - SERVER_PORT=9097
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka/
+      - SPRING_DATA_MONGODB_URI=mongodb://mongo-chat:27017/chat_app
+      - SPRING_DATA_MONGODB_PORT=27017
+      - SPRING_DATA_MONGODB_DATABASE=chat_app
+      - SPRING_DATA_REDIS_HOST=redis
+      - SPRING_DATA_REDIS_PORT=6379
+      - SPRING_DATA_REDIS_TIMEOUT=5000
+    networks:
+      - my-network
 
 volumes:
-  mariadb-user-data:  # Volume cho MariaDB User Service
-  mariadb-post-data:  # Volume cho MariaDB Post Service
-  mariadb-inventory-data:  # Volume cho MariaDB Inventory Service
-  mariadb-product-data:  # Volume cho MariaDB Product Service
-  redis-data:         # Volume cho Redis
-  mariadb-order-data: # Volume cho MariaDB Order Service
-  mongo-user-data:    # Volume cho MongoDB Chat App
+  mariadb-user-data:
+  mariadb-post-data:
+  mariadb-inventory-data:
+  mariadb-product-data:
+  redis-data:
+  mariadb-order-data:
+  mongo-user-data:
+
 
 networks:
   my-network:

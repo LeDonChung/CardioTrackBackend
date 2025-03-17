@@ -63,3 +63,10 @@ dependencyManagement {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+bootJar {
+    mainClass = 'vn.edu.iuh.fit.notification.NotificationServiceApplication'
+}
+build {
+    dependsOn bootJar
+}
