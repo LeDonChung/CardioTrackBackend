@@ -32,7 +32,7 @@ public class SupplierController {
 
     // add supplier
     @PostMapping("/add")
-    public ResponseEntity<BaseResponse<SupplierResponse>> save(SupplierRequest supplierRequest) {
+    public ResponseEntity<BaseResponse<SupplierResponse>> save(@RequestBody SupplierRequest supplierRequest) {
         SupplierResponse supplierResponse = supplierService.save(supplierRequest);
         return ResponseEntity.ok(
                 BaseResponse

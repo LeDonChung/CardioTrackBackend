@@ -145,5 +145,10 @@ public class MedicineServiceImpl implements MedicineService {
         return medicineRepository.findAll().stream().map(medicineMapper::toDto).collect(Collectors.toList());
     }
 
+    @Override
+    public List<MedicineResponse> findAllByCategoryTitle(String title) {
+        return medicineRepository.findAllByCategoryTitle(title).stream().map(medicineMapper::toDto).collect(Collectors.toList());
+    }
+
 
 }

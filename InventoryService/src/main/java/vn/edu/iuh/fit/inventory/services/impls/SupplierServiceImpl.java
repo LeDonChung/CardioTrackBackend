@@ -25,7 +25,7 @@ public class SupplierServiceImpl implements SupplierService {
 
     @Override
     public SupplierResponse save(SupplierRequest request) throws SupplierException {
-        Supplier supplier = null;
+        Supplier supplier;
 
         if(request.getId() == null) {
             supplier = supplierMapper.toEntity(request);

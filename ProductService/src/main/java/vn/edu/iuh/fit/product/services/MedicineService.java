@@ -30,4 +30,6 @@ public interface MedicineService {
     PageDTO<MedicineResponse> search(MedicineSearchRequest request, int page, int size, String sortBy, String sortName);
 
     List<MedicineResponse> getAll();
+
+    List<MedicineResponse> findAllByCategoryTitle(String title);
 }
