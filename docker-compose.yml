@@ -66,6 +66,20 @@ services:
     networks:
       - my-network
 
+  post-service:
+    build: ./PostService  # Đảm bảo bạn đã thiết lập đúng đường dẫn build
+    container_name: post-service
+    depends_on:
+      - discovery-service
+      - mariadb-post  # Cập nhật để sử dụng mariadb-post thay vì mariadb-user
+    ports:
+      - "9099:9099"
+    environment:
+      - SPRING_APPLICATION_NAME=post-service
+      - SERVER_PORT=9099
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka
+      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.mariadb.jdbc.Driver
+      - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb-post:3306/tcpost  # Kết nối đến MariaDB container mới và cơ sở dữ liệu tcpost
   inventory-service:
     build: ./InventoryService
     container_name: inventory-service
@@ -83,6 +97,19 @@ services:
       - SPRING_DATASOURCE_PASSWORD=sapassword
       - SPRING_JPA_SHOW_SQL=true
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    networks:
+      - my-network
+
+  mariadb-post:
+    image: mariadb:latest
+    container_name: mariadb-post
+    environment:
+      - MYSQL_ROOT_PASSWORD=sapassword
+      - MYSQL_DATABASE=tcpost  # Cơ sở dữ liệu cho post-service
+    ports:
+      - "3308:3306"  # Có thể thay đổi cổng nếu cần
+    volumes:
+      - mariadb-post-data:/var/lib/mysql
       - SPRING_MAIN_ALLOW_BEAN_DEFINITION_OVERRIDING=true
   product-service:
     build: ./ProductService
@@ -292,6 +319,7 @@ services:
 
 volumes:
   mariadb-user-data:  # Volume cho MariaDB User Service
+  mariadb-post-data:  # Volume cho MariaDB Post Service
   mariadb-inventory-data:  # Volume cho MariaDB Inventory Service
   mariadb-product-data:  # Volume cho MariaDB Product Service
   redis-data:         # Volume cho Redis
