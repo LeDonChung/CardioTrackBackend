@@ -1,10 +1,9 @@
 from flask import Flask, request, jsonify
-import app.erureka_client
 import services
+import os
+import app.erureka_client
 
 app = Flask(__name__)
-
-services.train_model()
 
 
 @app.route('/api/v1/recommend/<int:product_id>', methods=['GET'])
@@ -28,5 +27,4 @@ def recommend_order():
 
 
 if __name__ == '__main__':
-    services.schedule_training()  # Bắt đầu lên lịch huấn luyện
-    app.run(port=9016, debug=True)
+    app.run(port=os.getenv("SERVICE_PORT"), debug=True)
