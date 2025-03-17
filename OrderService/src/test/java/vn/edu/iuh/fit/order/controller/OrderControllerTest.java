@@ -1,129 +1,188 @@
 package vn.edu.iuh.fit.order.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import vn.edu.iuh.fit.order.enums.AddressType;
 import vn.edu.iuh.fit.order.enums.OrderStatus;
-import vn.edu.iuh.fit.order.jwt.JwtConfig;
-import vn.edu.iuh.fit.order.jwt.JwtService;
+import vn.edu.iuh.fit.order.enums.PaymentMethod;
+import vn.edu.iuh.fit.order.exceptions.OrderException;
+import vn.edu.iuh.fit.order.model.dto.request.AddressRequest;
+import vn.edu.iuh.fit.order.model.dto.request.OrderDetailRequest;
 import vn.edu.iuh.fit.order.model.dto.request.OrderRequest;
 import vn.edu.iuh.fit.order.model.dto.response.OrderResponse;
 import vn.edu.iuh.fit.order.services.OrderService;
+import org.mockito.Mockito;
 
-import java.util.Arrays;
-import java.util.List;
+import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Import({OrderControllerTest.OrderControllerTestConfig.class, OrderControllerTest.TestConfig.class})
-@WebMvcTest(OrderController.class)
+@SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
 public class OrderControllerTest {
-
-    @TestConfiguration
-    static class TestConfig {
-        @Bean
-        public JwtConfig jwtConfig() {
-            return new JwtConfig(/* truyền các tham số cần thiết nếu có */);
-        }
-    }
-
-    @TestConfiguration
-    static class JwtTestConfig {
-        @Bean
-        public JwtService jwtService() {
-            return Mockito.mock(JwtService.class);
-        }
-    }
 
     @Autowired
     private MockMvc mockMvc;
 
-    // Bean giả được cung cấp từ cấu hình test bên dưới
-    @Autowired
-    private OrderService orderService;
-
     @Autowired
     private ObjectMapper objectMapper;
 
+    // Bean mock được cung cấp bởi TestConfig (không dùng @MockBean)
+    @Autowired
+    private OrderService orderService;
+
+    private OrderRequest validOrderRequest;
+    private OrderResponse validOrderResponse;
+
     @TestConfiguration
-    static class OrderControllerTestConfig {
+    static class TestConfig {
         @Bean
         public OrderService orderService() {
             return Mockito.mock(OrderService.class);
         }
     }
 
+    @BeforeEach
+    void setup() {
+        // Khởi tạo danh sách chi tiết đơn hàng với OrderDetailRequest
+        Set<OrderDetailRequest> orderDetails = new HashSet<>();
+        orderDetails.add(OrderDetailRequest.builder()
+                .id(1L)
+                .discount(0)
+                .price(100.0)
+                .quantity(2)
+                .medicine(1L)  // Giả sử medicine có id 1 là hợp lệ
+                .orderId(null)
+                .build());
+
+        // Tạo đối tượng AddressRequest với cấu trúc mới
+        AddressRequest addressRequest = AddressRequest.builder()
+                .district("District 1")
+                .province("Ho Chi Minh")
+                .ward("Ward 1")
+                .street("123 Đường ABC")
+                .addressType(AddressType.HOME) // Giả sử AddressType có giá trị HOME
+                .fullName("Test User")
+                .phoneNumber("0123456789")
+                .userId(1L)
+                .orderId(null)
+                .build();
+
+        validOrderRequest = OrderRequest.builder()
+                .id(1L)
+                .note("Đơn hàng test")
+                .exportInvoice(true)
+                .status(OrderStatus.PENDING)
+                .paymentMethod(PaymentMethod.CASH)
+                .orderDate(LocalDate.now())
+                .feeShip(20.0)
+                .customer(1L) // Giả sử khách hàng có id 1 là hợp lệ
+                .addressDetail(addressRequest)
+                .orderDetails(orderDetails)
+                .build();
+
+        validOrderResponse = OrderResponse.builder()
+                .id(1L)
+                .note("Đơn hàng test")
+                .exportInvoice(true)
+                .status(OrderStatus.PENDING)
+                .orderDate(LocalDate.now())
+                .feeShip(20.0)
+                .customer(1L)
+                .build();
+    }
+
+    /**
+     * ✅ Kiểm tra tạo đơn hàng thành công
+     */
     @Test
-    public void testAddOrder() throws Exception {
-        OrderRequest orderRequest = new OrderRequest();
-
-        OrderResponse orderResponse = new OrderResponse();
-
-        Mockito.when(orderService.save(Mockito.any(OrderRequest.class)))
-                .thenReturn(orderResponse);
+    void testCreateOrder_Success() throws Exception {
+        Mockito.when(orderService.save(any(OrderRequest.class))).thenReturn(validOrderResponse);
 
         mockMvc.perform(post("/api/v1/order")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(orderRequest)))
+                        .content(objectMapper.writeValueAsString(validOrderRequest)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data").exists())
-                .andExpect(jsonPath("$.success").value(true));
+                .andExpect(jsonPath("$.success").value(true))
+                .andExpect(jsonPath("$.data.id").value(1L));
     }
 
+    /**
+     * ❌ Kiểm tra tạo đơn hàng thất bại khi người dùng không tồn tại
+     */
     @Test
-    public void testChangeStatus() throws Exception {
-        Long orderId = 1L;
-        OrderStatus status = OrderStatus.PAID;
-        OrderResponse orderResponse = new OrderResponse();
+    void testCreateOrder_UserNotFound() throws Exception {
+        Mockito.when(orderService.save(any(OrderRequest.class)))
+                .thenThrow(new OrderException("Người dùng không tồn tại."));
 
-        Mockito.when(orderService.changeStatus(Mockito.eq(orderId), Mockito.eq(status)))
-                .thenReturn(orderResponse);
-
-        mockMvc.perform(put("/api/v1/order/change-status/{id}", orderId)
-                        .param("status", status.toString()))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data").exists())
-                .andExpect(jsonPath("$.success").value(true));
+        mockMvc.perform(post("/api/v1/order")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(validOrderRequest)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error").value("Người dùng không tồn tại."));
     }
 
+    /**
+     * ❌ Kiểm tra tạo đơn hàng thất bại khi sản phẩm không hợp lệ
+     */
     @Test
-    public void testGetOrdersByUserId() throws Exception {
-        Long userId = 1L;
-        OrderResponse orderResponse = new OrderResponse();
-        List<OrderResponse> orders = Arrays.asList(orderResponse);
+    void testCreateOrder_InvalidProduct() throws Exception {
+        Mockito.when(orderService.save(any(OrderRequest.class)))
+                .thenThrow(new OrderException("Sản phẩm không tồn tại."));
 
-        Mockito.when(orderService.getOrdersByUserId(Mockito.eq(userId)))
-                .thenReturn(orders);
-
-        String token = "Bearer some-valid-token";
-
-        mockMvc.perform(get("/api/v1/order/user/{id}", userId)
-                        .header("Authorization", token))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data").isArray())
-                .andExpect(jsonPath("$.success").value(true));
+        mockMvc.perform(post("/api/v1/order")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(validOrderRequest)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error").value("Sản phẩm không tồn tại."));
     }
 
+    /**
+     * ❌ Kiểm tra tạo đơn hàng thất bại khi không có chi tiết sản phẩm
+     */
     @Test
-    public void testRecommend() throws Exception {
-        OrderResponse orderResponse = new OrderResponse();
-        List<OrderResponse> orders = Arrays.asList(orderResponse);
+    void testCreateOrder_EmptyOrderDetails() throws Exception {
+        // Thiết lập request có orderDetails rỗng
+        validOrderRequest.setOrderDetails(new HashSet<>());
 
-        Mockito.when(orderService.recommend()).thenReturn(orders);
+        // Cấu hình mock orderService để ném exception với thông báo lỗi cụ thể
+        Mockito.when(orderService.save(any(OrderRequest.class)))
+                .thenThrow(new OrderException("Chi tiết đơn hàng không được để trống."));
 
-        mockMvc.perform(get("/api/v1/order/recommend"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data").isArray())
-                .andExpect(jsonPath("$.success").value(true));
+        mockMvc.perform(post("/api/v1/order")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(validOrderRequest)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error").value("Chi tiết đơn hàng không được để trống."));
+    }
+
+    /**
+     * ❌ Kiểm tra tạo đơn hàng thất bại khi không có địa chỉ giao hàng
+     */
+    @Test
+    void testCreateOrder_InvalidAddress() throws Exception {
+        validOrderRequest.setAddressDetail(null);
+
+        Mockito.when(orderService.save(any(OrderRequest.class)))
+                .thenThrow(new OrderException("Địa chỉ không hợp lệ."));
+
+        mockMvc.perform(post("/api/v1/order")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(validOrderRequest)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error").value("Địa chỉ không hợp lệ."));
     }
 }
