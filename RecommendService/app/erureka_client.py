@@ -1,8 +1,8 @@
 import py_eureka_client.eureka_client as eureka_client
-
-EUREKA_SERVER = "http://localhost:8761/eureka/"
-SERVICE_NAME = "recommend-service"
-SERVICE_PORT = 9016
+import os
+EUREKA_SERVER = os.getenv("EUREKA_CLIENT_SERVICEURL_DEFAULTZONE")
+SERVICE_NAME = os.getenv("SERVICE_NAME")
+SERVICE_PORT = int(os.getenv("SERVICE_PORT"))
 
 try:
     eureka_client.init(
