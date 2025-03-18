@@ -29,8 +29,8 @@ public class PurchaseOrderController {
     public ResponseEntity<BaseResponse<PageDTO<PurchaseOrderResponse>>> getAllPurchaseOrder(@RequestParam(defaultValue = "0") int page,
                                                                                             @RequestParam(defaultValue = "10") int size,
                                                                                             @RequestParam(required = false) String sortBy,
-                                                                                            @RequestParam(required = false) String sorName) {
-        PageDTO<PurchaseOrderResponse> purchaseOrders = purchaseOrderService.getAllPurchaseOrder(page, size, sortBy, sorName);
+                                                                                            @RequestParam(required = false) String sortName) {
+        PageDTO<PurchaseOrderResponse> purchaseOrders = purchaseOrderService.getAllPurchaseOrder(page, size, sortBy, sortName);
         return ResponseEntity.ok(
                 BaseResponse
                         .<PageDTO<PurchaseOrderResponse>>builder()

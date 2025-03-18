@@ -88,4 +88,21 @@ public class ShelfServiceImpl implements ShelfService {
         sheltRepository.deleteById(id);
     }
 
+    @Override
+    public List<ShelfResponse> findShelfsWithCapacityGreaterThan(int threshold) {
+        List<Shelf> shelves = sheltRepository.findShelfsWithCapacityGreaterThan(threshold);
+        return shelves.stream().map(shelf -> sheftMapper.toDto(shelf)).collect(Collectors.toList());
+    }
+
+    @Override
+    public void updateTotalProduct(Long id, int quantity) {
+        Optional<Shelf> shelf = sheltRepository.findById(id);
+        if(shelf.isEmpty()) {
+            throw new ShelfException("Shelf not found");
+        }
+        Shelf shelfEntity = shelf.get();
+        sheltRepository.updateTotalProduct(id, quantity);
+        sheltRepository.save(shelfEntity);
+    }
+
 }

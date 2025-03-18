@@ -40,8 +40,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         Page<PurchaseOrder> purchaseOrderPage = purchaseOrderRepository.findAll(pageable);
         List<PurchaseOrder> inventoryDetails = purchaseOrderPage.getContent();
 
-        List<PurchaseOrderResponse> inventoryDetailResponses = inventoryDetails.stream()
-                .map(inventoryDetail -> purchaseOrderMapper.toDto(inventoryDetail))
+        List<PurchaseOrderResponse> purchaseOrderResponses = inventoryDetails.stream()
+                .map(purchaseOrder -> purchaseOrderMapper.toDto(purchaseOrder))
                 .collect(Collectors.toList());
 
         // Tạo và trả về PageDTO với thông tin phân trang
@@ -50,7 +50,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                 .size(size)
                 .sortBy(sortBy)
                 .sortName(sortName)
-                .data(inventoryDetailResponses)
+                .data(purchaseOrderResponses)
                 .build();
     }
 

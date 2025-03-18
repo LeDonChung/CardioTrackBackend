@@ -12,6 +12,8 @@ import vn.edu.iuh.fit.inventory.models.dtos.responses.BaseResponse;
 import vn.edu.iuh.fit.inventory.models.dtos.responses.ShelfResponse;
 import vn.edu.iuh.fit.inventory.services.ShelfService;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/api/v1/shelf")
 public class ShelfController {
@@ -67,6 +69,32 @@ public class ShelfController {
                 BaseResponse
                         .<String>builder()
                         .data("Delete shelf success")
+                        .success(true)
+                        .build()
+        );
+    }
+
+    //hiển thị thông tin của các shelf có capacity - totalProduct lớn hơn một giá trị nhập từ bàn phím
+    @GetMapping("/findShelfsWithCapacityGreaterThan")
+    public ResponseEntity<BaseResponse<List<ShelfResponse>>> findShelfsWithCapacityGreaterThan(@RequestParam int threshold) {
+        List<ShelfResponse> pageDTO = shelfService.findShelfsWithCapacityGreaterThan(threshold);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<List<ShelfResponse>>builder()
+                        .data(pageDTO)
+                        .success(true)
+                        .build()
+        );
+    }
+
+    //Cập nhật số lượng sản phẩm của shelf
+    @PutMapping("/updateTotalProduct")
+    public ResponseEntity<BaseResponse<String>> updateTotalProduct(@RequestParam Long id, @RequestParam int quantity) {
+        shelfService.updateTotalProduct(id, quantity);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<String>builder()
+                        .data("Update total product success")
                         .success(true)
                         .build()
         );

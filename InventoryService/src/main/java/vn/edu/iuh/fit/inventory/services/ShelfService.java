@@ -17,4 +17,10 @@ public interface ShelfService {
 
     void deleteShelfById(Long id);
 
+    //hiển thị thông tin của các shelf có capacity - totalProduct lớn hơn một giá trị nhập từ bàn phím
+    List<ShelfResponse> findShelfsWithCapacityGreaterThan(int threshold);
+
+    //Cập nhật số lượng sản phẩm của shelf
+    void updateTotalProduct(Long id, int quantity);
+
 }

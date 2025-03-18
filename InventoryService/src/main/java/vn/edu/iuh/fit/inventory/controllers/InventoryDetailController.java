@@ -3,7 +3,9 @@ package vn.edu.iuh.fit.inventory.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import vn.edu.iuh.fit.inventory.exceptions.InventoryDetailException;
 import vn.edu.iuh.fit.inventory.models.dtos.PageDTO;
+import vn.edu.iuh.fit.inventory.models.dtos.requests.InventoryDetailRequest;
 import vn.edu.iuh.fit.inventory.models.dtos.responses.BaseResponse;
 import vn.edu.iuh.fit.inventory.models.dtos.responses.CategoryResponse;
 import vn.edu.iuh.fit.inventory.models.dtos.responses.InventoryDetailResponse;
@@ -66,6 +68,19 @@ public class InventoryDetailController {
                 BaseResponse
                         .<CategoryResponse>builder()
                         .data(categoryResponse)
+                        .success(true)
+                        .build()
+        );
+    }
+
+    //Add inventory_detail
+    @PostMapping
+    public ResponseEntity<BaseResponse<InventoryDetailResponse>> save(@RequestBody InventoryDetailRequest inventoryDetailRequest) throws InventoryDetailException {
+        InventoryDetailResponse inventoryDetailResponse = inventoryDetailService.save(inventoryDetailRequest);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<InventoryDetailResponse>builder()
+                        .data(inventoryDetailResponse)
                         .success(true)
                         .build()
         );

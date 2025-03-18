@@ -16,6 +16,8 @@ public class PurchaseOrderResponse {
     private Long id;
     private Long supplierId;
     private String supplierName;
+    private String supplierAddress;
+    private String supplierContactInfo;
     private Timestamp orderDate;
     private PurchaseOrderStatus status;
     private Set<PurchaseOrderDetail> purchaseOrderDetails;

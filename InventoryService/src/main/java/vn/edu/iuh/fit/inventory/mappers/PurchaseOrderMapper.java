@@ -16,5 +16,7 @@ public interface PurchaseOrderMapper {
 
     @Mapping(target = "supplierName", source = "supplier.name")
     @Mapping(target = "supplierId", source = "supplier.id")
+    @Mapping(target = "supplierAddress", source = "supplier.address")
+    @Mapping(target = "supplierContactInfo", source = "supplier.contactInfo")
     PurchaseOrderResponse toDto(PurchaseOrder purchaseOrder);
 }

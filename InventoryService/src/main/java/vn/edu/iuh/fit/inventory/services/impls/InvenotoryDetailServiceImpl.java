@@ -12,6 +12,7 @@ import vn.edu.iuh.fit.inventory.clients.ProductServiceClient;
 import vn.edu.iuh.fit.inventory.exceptions.InventoryDetailException;
 import vn.edu.iuh.fit.inventory.mappers.InventoryDetailMapper;
 import vn.edu.iuh.fit.inventory.models.dtos.PageDTO;
+import vn.edu.iuh.fit.inventory.models.dtos.requests.InventoryDetailRequest;
 import vn.edu.iuh.fit.inventory.models.dtos.responses.*;
 import vn.edu.iuh.fit.inventory.models.entities.InventoryDetail;
 import vn.edu.iuh.fit.inventory.repositories.InventoryDetailRepository;
@@ -97,6 +98,19 @@ public class InvenotoryDetailServiceImpl implements InventoryDetailService {
             //ném exception
             throw new InventoryDetailException(SystemConstraints.CATEGORY_NOT_FOUND);
         }
+    }
+
+    //Thêm một medicine vào kho
+    @Override
+    public InventoryDetailResponse save(InventoryDetailRequest request) throws InventoryDetailException {
+        InventoryDetail inventoryDetail = null;
+
+        if(request.getId() == null) {
+            inventoryDetail = inventoryDetailMapper.toEntity(request);
+        }
+
+        inventoryDetail = inventoryDetailRepository.save(inventoryDetail);
+        return inventoryDetailMapper.toDto(inventoryDetail);
     }
 
     //Tìm tổng số lượng của 1 thuốc trong kho (1 thuốc có thể nằm trên nhiều kệ)
