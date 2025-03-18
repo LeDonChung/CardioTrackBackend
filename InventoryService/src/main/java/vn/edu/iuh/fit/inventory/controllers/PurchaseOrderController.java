@@ -55,11 +55,14 @@ public class PurchaseOrderController {
 
     // Get all pending purchase order
     @GetMapping("/pending")
-    public ResponseEntity<BaseResponse<List<PurchaseOrderResponse>>> getAllPendingPurchaseOrder() {
-        List<PurchaseOrderResponse> purchaseOrders = purchaseOrderService.getAllPendingPurchaseOrder();
+    public ResponseEntity<BaseResponse<PageDTO<PurchaseOrderResponse>>> getAllPendingPurchaseOrder(@RequestParam(defaultValue = "0") int page,
+                                                                                                   @RequestParam(defaultValue = "10") int size,
+                                                                                                   @RequestParam(required = false) String sortBy,
+                                                                                                   @RequestParam(required = false) String sortName) {
+        PageDTO<PurchaseOrderResponse> purchaseOrders = purchaseOrderService.getAllPendingPurchaseOrder(page, size, sortBy, sortName);
         return ResponseEntity.ok(
                 BaseResponse
-                        .<List<PurchaseOrderResponse>>builder()
+                        .<PageDTO<PurchaseOrderResponse>>builder()
                         .data(purchaseOrders)
                         .success(true)
                         .build()

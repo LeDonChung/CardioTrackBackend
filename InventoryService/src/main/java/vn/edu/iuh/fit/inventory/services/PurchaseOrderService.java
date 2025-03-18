@@ -17,7 +17,7 @@ public interface PurchaseOrderService {
     PurchaseOrderResponse save(PurchaseOrderRequest request) throws PurchaseOrderException;
 
     // Lấy tất cả phiếu mua hàng theo status = PENDING
-    List<PurchaseOrderResponse> getAllPendingPurchaseOrder();
+    PageDTO<PurchaseOrderResponse> getAllPendingPurchaseOrder(int page, int size, String sortBy, String sortName);
 
     //Thay đổi status của phiếu mua hàng
     PurchaseOrderResponse changeStatus(Long id, PurchaseOrderStatus status) throws PurchaseOrderException;

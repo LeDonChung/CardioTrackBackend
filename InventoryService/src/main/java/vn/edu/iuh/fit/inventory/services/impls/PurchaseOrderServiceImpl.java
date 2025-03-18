@@ -56,23 +56,46 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
     @Override
     public PurchaseOrderResponse save(PurchaseOrderRequest request) throws PurchaseOrderException {
+        // Chuyển request thành đối tượng PurchaseOrder
         PurchaseOrder purchaseOrder = purchaseOrderMapper.toEntity(request);
         purchaseOrder.setStatus(PurchaseOrderStatus.PENDING);
 
+        // Gán PurchaseOrder cho từng PurchaseOrderDetail
         PurchaseOrder finalPurchaseOrder = purchaseOrder;
         purchaseOrder.getPurchaseOrderDetails().forEach(purchaseOrderDetail -> {
             purchaseOrderDetail.setPurchaseOrder(finalPurchaseOrder);
         });
 
+        // Sử dụng merge thay vì save để tránh đối tượng detached
         purchaseOrder = purchaseOrderRepository.save(purchaseOrder);
+
+        // Trả về DTO của PurchaseOrder
         return purchaseOrderMapper.toDto(purchaseOrder);
     }
 
     @Override
-    public List<PurchaseOrderResponse> getAllPendingPurchaseOrder() {
-        List<PurchaseOrder> purchaseOrders = purchaseOrderRepository.getAllPendingPurchaseOrder();
+    public PageDTO<PurchaseOrderResponse> getAllPendingPurchaseOrder(int page, int size, String sortBy, String sortName) {
+        Pageable pageable = PageRequest.of(page, size);
+        if (sortBy != null && sortName != null) {
+            pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortName), sortBy));
+        }
 
-        return purchaseOrders.stream().map(purchaseOrder -> purchaseOrderMapper.toDto(purchaseOrder)).collect(Collectors.toList());
+        // Lấy dữ liệu phân trang từ repository
+        Page<PurchaseOrder> purchaseOrderPage = purchaseOrderRepository.getAllPendingPurchaseOrder(pageable);
+        List<PurchaseOrder> inventoryDetails = purchaseOrderPage.getContent();
+
+        List<PurchaseOrderResponse> purchaseOrderResponses = inventoryDetails.stream()
+                .map(purchaseOrder -> purchaseOrderMapper.toDto(purchaseOrder))
+                .collect(Collectors.toList());
+
+        // Tạo và trả về PageDTO với thông tin phân trang
+        return PageDTO.<PurchaseOrderResponse>builder()
+                .page(page)
+                .size(size)
+                .sortBy(sortBy)
+                .sortName(sortName)
+                .data(purchaseOrderResponses)
+                .build();
     }
 
     @Override
