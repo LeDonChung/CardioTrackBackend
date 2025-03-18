@@ -253,10 +253,13 @@ services:
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka
       - SERVICE_NAME=recommend-service
       - SERVICE_PORT=9016
+      - EUREKA_INSTANCE_HOSTNAME=recommend-service
     depends_on:
       - redis
       - api-gateway
       - discovery-service
+      - order-service
+      - product-service
     networks:
       - my-network
 
