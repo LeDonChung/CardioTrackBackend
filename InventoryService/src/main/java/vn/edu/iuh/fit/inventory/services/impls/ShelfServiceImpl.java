@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import vn.edu.iuh.fit.inventory.exceptions.ShelfException;
 import vn.edu.iuh.fit.inventory.mappers.ShelfMapper;
 import vn.edu.iuh.fit.inventory.models.dtos.PageDTO;
@@ -95,13 +96,16 @@ public class ShelfServiceImpl implements ShelfService {
     }
 
     @Override
+    @Transactional
     public void updateTotalProduct(Long id, int quantity) {
         Optional<Shelf> shelf = sheltRepository.findById(id);
         if(shelf.isEmpty()) {
             throw new ShelfException("Shelf not found");
         }
         Shelf shelfEntity = shelf.get();
+        // Cập nhật số lượng sản phẩm
         sheltRepository.updateTotalProduct(id, quantity);
+        // Lưu lại kệ đã cập nhật
         sheltRepository.save(shelfEntity);
     }
 

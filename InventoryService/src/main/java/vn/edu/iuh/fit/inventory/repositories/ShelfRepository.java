@@ -16,6 +16,6 @@ public interface ShelfRepository extends JpaRepository<Shelf, Long> {
 
     //Cập nhật số lượng sản phẩm của shelf
     @Modifying
-    @Query("update Shelf s set s.totalProduct = s.totalProduct + :quantity where s.id = :id")
+    @Query("update Shelf s set s.totalProduct = s.totalProduct + :quantity,s.notes = CONCAT('+ ', :quantity) where s.id = :id")
     void updateTotalProduct(Long id, int quantity);
 }
