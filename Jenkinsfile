@@ -4,16 +4,26 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                // 1. Lấy code từ Git
+                // Lấy code từ Git từ nhánh jenkins
                 git branch: 'jenkins', url: 'https://github.com/LeDonChung/CardioTrackBackend.git'
+                // Build toàn bộ dự án (giả sử gradlew ở gốc build tất cả các module)
+                sh './gradlew clean build'
+            }
+        }
+        
+        stage('List Artifacts') {
+            steps {
+                // In danh sách file trong thư mục build/libs của DiscoveryService để kiểm tra file jar đã được tạo chưa
+                dir('DiscoveryService/build/libs') {
+                    sh 'ls -la'
+                }
             }
         }
         
         stage('Build Images') {
             steps {
                 script {
-                    // 2. Build toàn bộ service theo docker-compose.yml
-                    //    Nếu muốn cập nhật base image, bạn có thể thêm --pull --no-cache
+                    // Build image bằng docker-compose (docker-compose.yml ở gốc repo)
                     sh 'docker-compose build'
                 }
             }
@@ -22,7 +32,6 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    // 3. Dừng container cũ và khởi chạy container mới
                     sh 'docker-compose down'
                     sh 'docker-compose up -d --remove-orphans'
                 }
