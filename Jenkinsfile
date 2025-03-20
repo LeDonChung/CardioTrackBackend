@@ -6,14 +6,16 @@ pipeline {
             steps {
                 // Lấy code từ Git từ nhánh jenkins
                 git branch: 'jenkins', url: 'https://github.com/LeDonChung/CardioTrackBackend.git'
-                // Build toàn bộ dự án (giả sử gradlew ở gốc build tất cả các module)
+                // Đảm bảo gradlew có quyền thực thi
+                sh 'chmod +x gradlew'
+                // Chạy build toàn bộ dự án
                 sh './gradlew clean build'
             }
         }
         
         stage('List Artifacts') {
             steps {
-                // In danh sách file trong thư mục build/libs của DiscoveryService để kiểm tra file jar đã được tạo chưa
+                // Kiểm tra file jar của DiscoveryService được tạo ra chưa (nếu có)
                 dir('DiscoveryService/build/libs') {
                     sh 'ls -la'
                 }
