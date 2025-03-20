@@ -54,10 +54,6 @@ pipeline {
                         sh 'chmod +x gradlew'
                         sh './gradlew clean build'
                     }
-                    dir('RecommendService') {
-                        sh 'chmod +x gradlew'
-                        sh './gradlew clean build'
-                    }
                     dir('UserService') {
                         sh 'chmod +x gradlew'
                         sh './gradlew clean build'
