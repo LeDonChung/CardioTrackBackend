@@ -28,6 +28,7 @@ pipeline {
                     dir('ChatService') {
                         sh 'chmod +x gradlew'
                         sh './gradlew clean build'
+                        sh './gradlew clean build -x test'
                     }
                     dir('InventoryService') {
                         sh 'chmod +x gradlew'
