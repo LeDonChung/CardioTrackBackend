@@ -5,7 +5,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // 1. Lấy code từ Git
-                git branch: 'main', url: 'https://github.com/LeDonChung/CardioTrackBackend.git'
+                git branch: 'jenkins', url: 'https://github.com/LeDonChung/CardioTrackBackend.git'
             }
         }
         
