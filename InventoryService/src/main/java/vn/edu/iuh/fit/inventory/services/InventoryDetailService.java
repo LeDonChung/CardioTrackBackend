@@ -19,5 +19,8 @@ public interface InventoryDetailService {
     // Lấy thông tin chi tiết của danh mục từ product-service
     CategoryResponse getCategoryDetails(Long id);
 
+    //lấy danh sách medicine theo category id
+    PageDTO<InventoryDetailResponse> getMedicineByCategory(Long id, int page, int size, String sortBy, String sortName);
+
     //Tìm tổng số lượng của 1 thuốc trong kho (1 thuốc có thể nằm trên nhiều kệ)
 }

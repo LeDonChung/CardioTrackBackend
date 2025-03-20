@@ -99,5 +99,31 @@ public class InvenotoryDetailServiceImpl implements InventoryDetailService {
         }
     }
 
+    @Override
+    public PageDTO<InventoryDetailResponse> getMedicineByCategory(Long id, int page, int size, String sortBy, String sortName) {
+        Pageable pageable = PageRequest.of(page, size);
+        if (sortBy != null && sortName != null) {
+            pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortName), sortBy));
+        }
+
+        // Lấy dữ liệu phân trang từ repository
+        Page<InventoryDetail> inventoryDetailPage = inventoryDetailRepository.findAllByCategoryId(id, pageable);
+        List<InventoryDetail> inventoryDetails = inventoryDetailPage.getContent();
+
+        List<InventoryDetailResponse> inventoryDetailResponses = inventoryDetails.stream()
+                .map(inventoryDetail -> inventoryDetailMapper.toDto(inventoryDetail))
+                .collect(Collectors.toList());
+
+        // Tạo và trả về PageDTO với thông tin phân trang
+        return PageDTO.<InventoryDetailResponse>builder()
+                .page(page)
+                .size(size)
+                .sortBy(sortBy)
+                .sortName(sortName)
+                .data(inventoryDetailResponses)
+                .totalPage(inventoryDetailPage.getTotalPages())
+                .build();
+    }
+
     //Tìm tổng số lượng của 1 thuốc trong kho (1 thuốc có thể nằm trên nhiều kệ)
 }

@@ -70,4 +70,21 @@ public class InventoryDetailController {
                         .build()
         );
     }
+
+    //Get medicine by category
+    @GetMapping("/medicine-by-category/{id}")
+    public ResponseEntity<BaseResponse<PageDTO<InventoryDetailResponse>>> getMedicineByCategory(@PathVariable Long id,
+                                                                                                 @RequestParam(defaultValue = "0") int page,
+                                                                                                 @RequestParam(defaultValue = "10") int size,
+                                                                                                 @RequestParam(required = false) String sortBy,
+                                                                                                 @RequestParam(required = false) String sortName) {
+        PageDTO<InventoryDetailResponse> pageDTO = inventoryDetailService.getMedicineByCategory(id, page, size, sortBy, sortName);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<PageDTO<InventoryDetailResponse>>builder()
+                        .data(pageDTO)
+                        .success(true)
+                        .build()
+        );
+    }
 }
