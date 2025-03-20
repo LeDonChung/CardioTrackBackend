@@ -12,7 +12,7 @@ pipeline {
         stage('Build All Services') {
             steps {
                 script {
-                    // 2. Lần lượt build từng service
+                    // 2. Lần lượt build từng service Java (các service khác sử dụng Gradle)
                     dir('DiscoveryService') {
                         sh 'chmod +x gradlew'
                         sh './gradlew clean build'
@@ -61,20 +61,11 @@ pipeline {
                 }
             }
         }
-
-        stage('Build Python Service') {
-            steps {
-                dir('RecommendService') {
-                    // Cài đặt dependencies Python (nếu Jenkins container có python)
-                    sh 'pip install -r requirements.txt'
-                }
-            }
-        }
         
         stage('Build Docker Images') {
             steps {
                 script {
-                    // 3. Build image bằng docker-compose (sẽ gọi Dockerfile trong từng service)
+                    // 3. Build image bằng docker-compose (Dockerfile sẽ tự cài đặt dependencies)
                     sh 'docker-compose build'
                 }
             }
