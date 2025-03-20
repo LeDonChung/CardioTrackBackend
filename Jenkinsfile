@@ -4,6 +4,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
+                 sh 'ls -la'
                 // Lấy code từ Git từ nhánh jenkins
                 git branch: 'jenkins', url: 'https://github.com/LeDonChung/CardioTrackBackend.git'
                 // Đảm bảo gradlew có quyền thực thi
