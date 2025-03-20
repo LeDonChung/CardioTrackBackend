@@ -61,6 +61,15 @@ pipeline {
                 }
             }
         }
+
+        stage('Build Python Service') {
+            steps {
+                dir('RecommendService') {
+                    // Cài đặt dependencies Python (nếu Jenkins container có python)
+                    sh 'pip install -r requirements.txt'
+                }
+            }
+        }
         
         stage('Build Docker Images') {
             steps {
