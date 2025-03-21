@@ -17,6 +17,12 @@ public class AuthController {
     @Autowired
     private UserServiceClient userServiceClient;
 
+    //Test gọi controller
+    @GetMapping("/test")
+    public String test() {
+        return "Auth service is working";
+    }
+
     @PostMapping("/register")
     public ResponseEntity<BaseResponse<UserResponse>> register(@RequestBody UserRegisterRequest request) throws UserException {
         return userServiceClient.register(request);
