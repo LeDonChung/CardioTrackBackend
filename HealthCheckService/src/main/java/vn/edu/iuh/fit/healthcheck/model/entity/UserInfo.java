@@ -1,12 +1,18 @@
 package vn.edu.iuh.fit.healthcheck.model.entity;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Entity
 @Table(name = "user_info")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class UserInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

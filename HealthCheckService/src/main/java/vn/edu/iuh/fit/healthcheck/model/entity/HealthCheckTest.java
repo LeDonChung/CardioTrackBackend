@@ -1,11 +1,17 @@
 package vn.edu.iuh.fit.healthcheck.model.entity;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.util.List;
 
 @Entity
 @Table(name = "health_check_tests")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class HealthCheckTest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,11 +1,17 @@
 package vn.edu.iuh.fit.healthcheck.model.entity;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.util.List;
 
 @Entity
 @Table(name = "questions")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -13,7 +19,6 @@ public class Question {
 
 
     private String questionTitle;
-    private String questionText; // Nội dung câu hỏi
 
     @ElementCollection
     @CollectionTable(name = "question_choices", joinColumns = @JoinColumn(name = "question_id"))
