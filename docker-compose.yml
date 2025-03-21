@@ -146,6 +146,7 @@ services:
     ports:
       - "3302:3306"
     volumes:
+      - ./sql/tcuser:/docker-entrypoint-initdb.d   # Mount thư mục chứa file SQL
       - mariadb-user-data:/var/lib/mysql
     networks:
       - my-network
@@ -159,6 +160,7 @@ services:
     ports:
       - "3303:3306"
     volumes:
+      - ./sql/tcproduct:/docker-entrypoint-initdb.d
       - mariadb-product-data:/var/lib/mysql
     networks:
       - my-network
@@ -195,6 +197,7 @@ services:
     ports:
       - "3304:3306"
     volumes:
+      - ./sql/tcorder:/docker-entrypoint-initdb.d
       - mariadb-order-data:/var/lib/mysql
     networks:
       - my-network
