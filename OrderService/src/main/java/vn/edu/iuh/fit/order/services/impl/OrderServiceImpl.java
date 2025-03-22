@@ -1,6 +1,8 @@
 package vn.edu.iuh.fit.order.services.impl;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.ratelimiter.RequestNotPermitted;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import io.github.resilience4j.retry.annotation.Retry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,6 +41,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @CircuitBreaker(name = "orderService", fallbackMethod = "saveFallback")
     @Retry(name = "orderService")
+    @RateLimiter(name = "orderServiceRateLimiter", fallbackMethod = "saveFallback")
     public OrderResponse save(OrderRequest request) throws OrderException {
         // Check if user is valid
         if (request.getCustomer() != null) {
@@ -89,7 +92,12 @@ public class OrderServiceImpl implements OrderService {
 
     // Fallback method cho phương thức save
     public OrderResponse saveFallback(OrderRequest request, Throwable throwable) throws OrderException {
-        throw new OrderException("Hiện tại không thể xử lý yêu cầu đặt hàng. Vui lòng thử lại sau.");
+        // Kiểm tra nếu là ngoại lệ của RateLimiter
+        if (throwable instanceof RequestNotPermitted) {
+            throw new OrderException("Số lượng request đặt hàng vượt quá giới hạn (100 request/phút), vui lòng thử lại sau.");
+        }
+        // Các trường hợp lỗi khác
+        throw new OrderException("Hiện tại không thể xử lý yêu cầu đặt hàng, vui lòng thử lại sau.");
     }
 
     @Override
