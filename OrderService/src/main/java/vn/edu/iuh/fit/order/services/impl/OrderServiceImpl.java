@@ -1,6 +1,7 @@
 package vn.edu.iuh.fit.order.services.impl;
 
-import com.netflix.discovery.converters.Auto;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import vn.edu.iuh.fit.order.client.ProductServiceClient;
@@ -15,7 +16,6 @@ import vn.edu.iuh.fit.order.model.entities.Order;
 import vn.edu.iuh.fit.order.model.entities.OrderDetail;
 import vn.edu.iuh.fit.order.repositories.OrderRepository;
 import vn.edu.iuh.fit.order.services.OrderService;
-import vn.edu.iuh.fit.order.utils.SystemConstraints;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -37,19 +37,21 @@ public class OrderServiceImpl implements OrderService {
     private ProductServiceClient productServiceClient;
 
     @Override
+    @CircuitBreaker(name = "orderService", fallbackMethod = "saveFallback")
+    @Retry(name = "orderService")
     public OrderResponse save(OrderRequest request) throws OrderException {
-        // check if user is valid
-        if(request.getCustomer() != null) {
+        // Check if user is valid
+        if (request.getCustomer() != null) {
             UserResponse user = userServiceClient.getUserById(request.getCustomer()).getBody().getData();
-            if(user == null) {
+            if (user == null) {
                 throw new OrderException("Người dùng không tồn tại.");
             }
         }
-        // check if product is valid
+        // Check if product is valid
         request.getOrderDetails().forEach(orderDetail -> {
-            if(orderDetail.getMedicine() != null) {
+            if (orderDetail.getMedicine() != null) {
                 boolean isExists = productServiceClient.isExists(orderDetail.getMedicine()).getBody().getData();
-                if(!isExists) {
+                if (!isExists) {
                     try {
                         throw new OrderException("Sản phẩm không tồn tại.");
                     } catch (OrderException e) {
@@ -59,17 +61,14 @@ public class OrderServiceImpl implements OrderService {
             }
         });
 
-
-        // check if address is valid
+        // Convert request thành entity và thiết lập các thuộc tính cần thiết
         Order order = orderMapper.toEntity(request);
         order.setOrderDate(LocalDate.now());
         order.setCustomer(request.getCustomer());
         order.setStatus(OrderStatus.PENDING);
 
-        // Set order id for each order detail
-
+        // Gán order id cho từng order detail
         Order finalOrder = order;
-
         order.getOrderDetails().forEach(orderDetail -> {
             orderDetail.setOrder(finalOrder);
         });
@@ -81,13 +80,16 @@ public class OrderServiceImpl implements OrderService {
         AddressResponse addressResponse = userServiceClient.addAddress(addressRequest).getBody().getData();
         order.setAddressId(addressResponse.getId());
 
-
-
         orderRepository.save(order);
 
         OrderResponse response = orderMapper.toDto(order);
         response.setAddressDetail(addressResponse);
         return response;
+    }
+
+    // Fallback method cho phương thức save
+    public OrderResponse saveFallback(OrderRequest request, Throwable throwable) throws OrderException {
+        throw new OrderException("Hiện tại không thể xử lý yêu cầu đặt hàng. Vui lòng thử lại sau.");
     }
 
     @Override
@@ -147,12 +149,6 @@ public class OrderServiceImpl implements OrderService {
 
         return orderResponses;
     }
-
-
-
-
-
-
 
     public List<OrderResponse> recommend() {
         return orderRepository.findAll().stream().map(orderMapper::toDto).toList();
