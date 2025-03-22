@@ -1,5 +1,6 @@
 package vn.edu.iuh.fit.pay.controllers;
 
+import io.github.resilience4j.retry.annotation.Retry;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.MediaType;
@@ -28,37 +29,44 @@ public class CheckoutController {
     }
 
     @PostMapping("/create-payment-link")
-    public ResponseEntity<?> createPaymentLink(@RequestBody PaymentRequest request) {
-        try {
-            final List<ProductRequest> products = request.getProducts();
-            final String description = request.getDescription();
-            final String returnUrl = request.getReturnUrl();
-            final String cancelUrl = request.getCancelUrl();
-            final int price = request.getAmount();
-            final Long orderCode = request.getOrderCode();
+    @Retry(name = "paymentService", fallbackMethod = "createPaymentLinkFallback")
+    public ResponseEntity<?> createPaymentLink(@RequestBody PaymentRequest request) throws Exception {
+        // Chuẩn bị dữ liệu
+        final List<ProductRequest> products = request.getProducts();
+        final String description = request.getDescription();
+        final String returnUrl = request.getReturnUrl();
+        final String cancelUrl = request.getCancelUrl();
+        final int price = request.getAmount();
+        final Long orderCode = request.getOrderCode();
 
-            List<ItemData> items = new ArrayList<>();
-
-            for (ProductRequest product : products) {
-                ItemData item = ItemData.builder().name(product.getName()).quantity(product.getQuantity()).price(product.getPrice()).build();
-                items.add(item);
-            }
-            PaymentData paymentData = PaymentData.builder()
-                    .orderCode(orderCode)
-                    .amount(price)
-                    .description(description)
-                    .returnUrl(returnUrl)
-                    .cancelUrl(cancelUrl)
-                    .items(items)
+        List<ItemData> items = new ArrayList<>();
+        for (ProductRequest product : products) {
+            ItemData item = ItemData.builder()
+                    .name(product.getName())
+                    .quantity(product.getQuantity())
+                    .price(product.getPrice())
                     .build();
-
-            CheckoutResponseData data = payOS.createPaymentLink(paymentData);
-
-            return ResponseEntity.ok(Map.of("checkoutUrl", data.getCheckoutUrl()));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).body(Map.of("error", "Failed to create payment link"));
+            items.add(item);
         }
+
+        PaymentData paymentData = PaymentData.builder()
+                .orderCode(orderCode)
+                .amount(price)
+                .description(description)
+                .returnUrl(returnUrl)
+                .cancelUrl(cancelUrl)
+                .items(items)
+                .build();
+
+        // Gọi PayOS để tạo payment link (nếu exception xảy ra, Retry sẽ kích hoạt)
+        CheckoutResponseData data = payOS.createPaymentLink(paymentData);
+
+        return ResponseEntity.ok(Map.of("checkoutUrl", data.getCheckoutUrl()));
+    }
+
+    public ResponseEntity<?> createPaymentLinkFallback(PaymentRequest request, Throwable throwable) {
+        return ResponseEntity.status(500)
+                .body(Map.of("error", "Failed to create payment link, please try again later."));
     }
 
     private String getBaseUrl(HttpServletRequest request) {
