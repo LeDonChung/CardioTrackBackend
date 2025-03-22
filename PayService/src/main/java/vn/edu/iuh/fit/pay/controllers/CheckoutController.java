@@ -1,5 +1,7 @@
 package vn.edu.iuh.fit.pay.controllers;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import io.github.resilience4j.retry.annotation.Retry;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -30,6 +32,8 @@ public class CheckoutController {
 
     @PostMapping("/create-payment-link")
     @Retry(name = "paymentService", fallbackMethod = "createPaymentLinkFallback")
+    @CircuitBreaker(name = "paymentService", fallbackMethod = "createPaymentLinkFallback")
+    @RateLimiter(name = "paymentServiceRateLimiter", fallbackMethod = "createPaymentLinkFallback")
     public ResponseEntity<?> createPaymentLink(@RequestBody PaymentRequest request) throws Exception {
         // Chuẩn bị dữ liệu
         final List<ProductRequest> products = request.getProducts();
