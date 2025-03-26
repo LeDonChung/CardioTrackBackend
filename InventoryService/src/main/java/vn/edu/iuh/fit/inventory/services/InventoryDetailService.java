@@ -22,6 +22,8 @@ public interface InventoryDetailService {
 
     //Thêm một thuốc vào kho
     InventoryDetailResponse save(InventoryDetailRequest request) throws InventoryDetailException;
+    //lấy danh sách medicine theo category id
+    PageDTO<InventoryDetailResponse> getMedicineByCategory(Long id, int page, int size, String sortBy, String sortName);
 
     //Tìm tổng số lượng của 1 thuốc trong kho (1 thuốc có thể nằm trên nhiều kệ)
 }

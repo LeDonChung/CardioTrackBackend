@@ -1,9 +1,14 @@
 package vn.edu.iuh.fit.product.services.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import vn.edu.iuh.fit.product.exceptions.CategoryException;
 import vn.edu.iuh.fit.product.mappers.CategoryMapper;
+import vn.edu.iuh.fit.product.models.dtos.PageDTO;
 import vn.edu.iuh.fit.product.models.dtos.requests.CategoryRequest;
 import vn.edu.iuh.fit.product.models.dtos.responses.CategoryProminentResponse;
 import vn.edu.iuh.fit.product.models.dtos.responses.CategoryResponse;
@@ -15,6 +20,8 @@ import vn.edu.iuh.fit.product.utils.SystemConstraints;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
@@ -118,5 +125,34 @@ public class CategoryServiceImpl implements CategoryService {
             return categoryProminentResponse;
         }).toList();
     }
+
+    @Override
+    public PageDTO<CategoryResponse> getPagesCategory(int page, int size, String sortBy, String sortName) {
+        Pageable pageable = PageRequest.of(page, size);
+        if (sortBy != null && sortName != null) {
+            pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortName), sortBy));
+        }
+
+        // Lấy dữ liệu phân trang từ repository
+        Page<Category> categoryPage = categoryRepositories.findAll(pageable);
+
+        Set<CategoryResponse> categoryResponses = categoryPage.getContent().stream()
+                .map(category -> categoryMapper.toResponse(category))
+                .collect(Collectors.toSet());
+
+        // Sử dụng totalElements để tính totalPage chính xác
+        int totalPage = (int) Math.ceil((double) categoryPage.getTotalElements() / size);
+
+        // Tạo và trả về PageDTO với thông tin phân trang
+        return PageDTO.<CategoryResponse>builder()
+                .page(page)
+                .size(size)
+                .sortBy(sortBy)
+                .totalPage(totalPage)
+                .sortName(sortName)
+                .data(categoryResponses)
+                .build();
+    }
+
 
 }

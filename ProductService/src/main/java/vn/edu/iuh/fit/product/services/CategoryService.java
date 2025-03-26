@@ -1,6 +1,7 @@
 package vn.edu.iuh.fit.product.services;
 
 import vn.edu.iuh.fit.product.exceptions.CategoryException;
+import vn.edu.iuh.fit.product.models.dtos.PageDTO;
 import vn.edu.iuh.fit.product.models.dtos.requests.CategoryRequest;
 import vn.edu.iuh.fit.product.models.dtos.responses.CategoryProminentResponse;
 import vn.edu.iuh.fit.product.models.dtos.responses.CategoryResponse;
@@ -29,4 +30,6 @@ public interface CategoryService {
     List<CategoryResponse> getAllCategories();
 
     List<CategoryProminentResponse> getProminent();
+
+    PageDTO<CategoryResponse> getPagesCategory(int page, int size, String sortBy, String sortName);
 }

@@ -23,4 +23,6 @@ public interface ShelfService {
     //Cập nhật số lượng sản phẩm của shelf
     void updateTotalProduct(Long id, int quantity);
 
+    PageDTO<ShelfResponse> findLocationPage(int page, int size, String sortBy, String sortName, String location);
+
 }

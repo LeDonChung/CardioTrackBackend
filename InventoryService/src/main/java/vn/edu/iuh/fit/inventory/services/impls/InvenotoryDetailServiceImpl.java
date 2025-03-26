@@ -105,7 +105,7 @@ public class InvenotoryDetailServiceImpl implements InventoryDetailService {
     public InventoryDetailResponse save(InventoryDetailRequest request) throws InventoryDetailException {
         InventoryDetail inventoryDetail = null;
 
-        if(request.getId() == null) {
+        if (request.getId() == null) {
             inventoryDetail = inventoryDetailMapper.toEntity(request);
         }
 
@@ -113,5 +113,30 @@ public class InvenotoryDetailServiceImpl implements InventoryDetailService {
         return inventoryDetailMapper.toDto(inventoryDetail);
     }
 
-    //Tìm tổng số lượng của 1 thuốc trong kho (1 thuốc có thể nằm trên nhiều kệ)
+    @Override
+    public PageDTO<InventoryDetailResponse> getMedicineByCategory(Long id, int page, int size, String sortBy, String sortName) {
+        Pageable pageable = PageRequest.of(page, size);
+        if (sortBy != null && sortName != null) {
+            pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortName), sortBy));
+        }
+
+        // Lấy dữ liệu phân trang từ repository
+        Page<InventoryDetail> inventoryDetailPage = inventoryDetailRepository.findAllByCategoryId(id, pageable);
+        List<InventoryDetail> inventoryDetails = inventoryDetailPage.getContent();
+
+        List<InventoryDetailResponse> inventoryDetailResponses = inventoryDetails.stream()
+                .map(inventoryDetail -> inventoryDetailMapper.toDto(inventoryDetail))
+                .collect(Collectors.toList());
+
+        // Tạo và trả về PageDTO với thông tin phân trang
+        return PageDTO.<InventoryDetailResponse>builder()
+                .page(page)
+                .size(size)
+                .sortBy(sortBy)
+                .sortName(sortName)
+                .data(inventoryDetailResponses)
+                .totalPage(inventoryDetailPage.getTotalPages())
+                .build();
+    }
+
 }

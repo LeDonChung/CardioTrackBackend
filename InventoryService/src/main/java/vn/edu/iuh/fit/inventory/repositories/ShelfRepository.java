@@ -1,5 +1,6 @@
 package vn.edu.iuh.fit.inventory.repositories;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -18,4 +19,7 @@ public interface ShelfRepository extends JpaRepository<Shelf, Long> {
     @Modifying
     @Query("update Shelf s set s.totalProduct = s.totalProduct + :quantity,s.notes = CONCAT('+ ', :quantity) where s.id = :id")
     void updateTotalProduct(Long id, int quantity);
+
+    @Query("SELECT s FROM Shelf s WHERE s.location LIKE %?1%")
+    Page<Shelf> findByLocation(String location, Pageable pageable);
 }
