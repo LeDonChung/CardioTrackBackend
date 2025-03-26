@@ -10,6 +10,7 @@ import vn.edu.iuh.fit.inventory.models.dtos.requests.InventoryImportRequest;
 import vn.edu.iuh.fit.inventory.models.dtos.responses.BaseResponse;
 import vn.edu.iuh.fit.inventory.models.dtos.responses.InventoryImportDetailResponse;
 import vn.edu.iuh.fit.inventory.models.dtos.responses.InventoryImportResponse;
+import vn.edu.iuh.fit.inventory.models.dtos.responses.PurchaseOrderResponse;
 import vn.edu.iuh.fit.inventory.services.InventoryImportDetailService;
 import vn.edu.iuh.fit.inventory.services.InventoryImportService;
 
@@ -75,6 +76,22 @@ public class InventoryImportController {
                 BaseResponse
                         .<List<InventoryImportDetailResponse>>builder()
                         .data(inventoryImportDetailResponses)
+                        .success(true)
+                        .build()
+        );
+    }
+
+    // Lấy tất cả  phiếu nhập đang sử lý
+    @GetMapping("/pending")
+    public ResponseEntity<BaseResponse<PageDTO<InventoryImportResponse>>> getAllPendingImport(@RequestParam(defaultValue = "0") int page,
+                                                                                                   @RequestParam(defaultValue = "10") int size,
+                                                                                                   @RequestParam(required = false) String sortBy,
+                                                                                                   @RequestParam(required = false) String sortName) {
+        PageDTO<InventoryImportResponse> inventoryImportResponse = inventoryImportService.getAllPendingImport(page, size, sortBy, sortName);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<PageDTO<InventoryImportResponse>>builder()
+                        .data(inventoryImportResponse)
                         .success(true)
                         .build()
         );

@@ -5,6 +5,7 @@ import vn.edu.iuh.fit.inventory.exceptions.InventoryImportException;
 import vn.edu.iuh.fit.inventory.models.dtos.PageDTO;
 import vn.edu.iuh.fit.inventory.models.dtos.requests.InventoryImportRequest;
 import vn.edu.iuh.fit.inventory.models.dtos.responses.InventoryImportResponse;
+import vn.edu.iuh.fit.inventory.models.dtos.responses.PurchaseOrderResponse;
 
 public interface InventoryImportService {
     //Thêm phiếu nhập
@@ -15,4 +16,7 @@ public interface InventoryImportService {
 
     // Lấy tất cả phiếu nhập
     PageDTO<InventoryImportResponse> getPagesInventoryImport(int page, int size, String sortBy, String sortName);
+
+    // Lấy tất cả đơn nhập theo status = PENDING
+    PageDTO<InventoryImportResponse> getAllPendingImport(int page, int size, String sortBy, String sortName);
 }
