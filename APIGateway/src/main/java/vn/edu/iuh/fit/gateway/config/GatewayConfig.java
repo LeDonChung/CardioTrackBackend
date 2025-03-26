@@ -5,10 +5,6 @@ import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.cors.reactive.CorsWebFilter;
-import org.springframework.web.filter.CorsFilter;
 import vn.edu.iuh.fit.gateway.filter.JwtAuthenticationFilter;
 
 import java.util.List;
@@ -30,6 +26,7 @@ public class GatewayConfig {
 
     );
 
+
     /**
      * Configures the route locator to define the routing rules for the gateway.
      *
@@ -38,10 +35,12 @@ public class GatewayConfig {
      */
     @Bean
     public RouteLocator routes(RouteLocatorBuilder builder) {
+
         return builder.routes()
                 .route("auth-service", r -> r.path("/api/v1/auth/**")
                         .filters(f -> f.filter(jwtAuthFilter.apply(new JwtAuthenticationFilter.Config()
-                                .setPublicEndpoints(PUBLIC_ENDPOINTS))))
+                                .setPublicEndpoints(PUBLIC_ENDPOINTS)))
+                        )
                         .uri("lb://auth-service"))
                 .route("user-service", r -> r.path("/api/v1/user/**")
                         .uri("lb://user-service"))
@@ -85,5 +84,4 @@ public class GatewayConfig {
                         .uri("lb://chat-service"))
                 .build();
     }
-
 }

@@ -1,5 +1,8 @@
 package vn.edu.iuh.fit.auth.controller;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
+import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,11 +26,22 @@ public class AuthController {
     }
 
     @PostMapping("/login")
+    @CircuitBreaker(name = "userLoginCircuit", fallbackMethod = "loginFallback")
+    @Retry(name = "userLoginRetry", fallbackMethod = "loginFallback")
     public ResponseEntity<BaseResponse<Object>> loginUser(@RequestBody LoginRequest request) {
 
         return ResponseEntity.ok(
                 userServiceClient.login(request).getBody()
         );
+    }
+
+    @GetMapping("/healthCheck")
+    public String healthCheck() {
+        return "hi";
+    }
+
+    public ResponseEntity<BaseResponse<Object>> loginFallback(LoginRequest request, Throwable t) throws UserException {
+        throw new UserException(SystemConstraints.USER_SERVICE_UNAVAILABLE);
     }
 
     @PostMapping("/generation-otp")
