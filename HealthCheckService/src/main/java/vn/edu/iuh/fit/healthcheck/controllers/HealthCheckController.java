@@ -8,10 +8,20 @@ import vn.edu.iuh.fit.healthcheck.model.dto.request.HealthCheckTestRequest;
 import vn.edu.iuh.fit.healthcheck.model.dto.request.UserAnswerRequest;
 import vn.edu.iuh.fit.healthcheck.model.dto.response.BaseResponse;
 import vn.edu.iuh.fit.healthcheck.model.dto.response.HealthCheckTestResponse;
+import vn.edu.iuh.fit.healthcheck.model.dto.response.QuestionResponse;
 import vn.edu.iuh.fit.healthcheck.model.dto.response.UserAnswerResponse;
+import vn.edu.iuh.fit.healthcheck.model.entity.HealthCheckTest;
+import vn.edu.iuh.fit.healthcheck.model.entity.Question;
+import vn.edu.iuh.fit.healthcheck.model.entity.UserAnswer;
+import vn.edu.iuh.fit.healthcheck.repositories.HealthCheckTestRepository;
+import vn.edu.iuh.fit.healthcheck.repositories.QuestionRepository;
+import vn.edu.iuh.fit.healthcheck.repositories.UserAnswerRepository;
+import vn.edu.iuh.fit.healthcheck.services.HealthCheckService;
 import vn.edu.iuh.fit.healthcheck.services.HealthCheckTestService;
 import vn.edu.iuh.fit.healthcheck.services.UserAnswerService;
+import vn.edu.iuh.fit.healthcheck.utils.SystemConstraints;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -22,6 +32,14 @@ public class HealthCheckController {
     private HealthCheckTestService healthCheckTestService;
     @Autowired
     private UserAnswerService userAnswerService;
+    @Autowired
+    private QuestionRepository questionRepository;
+    @Autowired
+    private HealthCheckTestRepository healthCheckTestRepository;
+    @Autowired
+    private UserAnswerRepository userAnswerRepository;
+    @Autowired
+    private HealthCheckService healthCheckService;
 
     @PostMapping("/create")
     public ResponseEntity<BaseResponse<HealthCheckTestResponse>> createHealthCheckTest(
@@ -32,16 +50,59 @@ public class HealthCheckController {
 
     //lưu test của user
     @PostMapping("/submit-answers")
-    public ResponseEntity<BaseResponse<List<UserAnswerResponse>>> submitUserAnswers(
-            @RequestBody List<UserAnswerRequest> userAnswers) throws HealthException {
+    public ResponseEntity<String> submitUserAnswers(@RequestBody List<UserAnswerRequest> userAnswers) {
+        try {
+            // Tạo danh sách chứa các đối tượng UserAnswer
+            List<UserAnswer> userAnswerList = new ArrayList<>();
 
-        // Lưu câu trả lời từ người dùng và trả về danh sách câu trả lời đã lưu
-        List<UserAnswerResponse> savedAnswers = (List<UserAnswerResponse>) userAnswerService.saveUserAnswer(userAnswers);
+            // Chuyển đổi từ UserAnswerRequest sang UserAnswer và lưu vào cơ sở dữ liệu
+            for (UserAnswerRequest answer : userAnswers) {
+                UserAnswer userAnswer = new UserAnswer();
+                userAnswer.setUserId(answer.getUserId());
+                userAnswer.setQuestion_id(answer.getQuestionId());
+                userAnswer.setAnswer(answer.getAnswer());
 
-        // Trả về danh sách các câu trả lời đã lưu trong BaseResponse
-        BaseResponse<List<UserAnswerResponse>> response = new BaseResponse<>(savedAnswers, true, "Answers saved successfully");
-        return ResponseEntity.ok(response);
+                // Lấy thông tin câu hỏi từ question repository
+                Question question = questionRepository.findById(answer.getQuestionId())
+                        .orElseThrow(() -> new HealthException(SystemConstraints.QUESTION_NOT_FOUND));
+
+                // Lấy các lựa chọn cho câu hỏi từ bảng question_choices
+                List<String> choices = question.getChoices();
+
+                // Kiểm tra câu trả lời của người dùng có hợp lệ không
+                if (choices.contains(answer.getAnswer())) {
+                    // Nếu câu trả lời hợp lệ, lưu câu trả lời vào database
+                    HealthCheckTest test = healthCheckTestRepository.findById(question.getTest().getId())
+                            .orElseThrow(() -> new HealthException(SystemConstraints.QUESTION_NOT_FOUND));
+                    userAnswer.setTestTitle(test.getTestName());  // Lưu tiêu đề bài kiểm tra
+                    userAnswer.setQuestionTitle(question.getQuestionTitle());  // Lưu tiêu đề câu hỏi
+                    userAnswerRepository.save(userAnswer); // Lưu vào cơ sở dữ liệu
+
+                    // Thêm câu trả lời vào danh sách đã lưu
+                    userAnswerList.add(userAnswer);
+                } else {
+                    throw new RuntimeException("Invalid answer for question ID: " + answer.getQuestionId());
+                }
+            }
+
+            // Xây dựng thông điệp từ câu trả lời của người dùng
+            StringBuilder userMessage = new StringBuilder();
+            for (UserAnswer userAnswer : userAnswerList) {
+                userMessage.append("Câu hỏi: ").append(userAnswer.getQuestionTitle())
+                        .append("\nCâu trả lời: ").append(userAnswer.getAnswer())
+                        .append("\n");
+            }
+
+            // Gửi dữ liệu cho GPT-4 và nhận phản hồi
+            String gptResponse = healthCheckService.sendHealthCheckQuestionToGPT(userMessage.toString(), userAnswerList);
+
+            // Trả về phản hồi từ GPT
+            return ResponseEntity.ok(gptResponse);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error: " + e.getMessage());
+        }
     }
+
 
 
     @GetMapping("/all")
