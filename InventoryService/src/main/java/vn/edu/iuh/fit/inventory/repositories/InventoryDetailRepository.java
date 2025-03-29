@@ -13,4 +13,7 @@ public interface InventoryDetailRepository extends JpaRepository<InventoryDetail
     //findAllByCategoryId
     @Query("SELECT i FROM InventoryDetail i WHERE i.category = ?1")
     Page<InventoryDetail> findAllByCategoryId(Long categoryId, Pageable pageable);
+
+    @Query("SELECT SUM(i.quantity) FROM InventoryDetail i")
+    Long getTotalQuantity();
 }

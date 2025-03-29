@@ -101,4 +101,9 @@ public class InventoryDetailController {
                         .build()
         );
     }
+
+    @GetMapping("/total-quantity")
+    public Long getTotalQuantity() {
+        return inventoryDetailService.getTotalQuantity();
+    }
 }

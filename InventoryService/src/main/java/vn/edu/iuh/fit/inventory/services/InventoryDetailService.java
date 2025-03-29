@@ -25,5 +25,8 @@ public interface InventoryDetailService {
     //lấy danh sách medicine theo category id
     PageDTO<InventoryDetailResponse> getMedicineByCategory(Long id, int page, int size, String sortBy, String sortName);
 
+    //Tổng số lượng thuốc trong kho
+    Long getTotalQuantity();
+
     //Tìm tổng số lượng của 1 thuốc trong kho (1 thuốc có thể nằm trên nhiều kệ)
 }

@@ -139,4 +139,9 @@ public class InvenotoryDetailServiceImpl implements InventoryDetailService {
                 .build();
     }
 
+    @Override
+    public Long getTotalQuantity() {
+        return inventoryDetailRepository.getTotalQuantity();
+    }
+
 }
