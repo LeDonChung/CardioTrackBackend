@@ -2,6 +2,7 @@ package vn.edu.iuh.fit.inventory.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import vn.edu.iuh.fit.inventory.enums.PurchaseOrderStatus;
 import vn.edu.iuh.fit.inventory.exceptions.PurchaseOrderException;
@@ -24,6 +25,13 @@ public class PurchaseOrderController {
     @Autowired
     private PurchaseOrderDetailService purchaseOrderDetailService;
 
+    //verify
+    @GetMapping("/permission")
+    @PreAuthorize("hasAuthority('PURCHASE_ORDER')")
+    public ResponseEntity<String> purchaseOrder() {
+        return ResponseEntity.ok("You have permission to access purchase order");
+    }
+
     // Lấy tất cả phiếu mua hàng
     @GetMapping
     public ResponseEntity<BaseResponse<PageDTO<PurchaseOrderResponse>>> getAllPurchaseOrder(@RequestParam(defaultValue = "0") int page,
@@ -42,6 +50,7 @@ public class PurchaseOrderController {
 
     // Tạo mới phiếu mua hàng
     @PostMapping("/add")
+    @PreAuthorize("hasAuthority('PURCHASE_ORDER')")
     public ResponseEntity<BaseResponse<PurchaseOrderResponse>> save(@RequestBody PurchaseOrderRequest request) throws PurchaseOrderException {
         PurchaseOrderResponse response = purchaseOrderService.save(request);
         return ResponseEntity.ok(

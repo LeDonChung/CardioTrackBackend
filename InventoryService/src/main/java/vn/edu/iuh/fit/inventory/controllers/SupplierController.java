@@ -2,6 +2,7 @@ package vn.edu.iuh.fit.inventory.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import vn.edu.iuh.fit.inventory.models.dtos.requests.SupplierRequest;
 import vn.edu.iuh.fit.inventory.models.dtos.responses.BaseResponse;
@@ -16,6 +17,13 @@ public class SupplierController {
 
     @Autowired
     private SupplierService supplierService;
+
+    // verify
+    @GetMapping("/permission")
+    @PreAuthorize("hasAuthority('CONTROL_SUPPLIER')")
+    public ResponseEntity<String> supplier() {
+        return ResponseEntity.ok("You have permission to access supplier");
+    }
 
     // Get all suppliers
     @GetMapping

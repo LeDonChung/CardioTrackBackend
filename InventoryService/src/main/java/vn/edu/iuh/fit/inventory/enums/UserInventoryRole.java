@@ -4,7 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum UserInventoryRole {
-    MANAGEMENT("ADMIN"),
+    ADMIN("ADMIN"),
     STAFF("STAFF"),
     VIEWER("VIEWER");
 
