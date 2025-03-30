@@ -29,4 +29,5 @@ public interface InventoryDetailService {
     Long getTotalQuantity();
 
     //Tìm tổng số lượng của 1 thuốc trong kho (1 thuốc có thể nằm trên nhiều kệ)
+    Long getTotalQuantityMedicine(Long medicineId);
 }

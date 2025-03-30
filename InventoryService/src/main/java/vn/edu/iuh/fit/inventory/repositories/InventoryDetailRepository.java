@@ -16,4 +16,7 @@ public interface InventoryDetailRepository extends JpaRepository<InventoryDetail
 
     @Query("SELECT SUM(i.quantity) FROM InventoryDetail i")
     Long getTotalQuantity();
+
+    @Query("SELECT SUM(i.quantity) FROM InventoryDetail i WHERE i.medicine = ?1 group by i.medicine")
+    Long getTotalQuantityMedicine(Long medicineId);
 }

@@ -106,4 +106,9 @@ public class InventoryDetailController {
     public Long getTotalQuantity() {
         return inventoryDetailService.getTotalQuantity();
     }
+
+    @GetMapping("/total-quantity-medicine/{medicineId}")
+    public Long getTotalQuantityMedicine(@PathVariable Long medicineId) {
+        return inventoryDetailService.getTotalQuantityMedicine(medicineId);
+    }
 }

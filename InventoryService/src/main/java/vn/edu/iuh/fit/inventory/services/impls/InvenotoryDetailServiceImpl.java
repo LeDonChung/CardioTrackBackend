@@ -144,4 +144,9 @@ public class InvenotoryDetailServiceImpl implements InventoryDetailService {
         return inventoryDetailRepository.getTotalQuantity();
     }
 
+    @Override
+    public Long getTotalQuantityMedicine(Long medicineId) {
+        return inventoryDetailRepository.getTotalQuantityMedicine(medicineId);
+    }
+
 }
