@@ -46,11 +46,11 @@ public class Medicine {
     @Column(name = "status", nullable = false)
     private Integer status;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
     @JoinColumn(name = "brand_id")
     private Brand brand;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
     @JoinTable(
             name = "categories_medicines",
             joinColumns = @JoinColumn(name = "medicine_id"),
@@ -66,7 +66,7 @@ public class Medicine {
     )
     private Set<Specification> specifications;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
             name = "images_medicines",
             joinColumns = @JoinColumn(name = "medicine_id"),
@@ -74,7 +74,7 @@ public class Medicine {
     )
     private Set<Image> images;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
     @JoinTable(
             name = "tags_medicines",
             joinColumns = @JoinColumn(name = "medicine_id"),

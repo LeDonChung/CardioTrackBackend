@@ -82,6 +82,8 @@ public class GatewayConfig {
                         .uri("lb://chat-service"))
                 .route("chat-service", r -> r.path("/api/v1/chat/**")
                         .uri("lb://chat-service"))
+                .route("consult-service", r -> r.path("/api/v1/consult/**")
+                        .uri("lb://consult-service"))
                 .build();
     }
 }
