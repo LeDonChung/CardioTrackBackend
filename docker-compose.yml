@@ -136,7 +136,44 @@ services:
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
     networks:
       - my-network
+    
+  consult-service:
+    build: ./ConsultService
+    container_name: consult-service
+    depends_on:
+      - discovery-service
+      - mariadb-consult
+    ports:
+      - "9078:9078"
+    environment:
+      - SPRING_APPLICATION_NAME=consult-service
+      - SERVER_PORT=9078
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka
+      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.mariadb.jdbc.Driver
+      - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb-consult:3306/tcconsult?useUnicode=true&characterEncoding=utf8&characterSetResults=utf8
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - SPRING_JPA_SHOW_SQL=true
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - CHATGPT_OPEN_API_KEY=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
+      - CHATGPT_MODEL=gpt-3.5-turbo-1106
+      - CHATGPT_ASSISTANT_ID=asst_knW06tfTd1ofGEDCKF9SHC0N
+    networks:
+      - my-network
 
+  mariadb-consult:
+    image: mariadb:latest
+    container_name: mariadb-consult
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=tcconsult
+    ports:
+      - "3309:3306"
+    volumes:
+      - mariadb-consult-data:/var/lib/mysql
+    networks:
+      - my-network
+        
   mariadb-user:
     image: mariadb:latest
     container_name: mariadb-user
@@ -325,6 +362,7 @@ services:
 
 volumes:
   mariadb-user-data:
+  mariadb-consult-data:
   mariadb-post-data:
   mariadb-inventory-data:
   mariadb-product-data:
