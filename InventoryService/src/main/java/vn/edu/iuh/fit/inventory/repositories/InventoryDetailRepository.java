@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import vn.edu.iuh.fit.inventory.models.entities.InventoryDetail;
 
+import java.sql.Timestamp;
+
 @Repository
 public interface InventoryDetailRepository extends JpaRepository<InventoryDetail, Long> {
 
@@ -29,6 +31,12 @@ public interface InventoryDetailRepository extends JpaRepository<InventoryDetail
 
     @Query("SELECT i FROM InventoryDetail i WHERE i.medicine = ?1 AND i.quantity > 0 ORDER BY i.quantity ASC")
     Page<InventoryDetail> getInventoryDetailsSortedByQuantity(Long medicineId, Pageable pageable);
+
+    @Query("SELECT i FROM InventoryDetail i WHERE i.expirationDate BETWEEN CURRENT_DATE AND :expirationDate")
+    Page<InventoryDetail> findMedicinesExpirationDate(Timestamp expirationDate, Pageable pageable);
+
+    @Query("SELECT i FROM InventoryDetail i WHERE i.expirationDate < CURRENT_DATE")
+    Page<InventoryDetail> findMedicinesExpired(Pageable pageable);
 
 }
 

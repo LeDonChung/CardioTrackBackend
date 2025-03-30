@@ -33,4 +33,10 @@ public interface InventoryDetailService {
     Long getTotalQuantityMedicine(Long medicineId);
 
     int updateQuantityByMedicine(Long medicineId, Long quantity);
+
+    // Lấy danh sách thuốc gần hết hạn (6 tháng)
+    PageDTO<InventoryDetailResponse> getMedicinesNearExpiration(int page, int size, String sortBy, String sortName);
+
+    // Lấy danh sách thuốc đã hết hạn
+    PageDTO<InventoryDetailResponse> getMedicinesExpired(int page, int size, String sortBy, String sortName);
 }

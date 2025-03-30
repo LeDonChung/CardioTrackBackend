@@ -32,4 +32,7 @@ public class InventoryDetailResponse {
     private Long price;
 
     private Timestamp expirationDate;
+
+    private boolean expired = false;
+    private boolean nearExpiration = false;
 }

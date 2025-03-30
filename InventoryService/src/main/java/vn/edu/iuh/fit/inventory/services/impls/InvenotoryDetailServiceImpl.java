@@ -20,6 +20,8 @@ import vn.edu.iuh.fit.inventory.repositories.InventoryDetailRepository;
 import vn.edu.iuh.fit.inventory.services.InventoryDetailService;
 import vn.edu.iuh.fit.inventory.utils.SystemConstraints;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -178,5 +180,63 @@ public class InvenotoryDetailServiceImpl implements InventoryDetailService {
         }
 
         return updated;
+    }
+
+    @Override
+    public PageDTO<InventoryDetailResponse> getMedicinesNearExpiration(int page, int size, String sortBy, String sortName) {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime expirationDate = now.plusMonths(6);
+
+        Timestamp expirationTimestamp = Timestamp.valueOf(expirationDate);
+
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Order.asc(sortBy))); // Hoặc desc nếu cần
+
+        Page<InventoryDetail> pageInventoryDetails = inventoryDetailRepository.findMedicinesExpirationDate(expirationTimestamp, pageRequest);
+
+        List<InventoryDetailResponse> inventoryDetailResponses = pageInventoryDetails.getContent().stream()
+                .map(inventoryDetail -> {
+                    InventoryDetailResponse inventoryDetailResponse = inventoryDetailMapper.toDto(inventoryDetail);
+                    inventoryDetailResponse.setNearExpiration(true);
+                    return inventoryDetailResponse;
+                })
+                .collect(Collectors.toList());
+
+        return PageDTO.<InventoryDetailResponse>builder()
+                .page(page)
+                .size(size)
+                .sortBy(sortBy)
+                .sortName(sortName)
+                .data(inventoryDetailResponses)
+                .totalPage(pageInventoryDetails.getTotalPages())
+                .build();
+
+    }
+
+    @Override
+    public PageDTO<InventoryDetailResponse> getMedicinesExpired(int page, int size, String sortBy, String sortName) {
+        LocalDateTime now = LocalDateTime.now();
+
+        Timestamp nowTimestamp = Timestamp.valueOf(now);
+
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Order.asc(sortBy))); // Hoặc desc nếu cần
+
+        Page<InventoryDetail> pageInventoryDetails = inventoryDetailRepository.findMedicinesExpired(pageRequest);
+
+        List<InventoryDetailResponse> inventoryDetailResponses = pageInventoryDetails.getContent().stream()
+                .map(inventoryDetail -> {
+                    InventoryDetailResponse inventoryDetailResponse = inventoryDetailMapper.toDto(inventoryDetail);
+                    inventoryDetailResponse.setExpired(true);
+                    return inventoryDetailResponse;
+                })
+                .collect(Collectors.toList());
+
+        return PageDTO.<InventoryDetailResponse>builder()
+                .page(page)
+                .size(size)
+                .sortBy(sortBy)
+                .sortName(sortName)
+                .data(inventoryDetailResponses)
+                .totalPage(pageInventoryDetails.getTotalPages())
+                .build();
     }
 }

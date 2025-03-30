@@ -123,4 +123,35 @@ public class InventoryDetailController {
                         .build()
         );
     }
+
+
+    @GetMapping("/medicines-near-expiration")
+    public ResponseEntity<BaseResponse<PageDTO<InventoryDetailResponse>>> getMedicinesNearExpiration(@RequestParam(defaultValue = "0") int page,
+                                                                                                     @RequestParam(defaultValue = "10") int size,
+                                                                                                     @RequestParam(required = false) String sortBy,
+                                                                                                     @RequestParam(required = false) String sortName) {
+        PageDTO<InventoryDetailResponse> pageDTO = inventoryDetailService.getMedicinesNearExpiration(page, size, sortBy, sortName);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<PageDTO<InventoryDetailResponse>>builder()
+                        .data(pageDTO)
+                        .success(true)
+                        .build()
+        );
+    }
+
+    @GetMapping("/medicines-expired")
+    public ResponseEntity<BaseResponse<PageDTO<InventoryDetailResponse>>> getMedicinesExpired(@RequestParam(defaultValue = "0") int page,
+                                                                                              @RequestParam(defaultValue = "10") int size,
+                                                                                              @RequestParam(required = false) String sortBy,
+                                                                                              @RequestParam(required = false) String sortName) {
+        PageDTO<InventoryDetailResponse> pageDTO = inventoryDetailService.getMedicinesExpired(page, size, sortBy, sortName);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<PageDTO<InventoryDetailResponse>>builder()
+                        .data(pageDTO)
+                        .success(true)
+                        .build()
+        );
+    }
 }
