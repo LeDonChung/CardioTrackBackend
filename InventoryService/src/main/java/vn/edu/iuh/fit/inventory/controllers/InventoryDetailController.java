@@ -111,4 +111,16 @@ public class InventoryDetailController {
     public Long getTotalQuantityMedicine(@PathVariable Long medicineId) {
         return inventoryDetailService.getTotalQuantityMedicine(medicineId);
     }
+
+    @PutMapping("/update-quantity-medicine/{medicineId}/{quantity}")
+    public ResponseEntity<BaseResponse<Integer>> updateQuantityByMedicine(@PathVariable Long medicineId, @PathVariable Long quantity) {
+        int result = inventoryDetailService.updateQuantityByMedicine(medicineId, quantity);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<Integer>builder()
+                        .data(result)
+                        .success(true)
+                        .build()
+        );
+    }
 }

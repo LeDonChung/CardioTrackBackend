@@ -1,5 +1,6 @@
 package vn.edu.iuh.fit.inventory.services.impls;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -149,4 +150,33 @@ public class InvenotoryDetailServiceImpl implements InventoryDetailService {
         return inventoryDetailRepository.getTotalQuantityMedicine(medicineId);
     }
 
+    @Override
+    @Transactional
+    public int updateQuantityByMedicine(Long medicineId, Long quantity) {
+        //lay danh sach medicine, sap xep tang theo so luong
+        Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE, Sort.by(Sort.Direction.ASC, "quantity"));
+        Page<InventoryDetail> inventoryDetailPage = inventoryDetailRepository.getInventoryDetailsSortedByQuantity(medicineId, pageable);
+
+        Long quantityToSell = quantity;
+        int updated = 0;
+
+        //lap qua cac shelf de tru so luong
+        for (InventoryDetail inventoryDetail : inventoryDetailPage.getContent()){
+            if(quantityToSell <= 0) break;
+
+            long quantityInStock = inventoryDetail.getQuantity();
+            long quantityToSubtract = Math.min(quantityInStock, quantityToSell);
+
+            int result = inventoryDetailRepository.updateQuantityByShelfAndMedicine(quantityToSubtract, inventoryDetail.getShelf().getId(), medicineId);
+            updated += result;
+
+            quantityToSell -= quantityToSubtract;
+        }
+
+        if (quantityToSell > 0) {
+            throw new InventoryDetailException(SystemConstraints.NOT_ENOUGH_MEDICINE);
+        }
+
+        return updated;
+    }
 }

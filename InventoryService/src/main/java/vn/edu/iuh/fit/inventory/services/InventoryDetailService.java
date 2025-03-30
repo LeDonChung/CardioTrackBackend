@@ -1,5 +1,6 @@
 package vn.edu.iuh.fit.inventory.services;
 
+import org.springframework.data.domain.Page;
 import vn.edu.iuh.fit.inventory.exceptions.InventoryDetailException;
 import vn.edu.iuh.fit.inventory.models.dtos.PageDTO;
 import vn.edu.iuh.fit.inventory.models.dtos.requests.InventoryDetailRequest;
@@ -30,4 +31,6 @@ public interface InventoryDetailService {
 
     //Tìm tổng số lượng của 1 thuốc trong kho (1 thuốc có thể nằm trên nhiều kệ)
     Long getTotalQuantityMedicine(Long medicineId);
+
+    int updateQuantityByMedicine(Long medicineId, Long quantity);
 }
