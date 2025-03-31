@@ -126,8 +126,9 @@ public class InventoryDetailController {
         return inventoryDetailService.getTotalQuantityMedicine(medicineId);
     }
 
-    @PutMapping("/update-quantity-medicine/{medicineId}/{quantity}")
-    public ResponseEntity<BaseResponse<Integer>> updateQuantityByMedicine(@PathVariable Long medicineId, @PathVariable Long quantity) {
+    // Cập nhật (trừ) số lượng của một thuốc trong kho khi đặt hàng
+    @PutMapping("/update-quantity-medicine/{medicineId}")
+    public ResponseEntity<BaseResponse<Integer>> updateQuantityByMedicine(@PathVariable Long medicineId, @RequestParam Long quantity) {
         int result = inventoryDetailService.updateQuantityByMedicine(medicineId, quantity);
         return ResponseEntity.ok(
                 BaseResponse
@@ -138,7 +139,20 @@ public class InventoryDetailController {
         );
     }
 
+    // Cập nhật (thêm) số lượng của một thuốc khi hủy đơn (thêm lại vào kho)
+    @PutMapping("/restore-quantity-medicine/{medicineId}")
+    public ResponseEntity<BaseResponse<Integer>> restoreQuantityByMedicine(@PathVariable Long medicineId, @RequestParam Long quantity) {
+        int result = inventoryDetailService.restoreQuantityByMedicine(medicineId, quantity);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<Integer>builder()
+                        .data(result)
+                        .success(true)
+                        .build()
+        );
+    }
 
+    // Danh sách thuốc gần hết hạn
     @GetMapping("/medicines-near-expiration")
     public ResponseEntity<BaseResponse<PageDTO<InventoryDetailResponse>>> getMedicinesNearExpiration(@RequestParam(defaultValue = "0") int page,
                                                                                                      @RequestParam(defaultValue = "10") int size,
@@ -154,6 +168,7 @@ public class InventoryDetailController {
         );
     }
 
+    // Danh sách thuốc đã hết hạn
     @GetMapping("/medicines-expired")
     public ResponseEntity<BaseResponse<PageDTO<InventoryDetailResponse>>> getMedicinesExpired(@RequestParam(defaultValue = "0") int page,
                                                                                               @RequestParam(defaultValue = "10") int size,
@@ -168,6 +183,7 @@ public class InventoryDetailController {
                         .build()
         );
     }
+
 
     @GetMapping("/inventory-details-expiration")
     public ResponseEntity<BaseResponse<PageDTO<InventoryDetailResponse>>> getInventoryDetailsExpiration(
