@@ -19,15 +19,15 @@ public interface InventoryDetailRepository extends JpaRepository<InventoryDetail
     @Query("SELECT SUM(i.quantity) FROM InventoryDetail i")
     Long getTotalQuantity();
 
-    //Cập nhật (thêm) số lượng của một thuốc khi hủy đơn (thêm lại vào kho)
-    @Modifying
-    @Query("update InventoryDetail s set s.quantity = s.quantity + :quantity where s.medicine = :medicineId")
-    void updateAddTotalProduct(Long medicineId, int quantity);
-
-    //Cập nhật (trừ) số lượng của một thuốc trong kho khi đặt hàng
-    @Modifying
-    @Query("update InventoryDetail s set s.quantity = s.quantity - :quantity where s.medicine = :medicineId")
-    void updateSubtractTotalProduct(Long medicineId, int quantity);
+//    //Cập nhật (thêm) số lượng của một thuốc khi hủy đơn (thêm lại vào kho)
+//    @Modifying
+//    @Query("update InventoryDetail s set s.quantity = s.quantity + :quantity where s.medicine = :medicineId")
+//    void updateAddTotalProduct(Long medicineId, int quantity);
+//
+//    //Cập nhật (trừ) số lượng của một thuốc trong kho khi đặt hàng
+//    @Modifying
+//    @Query("update InventoryDetail s set s.quantity = s.quantity - :quantity where s.medicine = :medicineId")
+//    void updateSubtractTotalProduct(Long medicineId, int quantity);
 
     // Tìm chi tiết kho theo medicine và shelfId
     @Query("SELECT i FROM InventoryDetail i WHERE i.medicine = :medicineId AND i.shelf.id = :shelfId")

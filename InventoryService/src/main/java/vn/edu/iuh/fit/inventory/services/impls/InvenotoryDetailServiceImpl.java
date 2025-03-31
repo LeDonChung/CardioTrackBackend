@@ -153,19 +153,19 @@ public class InvenotoryDetailServiceImpl implements InventoryDetailService {
         return inventoryDetailRepository.getTotalQuantity();
     }
 
-    //Cập nhật (thêm) số lượng của một medicine khi hủy đơn (thêm lại vào kho)
-    @Override
-    @Transactional
-    public void updateAddTotalProduct(Long medicineId, int quantity) {
-        inventoryDetailRepository.updateAddTotalProduct(medicineId, quantity);
-    }
-
-    //Cập nhật (trừ) số lượng của một medicine trong kho khi đặt hàng
-    @Override
-    @Transactional
-    public void updateSubtractTotalProduct(Long medicineId, int quantity) {
-        inventoryDetailRepository.updateSubtractTotalProduct(medicineId, quantity);
-    }
+//    //Cập nhật (thêm) số lượng của một medicine khi hủy đơn (thêm lại vào kho)
+//    @Override
+//    @Transactional
+//    public void updateAddTotalProduct(Long medicineId, int quantity) {
+//        inventoryDetailRepository.updateAddTotalProduct(medicineId, quantity);
+//    }
+//
+//    //Cập nhật (trừ) số lượng của một medicine trong kho khi đặt hàng
+//    @Override
+//    @Transactional
+//    public void updateSubtractTotalProduct(Long medicineId, int quantity) {
+//        inventoryDetailRepository.updateSubtractTotalProduct(medicineId, quantity);
+//    }
 
     // Tìm chi tiết kho theo medicine và shelfId
     @Override
