@@ -27,4 +27,7 @@ public interface ShelfRepository extends JpaRepository<Shelf, Long> {
     @Modifying
     @Query("update Shelf s set s.totalProduct = s.totalProduct - :quantity,s.notes = CONCAT('- ', :quantity) where s.id = :id")
     void updateTotalProductWhenOrder(Long id, int quantity);
+
+    @Query("SELECT s FROM Shelf s WHERE s.location like %?1%")
+    Page<Shelf> findAllByLocation(String location, Pageable pageable);
 }
