@@ -47,6 +47,11 @@ dependencies {
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2'
 
 	implementation 'org.springframework.boot:spring-boot-starter-security'
+
+	implementation "io.github.resilience4j:resilience4j-spring-boot3"
+	implementation 'org.springframework.boot:spring-boot-starter-aop'
+
+
 }
 
 dependencyManagement {
@@ -57,4 +62,11 @@ dependencyManagement {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+bootJar {
+	mainClass = 'vn.edu.iuh.fit.auth.AuthServiceApplication'
+}
+build {
+	dependsOn bootJar
 }

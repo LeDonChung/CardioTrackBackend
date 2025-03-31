@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="056a8a1b-6a65-4077-aa32-40e075f4f0a1" name="Changes" comment="" />
+    <list default="true" id="056a8a1b-6a65-4077-aa32-40e075f4f0a1" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/vn/edu/iuh/fit/product/models/entities/Medicine.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/vn/edu/iuh/fit/product/models/entities/Medicine.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProductService/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProductService/src/test/java/vn/edu/iuh/fit/product/ProductServiceApplicationTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/test/java/vn/edu/iuh/fit/product/ProductServiceApplicationTests.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -20,6 +27,9 @@
   &quot;associatedIndex&quot;: 3
 }</component>
   <component name="ProjectId" id="2tDoH8dsSR2Tj8TQ002JVNu16v9" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -28,21 +38,17 @@
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "build-consult-service",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "D:/HK2_2024_2025/KTPM/CardioTrackBackend/UserService",
+    "last_opened_file_path": "D:/CardioTrack/CardioTrackBackend",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
-  <component name="SharedIndexes">
-    <attachedChunks>
-      <set>
-        <option value="bundled-jdk-9f38398b9061-18abd8497189-intellij.indexing.shared.core-IU-241.14494.240" />
-        <option value="bundled-js-predefined-1d06a55b98c1-74d2a5396914-JavaScript-IU-241.14494.240" />
-      </set>
-    </attachedChunks>
-  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -53,6 +59,8 @@
       <updated>1739895916968</updated>
       <workItem from="1739895918009" duration="40000" />
       <workItem from="1740038625781" duration="280000" />
+      <workItem from="1742128691528" duration="513000" />
+      <workItem from="1743176396648" duration="1000" />
     </task>
     <servers />
   </component>
