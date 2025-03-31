@@ -39,4 +39,6 @@ public interface InventoryDetailService {
 
     // Lấy danh sách thuốc đã hết hạn
     PageDTO<InventoryDetailResponse> getMedicinesExpired(int page, int size, String sortBy, String sortName);
+
+    PageDTO<InventoryDetailResponse> getInventoryDetailsExpiration(int page, int size, String sortBy, String sortName, Long  medicineId);
 }

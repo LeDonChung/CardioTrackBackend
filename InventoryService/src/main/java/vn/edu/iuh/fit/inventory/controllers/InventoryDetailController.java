@@ -154,4 +154,21 @@ public class InventoryDetailController {
                         .build()
         );
     }
+
+    @GetMapping("/inventory-details-expiration")
+    public ResponseEntity<BaseResponse<PageDTO<InventoryDetailResponse>>> getInventoryDetailsExpiration(
+                                                                                                         @RequestParam(defaultValue = "0") int page,
+                                                                                                         @RequestParam(defaultValue = "10") int size,
+                                                                                                         @RequestParam(required = false) String sortBy,
+                                                                                                         @RequestParam(required = false) String sortName,
+                                                                                                         @RequestParam(required = false) Long medicineId) {
+        PageDTO<InventoryDetailResponse> pageDTO = inventoryDetailService.getInventoryDetailsExpiration(page, size, sortBy, sortName, medicineId);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<PageDTO<InventoryDetailResponse>>builder()
+                        .data(pageDTO)
+                        .success(true)
+                        .build()
+        );
+    }
 }

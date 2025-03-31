@@ -239,4 +239,47 @@ public class InvenotoryDetailServiceImpl implements InventoryDetailService {
                 .totalPage(pageInventoryDetails.getTotalPages())
                 .build();
     }
+
+    @Override
+    public PageDTO<InventoryDetailResponse> getInventoryDetailsExpiration(int page, int size, String sortBy, String sortName, Long medicineId) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortName), sortBy));
+
+        Page<InventoryDetail> pageInventoryDetails;
+
+        if (medicineId != null) {
+            pageInventoryDetails = inventoryDetailRepository.findAllByMedicine(medicineId, pageable);
+        } else {
+            pageInventoryDetails = inventoryDetailRepository.findAll(pageable);
+        }
+
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime nearExpirationThreshold = now.plusMonths(6);
+
+        List<InventoryDetailResponse> inventoryDetailResponses = pageInventoryDetails.getContent().stream()
+                .map(inventoryDetail -> {
+                    InventoryDetailResponse response = inventoryDetailMapper.toDto(inventoryDetail);
+
+                    if (inventoryDetail.getExpirationDate() != null) {
+                        LocalDateTime expirationDate = inventoryDetail.getExpirationDate().toLocalDateTime();
+
+                        if (expirationDate.isBefore(now)) {
+                            response.setExpired(true); // Đã hết hạn
+                        } else if (expirationDate.isBefore(nearExpirationThreshold)) {
+                            response.setNearExpiration(true); // Gần hết hạn
+                        }
+                    }
+                    return response;
+                })
+                .collect(Collectors.toList());
+
+        return PageDTO.<InventoryDetailResponse>builder()
+                .page(page)
+                .size(size)
+                .sortBy(sortBy)
+                .sortName(sortName)
+                .data(inventoryDetailResponses)
+                .totalPage(pageInventoryDetails.getTotalPages())
+                .build();
+    }
+
 }

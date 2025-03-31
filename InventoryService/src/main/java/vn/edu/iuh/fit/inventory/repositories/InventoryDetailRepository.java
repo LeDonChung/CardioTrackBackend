@@ -38,5 +38,7 @@ public interface InventoryDetailRepository extends JpaRepository<InventoryDetail
     @Query("SELECT i FROM InventoryDetail i WHERE i.expirationDate < CURRENT_DATE")
     Page<InventoryDetail> findMedicinesExpired(Pageable pageable);
 
+    Page<InventoryDetail> findAllByMedicine(Long medicineId, Pageable pageable);
+
 }
 
