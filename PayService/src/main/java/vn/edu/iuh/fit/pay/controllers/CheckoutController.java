@@ -32,8 +32,8 @@ public class CheckoutController {
 
     @PostMapping("/create-payment-link")
     @Retry(name = "paymentService", fallbackMethod = "createPaymentLinkFallback")
-    @CircuitBreaker(name = "paymentService", fallbackMethod = "createPaymentLinkFallback")
-    @RateLimiter(name = "paymentServiceRateLimiter", fallbackMethod = "createPaymentLinkFallback")
+//    @CircuitBreaker(name = "paymentService", fallbackMethod = "createPaymentLinkFallback")
+//    @RateLimiter(name = "paymentServiceRateLimiter", fallbackMethod = "createPaymentLinkFallback")
     public ResponseEntity<?> createPaymentLink(@RequestBody PaymentRequest request) throws Exception {
         // Chuẩn bị dữ liệu
         final List<ProductRequest> products = request.getProducts();
@@ -42,6 +42,10 @@ public class CheckoutController {
         final String cancelUrl = request.getCancelUrl();
         final int price = request.getAmount();
         final Long orderCode = request.getOrderCode();
+
+
+        System.out.println("------------------------------------");
+        System.out.println("Request: " + request);
 
         List<ItemData> items = new ArrayList<>();
         for (ProductRequest product : products) {
@@ -61,6 +65,8 @@ public class CheckoutController {
                 .cancelUrl(cancelUrl)
                 .items(items)
                 .build();
+
+        System.out.println("Payment Data: " + paymentData);
 
         // Gọi PayOS để tạo payment link (nếu exception xảy ra, Retry sẽ kích hoạt)
         CheckoutResponseData data = payOS.createPaymentLink(paymentData);
