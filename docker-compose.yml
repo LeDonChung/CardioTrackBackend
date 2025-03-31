@@ -83,6 +83,44 @@ services:
     networks:
       - my-network
       
+  health-service:
+    build: ./HealthCheckService
+    container_name: health-service
+    depends_on:
+      - discovery-service
+      - mariadb-health
+    ports:
+      - "9101:9101"
+    environment:
+      - SPRING_APPLICATION_NAME=health-service
+      - SERVER_PORT=9101
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka
+      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.mariadb.jdbc.Driver
+      - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb-health:3306/tchealth  # ✅ sử dụng đúng tên container mới
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - SPRING_JPA_SHOW_SQL=true
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    volumes:
+      - ./HealthCheckService/.env:/app/.env
+    networks:
+      - my-network
+
+
+  mariadb-health:
+    image: mariadb:latest
+    container_name: mariadb-health
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=tchealth
+    ports:
+      - "3300:3306"   # ✅ expose port riêng
+    volumes:
+      - mariadb-health-data:/var/lib/mysql  # ✅ volume riêng để lưu trữ
+    networks:
+      - my-network      
+      
   inventory-service:
     build: ./InventoryService
     container_name: inventory-service
@@ -369,6 +407,7 @@ volumes:
   redis-data:
   mariadb-order-data:
   mongo-user-data:
+  mariadb-health-data:
 
 
 networks:
