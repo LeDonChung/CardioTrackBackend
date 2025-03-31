@@ -199,9 +199,6 @@ public class InvenotoryDetailServiceImpl implements InventoryDetailService {
             int result = inventoryDetailRepository.addQuantityByShelfAndMedicine(quantityToAddToShelf, inventoryDetail.getShelf().getId(), medicineId);
             updated += result;
 
-            // Cập nhật tổng số sản phẩm trên kệ
-            inventoryDetailRepository.updateTotalProductInShelf(quantityToAddToShelf, inventoryDetail.getShelf().getId());
-
             quantityToRestore -= quantityToAddToShelf;
         }
 
@@ -211,8 +208,6 @@ public class InvenotoryDetailServiceImpl implements InventoryDetailService {
 
         return updated;
     }
-
-
 
     @Override
     public PageDTO<InventoryDetailResponse> getMedicinesNearExpiration(int page, int size, String sortBy, String sortName) {
