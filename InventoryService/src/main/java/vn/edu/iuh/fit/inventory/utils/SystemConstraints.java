@@ -7,4 +7,5 @@ public class SystemConstraints {
     public static final String PURCHASEORDER_NOT_FOUND = "Đơn mua hàng không tồn tại";
     public static final String SUPPLIER_NOT_FOUND = "Nhà cung cấp không tồn tại";
     public static final String NOT_ENOUGH_MEDICINE = "Không đủ số lượng thuốc để bán!";
+    public static final String SHELF_FULL = "Kệ đầy!";
 }

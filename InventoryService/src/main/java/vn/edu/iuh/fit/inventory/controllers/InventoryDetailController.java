@@ -124,6 +124,18 @@ public class InventoryDetailController {
         );
     }
 
+    @PutMapping("/cancel-quantity-medicine/{medicineId}/{quantity}")
+    public ResponseEntity<BaseResponse<Integer>> cancelQuantityByMedicine(@PathVariable Long medicineId, @PathVariable Long quantity) {
+        int result = inventoryDetailService.cancelQuantityByMedicine(medicineId, quantity);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<Integer>builder()
+                        .data(result)
+                        .success(true)
+                        .build()
+        );
+    }
+
 
     @GetMapping("/medicines-near-expiration")
     public ResponseEntity<BaseResponse<PageDTO<InventoryDetailResponse>>> getMedicinesNearExpiration(@RequestParam(defaultValue = "0") int page,
