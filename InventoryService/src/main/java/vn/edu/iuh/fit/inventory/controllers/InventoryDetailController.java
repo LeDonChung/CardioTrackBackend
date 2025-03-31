@@ -139,7 +139,20 @@ public class InventoryDetailController {
         );
     }
 
-    // Danh sách thuốc gần hết hạn
+    // Cập nhật (cộng) số lượng của một thuốc trong kho khi hủy đơn
+    @PutMapping("/cancel-quantity-medicine/{medicineId}")
+    public ResponseEntity<BaseResponse<Integer>> cancelQuantityByMedicine(@PathVariable Long medicineId, @RequestParam Long quantity) {
+        int result = inventoryDetailService.cancelQuantityByMedicine(medicineId, quantity);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<Integer>builder()
+                        .data(result)
+                        .success(true)
+                        .build()
+        );
+    }
+
+    // Danh sách thuốc gần hết hạn (6 tháng)
     @GetMapping("/medicines-near-expiration")
     public ResponseEntity<BaseResponse<PageDTO<InventoryDetailResponse>>> getMedicinesNearExpiration(@RequestParam(defaultValue = "0") int page,
                                                                                                      @RequestParam(defaultValue = "10") int size,

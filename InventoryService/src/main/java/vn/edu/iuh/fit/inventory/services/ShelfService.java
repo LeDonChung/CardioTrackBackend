@@ -1,5 +1,6 @@
 package vn.edu.iuh.fit.inventory.services;
 
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.parameters.P;
 import vn.edu.iuh.fit.inventory.models.dtos.PageDTO;
 import vn.edu.iuh.fit.inventory.models.dtos.requests.ShelfRequest;
@@ -9,7 +10,7 @@ import vn.edu.iuh.fit.inventory.models.entities.Shelf;
 import java.util.List;
 
 public interface ShelfService {
-    PageDTO<ShelfResponse> getPagesShelf(int page, int size, String sortBy, String sortName);
+    PageDTO<ShelfResponse> getPagesShelf(int page, int size, String sortBy, String sortName, String location);
 
     ShelfResponse save(ShelfRequest request);
 

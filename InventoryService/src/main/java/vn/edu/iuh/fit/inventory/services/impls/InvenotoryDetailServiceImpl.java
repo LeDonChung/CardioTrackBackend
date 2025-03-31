@@ -17,6 +17,7 @@ import vn.edu.iuh.fit.inventory.models.dtos.requests.InventoryDetailRequest;
 import vn.edu.iuh.fit.inventory.models.dtos.responses.*;
 import vn.edu.iuh.fit.inventory.models.entities.InventoryDetail;
 import vn.edu.iuh.fit.inventory.repositories.InventoryDetailRepository;
+import vn.edu.iuh.fit.inventory.repositories.ShelfRepository;
 import vn.edu.iuh.fit.inventory.services.InventoryDetailService;
 import vn.edu.iuh.fit.inventory.utils.SystemConstraints;
 
@@ -39,6 +40,9 @@ public class InvenotoryDetailServiceImpl implements InventoryDetailService {
 
     @Autowired
     private CategoryClient categoryClient;
+
+    @Autowired
+    private ShelfRepository shelfRepository;
 
     //get all inventory detail
     @Override
@@ -190,10 +194,42 @@ public class InvenotoryDetailServiceImpl implements InventoryDetailService {
             updated += result;
 
             quantityToSell -= quantityToSubtract;
+
+            shelfRepository.updateSubtractTotalProduct(inventoryDetail.getShelf().getId(), (int) quantityToSubtract);
         }
 
         if (quantityToSell > 0) {
             throw new InventoryDetailException(SystemConstraints.NOT_ENOUGH_MEDICINE);
+        }
+
+        return updated;
+    }
+
+    // Cập nhật (cộng) số lượng của một thuốc trong kho khi hủy đơn
+    @Override
+    @Transactional
+    public int cancelQuantityByMedicine(Long medicineId, Long quantity) {
+        List<InventoryDetail> availableShelves = inventoryDetailRepository.getAvailableShelvesForMedicine(medicineId);
+
+        Long quantityToRestore = quantity;
+        int updated = 0;
+
+        for (InventoryDetail inventoryDetail : availableShelves) {
+            if (quantityToRestore <= 0) break;
+
+            long availableSpace = inventoryDetail.getShelf().getCapacity() - inventoryDetail.getQuantity();
+            long quantityToAddToShelf = Math.min(availableSpace, quantityToRestore);
+
+            int result = inventoryDetailRepository.addQuantityByShelfAndMedicine(quantityToAddToShelf, inventoryDetail.getShelf().getId(), medicineId);
+            updated += result;
+
+            quantityToRestore -= quantityToAddToShelf;
+
+            shelfRepository.updateAddTotalProduct(inventoryDetail.getShelf().getId(), (int) quantityToAddToShelf);
+        }
+
+        if (quantityToRestore > 0) {
+            throw new InventoryDetailException(SystemConstraints.SHELF_FULL);
         }
 
         return updated;

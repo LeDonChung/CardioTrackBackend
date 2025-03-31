@@ -25,8 +25,9 @@ public class ShelfController {
     public ResponseEntity<BaseResponse<PageDTO<ShelfResponse>>> getPages(@RequestParam(defaultValue = "0") int page,
                                                                          @RequestParam(defaultValue = "10") int size,
                                                                          @RequestParam(required = false) String sortBy,
-                                                                         @RequestParam(required = false) String sortName) {
-        PageDTO<ShelfResponse> pageDTO = shelfService.getPagesShelf(page, size, sortBy, sortName);
+                                                                         @RequestParam(required = false) String sortName,
+                                                                         @RequestParam(required = false) String location) {
+        PageDTO<ShelfResponse> pageDTO = shelfService.getPagesShelf(page, size, sortBy, sortName, location);
         return ResponseEntity.ok(
                 BaseResponse
                         .<PageDTO<ShelfResponse>>builder()
@@ -105,7 +106,7 @@ public class ShelfController {
                                                                                 @RequestParam(defaultValue = "10") int size,
                                                                                 @RequestParam(required = false) String sortBy,
                                                                                 @RequestParam(required = false) String sortName,
-                                                                                @RequestParam String location) {
+                                                                                @RequestParam(required = false) String location) {
         PageDTO<ShelfResponse> pageDTO = shelfService.findLocationPage(page, size, sortBy, sortName, location);
         return ResponseEntity.ok(
                 BaseResponse

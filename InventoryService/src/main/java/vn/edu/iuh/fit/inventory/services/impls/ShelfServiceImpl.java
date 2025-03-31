@@ -32,29 +32,30 @@ public class ShelfServiceImpl implements ShelfService {
     private ShelfMapper sheftMapper;
 
     @Override
-    public PageDTO<ShelfResponse> getPagesShelf(int page, int size, String sortBy, String sortName) {
-        Pageable pageable = PageRequest.of(page, size);
-        if (sortBy != null && sortName != null) {
-            pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortName), sortBy));
+    public PageDTO<ShelfResponse> getPagesShelf(int page, int size, String sortBy, String sortName, String location) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortName), sortBy));
+
+        Page<Shelf> shelfPage;
+        if (location != null && !location.isEmpty()) {
+            shelfPage = sheltRepository.findAllByLocation(location, pageable);
+        } else {
+            shelfPage = sheltRepository.findAll(pageable);
         }
 
-        // Lấy dữ liệu phân trang từ repository
-        Page<Shelf> shelfPage = sheltRepository.findAll(pageable);
-        List<Shelf> shelves = shelfPage.getContent();
-        List<ShelfResponse> shelfResponses = shelves.stream()
-                .map(shelf -> sheftMapper.toDto(shelf))
+        List<ShelfResponse> shelfResponses = shelfPage.getContent().stream()
+                .map(sheftMapper::toDto)
                 .collect(Collectors.toList());
 
-        // Tạo và trả về PageDTO với thông tin phân trang
         return PageDTO.<ShelfResponse>builder()
                 .page(page)
                 .size(size)
-                .sortBy(sortBy)
                 .totalPage(shelfPage.getTotalPages())
+                .sortBy(sortBy)
                 .sortName(sortName)
                 .data(shelfResponses)
                 .build();
     }
+
 
     @Override
     public ShelfResponse save(ShelfRequest request) throws ShelfException {
@@ -109,7 +110,7 @@ public class ShelfServiceImpl implements ShelfService {
         }
         Shelf shelfEntity = shelf.get();
         // Cập nhật số lượng sản phẩm
-        sheltRepository.updateTotalProduct(id, quantity);
+        sheltRepository.updateAddTotalProduct(id, quantity);
         // Lưu lại kệ đã cập nhật
         sheltRepository.save(shelfEntity);
     }
