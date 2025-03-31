@@ -1,0 +1,30 @@
+resilience4j.circuitbreaker:
+  instances:
+    userLoginCircuit:
+      registerHealthIndicator: true
+      slidingWindowSize: 10
+      permittedNumberOfCallsInHalfOpenState: 3
+      minimumNumberOfCalls: 5
+      waitDurationInOpenState: 10s
+      failureRateThreshold: 50
+      eventConsumerBufferSize: 10
+
+resilience4j.retry:
+  instances:
+    userLoginRetry:
+      maxAttempts: 3
+      waitDuration: 1s
+      enableExponentialBackoff: true
+      exponentialBackoffMultiplier: 2
+      retryExceptions:
+        - org.springframework.web.client.HttpServerErrorException
+        - java.io.IOException
+        - java.lang.reflect.UndeclaredThrowableException
+        - feign.FeignException
+        - feign.RetryableException
+
+resilience4j.timelimiter:
+  instances:
+    userLoginTimelimiter:
+      timeoutDuration: 2s
+      cancelRunningFuture: true

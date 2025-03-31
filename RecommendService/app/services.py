@@ -23,7 +23,7 @@ def schedule_training():
 
 
 def fetch_products():
-    response = requests.get("http://localhost:8888/api/v1/medicine" + "/get-all")
+    response = requests.get("http://api-gateway:8888/api/v1/medicine" + "/get-all")
 
     return response.json() if response.status_code == 200 else []
 
@@ -113,7 +113,7 @@ def recommend_knn(product_id, num_recommendations=3):
 
 
 def fetch_orders():
-    response = requests.get("http://localhost:8888/api/v1/order" + "/recommend")
+    response = requests.get("http://api-gateway:8888/api/v1/order" + "/recommend")
     return response.json() if response.status_code == 200 else []
 
 

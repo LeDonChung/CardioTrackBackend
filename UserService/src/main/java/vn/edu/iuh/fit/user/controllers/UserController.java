@@ -1,5 +1,7 @@
 package vn.edu.iuh.fit.user.controllers;
 
+import io.github.resilience4j.retry.annotation.Retry;
+import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,9 +16,11 @@ import vn.edu.iuh.fit.user.model.dto.response.BaseResponse;
 import vn.edu.iuh.fit.user.model.dto.response.UserResponse;
 import vn.edu.iuh.fit.user.model.entity.Address;
 import vn.edu.iuh.fit.user.services.UserService;
+import vn.edu.iuh.fit.user.utils.SystemConstraints;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -65,19 +69,28 @@ public class UserController {
     }
 
     @GetMapping("/info")
-    public ResponseEntity<BaseResponse<UserResponse>> getInfo(@RequestParam("token") String token) {
+    @Retry(name = "userProfileRetry", fallbackMethod = "getInfoFallback")
+    @TimeLimiter(name = "userProfileTimelimiter")
+    public CompletableFuture<ResponseEntity<BaseResponse<UserResponse>>> getInfo(@RequestParam("token") String token) {
         System.out.println("🔍 Nhận request validate token: " + token); // ✅ Debug log
         UserResponse user = userService.getMe(token);
-        return new ResponseEntity<>(
-                BaseResponse
-                        .<UserResponse>builder()
-                        .code(String.valueOf(HttpStatus.OK.value()))
-                        .success(true)
-                        .data(user)
-                        .build(),
-                HttpStatus.OK
+        return CompletableFuture.completedFuture(
+                new ResponseEntity<>(
+                        BaseResponse
+                                .<UserResponse>builder()
+                                .code(String.valueOf(HttpStatus.OK.value()))
+                                .success(true)
+                                .data(user)
+                                .build(),
+                        HttpStatus.OK
+                )
         );
     }
+
+    public CompletableFuture<ResponseEntity<BaseResponse<UserResponse>>> getInfoFallback(String token, Throwable throwable) throws UserException {
+        throw new UserException(SystemConstraints.SERVICE_UNAVAILABLE);
+    }
+
 
     @PostMapping("/generation-otp")
     public ResponseEntity<BaseResponse<Boolean>> generationOtp(@RequestParam("phoneNumber") String phoneNumber) throws UserException {

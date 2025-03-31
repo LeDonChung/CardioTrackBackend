@@ -20,6 +20,8 @@ public class Post {
     private Long id;
 
     private String title;
+
+    @Column(columnDefinition = "TEXT")
     private String content;
 
     @Column(name = "author_id", nullable = false) // Đảm bảo tên cột không trùng lặp
