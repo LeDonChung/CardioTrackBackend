@@ -199,31 +199,6 @@ public class InvenotoryDetailServiceImpl implements InventoryDetailService {
         return updated;
     }
 
-    // Cập nhật (thêm) số lượng của một thuốc khi hủy đơn (thêm lại vào kho)
-    @Override
-    @Transactional
-    public int restoreQuantityByMedicine(Long medicineId, Long quantity) {
-        // Lấy danh sách thuốc trên các kệ, sắp xếp theo số lượng tăng dần
-        Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE, Sort.by(Sort.Direction.ASC, "quantity"));
-        Page<InventoryDetail> inventoryDetailPage = inventoryDetailRepository.getInventoryDetailsSortedByQuantity(medicineId, pageable);
-
-        Long quantityToRestore = quantity;
-        int updated = 0;
-
-        // Duyệt qua từng kệ để cộng thuốc lại vào kho
-        for (InventoryDetail inventoryDetail : inventoryDetailPage.getContent()) {
-            if (quantityToRestore <= 0) break;
-
-            long quantityToAdd = Math.min(quantityToRestore, inventoryDetail.getQuantity()); // Cộng tối đa số cần phục hồi
-            int result = inventoryDetailRepository.restoreQuantityByShelfAndMedicine(quantityToAdd, inventoryDetail.getShelf().getId(), medicineId);
-            updated += result;
-
-            quantityToRestore += quantityToAdd;
-        }
-
-        return updated;
-    }
-
     // Lấy danh sách thuốc gần hết hạn (6 tháng)
     @Override
     public PageDTO<InventoryDetailResponse> getMedicinesNearExpiration(int page, int size, String sortBy, String sortName) {

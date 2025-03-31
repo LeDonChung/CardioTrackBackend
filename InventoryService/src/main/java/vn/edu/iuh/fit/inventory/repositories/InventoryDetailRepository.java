@@ -36,12 +36,6 @@ public interface InventoryDetailRepository extends JpaRepository<InventoryDetail
     @Query("UPDATE InventoryDetail i SET i.quantity = i.quantity - ?1 WHERE i.shelf.id = ?2 AND i.medicine = ?3")
     int updateQuantityByShelfAndMedicine(Long quantityToSell, Long shelfId, Long medicineId);
 
-    // Cập nhật (thêm) số lượng của một thuốc trong kho khi hủy đơn
-    @Modifying
-    @Transactional
-    @Query("UPDATE InventoryDetail i SET i.quantity = i.quantity + ?1 WHERE i.shelf.id = ?2 AND i.medicine = ?3")
-    int restoreQuantityByShelfAndMedicine(Long quantityToRestore, Long shelfId, Long medicineId);
-
     @Query("SELECT i FROM InventoryDetail i WHERE i.medicine = ?1 AND i.quantity > 0 ORDER BY i.quantity ASC")
     Page<InventoryDetail> getInventoryDetailsSortedByQuantity(Long medicineId, Pageable pageable);
 
