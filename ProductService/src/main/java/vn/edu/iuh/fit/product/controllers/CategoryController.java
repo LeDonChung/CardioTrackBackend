@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vn.edu.iuh.fit.product.exceptions.CategoryException;
+import vn.edu.iuh.fit.product.models.dtos.PageDTO;
 import vn.edu.iuh.fit.product.models.dtos.requests.CategoryRequest;
 import vn.edu.iuh.fit.product.models.dtos.responses.BaseResponse;
 import vn.edu.iuh.fit.product.models.dtos.responses.CategoryProminentResponse;
@@ -128,6 +129,21 @@ public class CategoryController {
                 BaseResponse
                         .<List<CategoryProminentResponse>>builder()
                         .data(categories)
+                        .success(true)
+                        .build()
+        );
+    }
+
+    @GetMapping
+    public ResponseEntity<BaseResponse<PageDTO<CategoryResponse>>> getPagesCategory(@RequestParam(defaultValue = "0") int page ,
+                                                                                    @RequestParam(defaultValue = "10") int size,
+                                                                                    @RequestParam (required = false) String sortBy,
+                                                                                    @RequestParam (required = false) String sortName) {
+        PageDTO<CategoryResponse> pageDTO = categoryService.getPagesCategory(page, size, sortBy, sortName);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<PageDTO<CategoryResponse>>builder()
+                        .data(pageDTO)
                         .success(true)
                         .build()
         );

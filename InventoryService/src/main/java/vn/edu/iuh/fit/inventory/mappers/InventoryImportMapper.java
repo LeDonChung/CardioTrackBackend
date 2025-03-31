@@ -14,6 +14,7 @@ public interface InventoryImportMapper {
 
     @Mapping(target = "inventory", source = "inventory.id")
     @Mapping(target = "supplier", source = "supplier.id")
+    @Mapping(target = "supplierName", source = "supplier.name")
     InventoryImportResponse toDto(InventoryImport inventoryImport);
 
 //    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)

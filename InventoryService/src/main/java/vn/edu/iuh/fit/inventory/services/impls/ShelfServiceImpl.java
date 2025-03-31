@@ -4,12 +4,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import vn.edu.iuh.fit.inventory.enums.SheftStatus;
 import vn.edu.iuh.fit.inventory.exceptions.ShelfException;
 import vn.edu.iuh.fit.inventory.mappers.ShelfMapper;
 import vn.edu.iuh.fit.inventory.models.dtos.PageDTO;
 import vn.edu.iuh.fit.inventory.models.dtos.requests.ShelfRequest;
 import vn.edu.iuh.fit.inventory.models.dtos.responses.ShelfResponse;
+import vn.edu.iuh.fit.inventory.models.entities.Inventory;
 import vn.edu.iuh.fit.inventory.models.entities.Shelf;
 import vn.edu.iuh.fit.inventory.repositories.ShelfRepository;
 import vn.edu.iuh.fit.inventory.services.ShelfService;
@@ -28,17 +32,25 @@ public class ShelfServiceImpl implements ShelfService {
     private ShelfMapper sheftMapper;
 
     @Override
-    public PageDTO<ShelfResponse> getPagesSheft(int page, int size, String sortBy, String sortName) {
+    public PageDTO<ShelfResponse> getPagesShelf(int page, int size, String sortBy, String sortName) {
         Pageable pageable = PageRequest.of(page, size);
-        if(sortBy != null && sortName != null) {
-            pageable = PageRequest.of(page, size);
+        if (sortBy != null && sortName != null) {
+            pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortName), sortBy));
         }
-        Set<Shelf> shelfResponsestResponses = sheltRepository.findAll(pageable).toSet();
-        Set<ShelfResponse> shelfResponses = shelfResponsestResponses.stream().map(shelf -> sheftMapper.toDto((Shelf) shelf)).collect(Collectors.toSet());
+
+        // Lấy dữ liệu phân trang từ repository
+        Page<Shelf> shelfPage = sheltRepository.findAll(pageable);
+        List<Shelf> shelves = shelfPage.getContent();
+        List<ShelfResponse> shelfResponses = shelves.stream()
+                .map(shelf -> sheftMapper.toDto(shelf))
+                .collect(Collectors.toList());
+
+        // Tạo và trả về PageDTO với thông tin phân trang
         return PageDTO.<ShelfResponse>builder()
                 .page(page)
                 .size(size)
                 .sortBy(sortBy)
+                .totalPage(shelfPage.getTotalPages())
                 .sortName(sortName)
                 .data(shelfResponses)
                 .build();
@@ -50,13 +62,17 @@ public class ShelfServiceImpl implements ShelfService {
 
         if(request.getId() == null) {
             shelf = sheftMapper.toEntity(request);
+            shelf.setTotalProduct(0L);
+            shelf.setStatus(SheftStatus.EMPTY);
+            Inventory inventory = new Inventory();
+            inventory.setId(1L);
+            shelf.setInventory(inventory);
         } else {
             Optional<Shelf> oldShelf = sheltRepository.findById(request.getId());
             if(oldShelf.isEmpty()) {
                 throw new ShelfException("Shelf not found");
-            } else {
-                shelf = sheftMapper.partialUpdate(request, oldShelf.get());
             }
+            shelf = sheftMapper.partialUpdate(request, oldShelf.get());
         }
 
         shelf = sheltRepository.save(shelf);
@@ -77,4 +93,61 @@ public class ShelfServiceImpl implements ShelfService {
         sheltRepository.deleteById(id);
     }
 
+    @Override
+    public List<ShelfResponse> findShelfsWithCapacityGreaterThan(int threshold) {
+        List<Shelf> shelves = sheltRepository.findShelfsWithCapacityGreaterThan(threshold);
+        return shelves.stream().map(shelf -> sheftMapper.toDto(shelf)).collect(Collectors.toList());
+    }
+
+    //Cập nhật (thêm) số lượng sản phẩm của shelf khi nhập hàng hoặc hủy đơn(thêm lại vào kệ)
+    @Override
+    @Transactional
+    public void updateTotalProduct(Long id, int quantity) {
+        Optional<Shelf> shelf = sheltRepository.findById(id);
+        if (shelf.isEmpty()) {
+            throw new ShelfException("Shelf not found");
+        }
+        Shelf shelfEntity = shelf.get();
+        // Cập nhật số lượng sản phẩm
+        sheltRepository.updateTotalProduct(id, quantity);
+        // Lưu lại kệ đã cập nhật
+        sheltRepository.save(shelfEntity);
+    }
+
+    // Cập nhật (trừ) số lượng sản phẩm của shelf khi đặt hàng
+    @Override
+    @Transactional
+    public void updateSubtractTotalProduct(Long id, int quantity) {
+        Optional<Shelf> shelf = sheltRepository.findById(id);
+        if (shelf.isEmpty()) {
+            throw new ShelfException("Shelf not found");
+        }
+        Shelf shelfEntity = shelf.get();
+        // Cập nhật số lượng sản phẩm
+        sheltRepository.updateSubtractTotalProduct(id, quantity);
+        // Lưu lại kệ đã cập nhật
+        sheltRepository.save(shelfEntity);
+    }
+
+    public PageDTO<ShelfResponse> findLocationPage(int page, int size, String sortBy, String sortName, String location) {
+        Pageable pageable = PageRequest.of(page, size);
+        if(sortBy != null && sortName != null) {
+            pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortName), sortBy));
+        }
+
+        Page<Shelf> shelfPage = sheltRepository.findByLocation(location, pageable);
+        List<Shelf> shelves = shelfPage.getContent();
+        List<ShelfResponse> shelfResponses = shelves.stream()
+                .map(shelf -> sheftMapper.toDto(shelf))
+                .collect(Collectors.toList());
+
+        return PageDTO.<ShelfResponse>builder()
+                .page(page)
+                .size(size)
+                .totalPage(shelfPage.getTotalPages())
+                .sortBy(sortBy)
+                .sortName(sortName)
+                .data(shelfResponses)
+                .build();
+    }
 }

@@ -30,7 +30,7 @@ public class PurchaseOrder {
     @Enumerated(EnumType.STRING)
     private PurchaseOrderStatus status;
 
-    @OneToMany(mappedBy = "purchaseOrder")
+    @OneToMany(mappedBy = "purchaseOrder", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<PurchaseOrderDetail> purchaseOrderDetails;
 }

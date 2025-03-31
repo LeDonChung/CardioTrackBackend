@@ -16,6 +16,6 @@ public class ShelfResponse {
     private Long capacity;
     private SheftStatus status;
     private String notes;
-    private Inventory inventory;
+    private InventoryResponse inventory;
 
 }

@@ -108,6 +108,7 @@ public class MedicineServiceImpl implements MedicineService {
         return PageDTO.<MedicineResponse>builder()
                 .page(page)
                 .size(size)
+                .totalPage(medicineRepository.findAll(pageable).getTotalPages())
                 .sortBy(sortBy)
                 .sortName(sortName)
                 .data(medicineResponses)
@@ -143,4 +144,11 @@ public class MedicineServiceImpl implements MedicineService {
     public List<MedicineResponse> getAll() {
         return medicineRepository.findAll().stream().map(medicineMapper::toDto).collect(Collectors.toList());
     }
+
+    @Override
+    public List<MedicineResponse> findAllByCategoryTitle(String title) {
+        return medicineRepository.findAllByCategoryTitle(title).stream().map(medicineMapper::toDto).collect(Collectors.toList());
+    }
+
+
 }

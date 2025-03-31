@@ -124,4 +124,16 @@ public class MedicineController {
                         .build()
         );
     }
+
+    @GetMapping("/get-by-category-title")
+    public ResponseEntity<BaseResponse<List<MedicineResponse>>> findAllByCategoryTitle(@RequestParam String title) {
+        List<MedicineResponse> medicineResponses = medicineService.findAllByCategoryTitle(title);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<List<MedicineResponse>>builder()
+                        .data(medicineResponses)
+                        .success(true)
+                        .build()
+        );
+    }
 }

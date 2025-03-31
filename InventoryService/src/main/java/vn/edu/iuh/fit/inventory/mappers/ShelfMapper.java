@@ -5,11 +5,10 @@ import vn.edu.iuh.fit.inventory.models.dtos.requests.ShelfRequest;
 import vn.edu.iuh.fit.inventory.models.dtos.responses.ShelfResponse;
 import vn.edu.iuh.fit.inventory.models.entities.Shelf;
 
-@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
+@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING, uses = {InventoryMapper.class})
 public interface ShelfMapper {
     Shelf toEntity(ShelfRequest request);
 
-    //@Mapping(target = "inventory.id", source = "inventory")
     ShelfResponse toDto(Shelf shelf);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)

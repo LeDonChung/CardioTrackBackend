@@ -22,4 +22,8 @@ public interface MedicineRepository extends JpaRepository<Medicine, Long>, JpaSp
 
     @Query("SELECT DISTINCT m FROM Medicine m JOIN m.tags t WHERE t.id = ?1")
     Page<Medicine> findAllByTags_Id(Long tagId, Pageable pageable);
+
+    //Hiển thị danh sách thuốc theo title của danh mục thuôc
+    @Query("SELECT m FROM Medicine m JOIN m.categories c WHERE c.title = :title")
+    List<Medicine> findAllByCategoryTitle(String title);
 }

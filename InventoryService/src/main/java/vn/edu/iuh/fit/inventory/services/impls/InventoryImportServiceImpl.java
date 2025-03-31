@@ -11,15 +11,17 @@ import vn.edu.iuh.fit.inventory.mappers.InventoryImportMapper;
 import vn.edu.iuh.fit.inventory.models.dtos.PageDTO;
 import vn.edu.iuh.fit.inventory.models.dtos.requests.InventoryImportRequest;
 import vn.edu.iuh.fit.inventory.models.dtos.responses.InventoryImportResponse;
+import vn.edu.iuh.fit.inventory.models.dtos.responses.PurchaseOrderResponse;
 import vn.edu.iuh.fit.inventory.models.entities.InventoryImport;
+import vn.edu.iuh.fit.inventory.models.entities.PurchaseOrder;
 import vn.edu.iuh.fit.inventory.repositories.InventoryImportRepository;
 import vn.edu.iuh.fit.inventory.services.InventoryImportService;
 import vn.edu.iuh.fit.inventory.utils.SystemConstraints;
-
-import java.time.LocalDate;
-import java.util.Optional;
-import java.util.Set;
+import org.springframework.data.domain.Page;
+import java.util.List;
 import java.util.stream.Collectors;
+
+import java.util.Optional;
 
 @Service
 public class InventoryImportServiceImpl implements InventoryImportService {
@@ -59,15 +61,48 @@ public class InventoryImportServiceImpl implements InventoryImportService {
 
     @Override
     public PageDTO<InventoryImportResponse> getPagesInventoryImport(int page, int size, String sortBy, String sortName) {
+        // Tạo Pageable với thông tin phân trang và sắp xếp
         Pageable pageable = PageRequest.of(page, size);
-        if(sortBy != null && sortName != null) {
+        if (sortBy != null && sortName != null) {
             pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortName), sortBy));
         }
 
-        Set<InventoryImport> inventoryImports = inventoryImportRepository.findAll(pageable).toSet();
+        // Lấy dữ liệu phân trang từ repository
+        Page<InventoryImport> inventoryImportsPage = inventoryImportRepository.findAll(pageable);
+        List<InventoryImport> inventoryImports = inventoryImportsPage.getContent();
 
-        Set<InventoryImportResponse> inventoryImportResponses = inventoryImports.stream().map(inventoryImport -> inventoryImportMapper.toDto(inventoryImport)).collect(Collectors.toSet());
+        // Chuyển đổi từ InventoryImport sang InventoryImportResponse
+        List<InventoryImportResponse> inventoryImportResponses = inventoryImports.stream()
+                .map(inventoryImport -> inventoryImportMapper.toDto(inventoryImport))
+                .collect(Collectors.toList());
 
+        // Tạo và trả về PageDTO với thông tin phân trang
+        return PageDTO.<InventoryImportResponse>builder()
+                .page(page)
+                .size(size)
+                .sortBy(sortBy)
+                .sortName(sortName)
+                .data(inventoryImportResponses)
+                .build();
+    }
+
+    // Lấy tất cả phiếu nhập theo trạng thái chờ xử lý
+    @Override
+    public PageDTO<InventoryImportResponse> getAllPendingImport(int page, int size, String sortBy, String sortName) {
+        Pageable pageable = PageRequest.of(page, size);
+        if (sortBy != null && sortName != null) {
+            pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortName), sortBy));
+        }
+
+        // Lấy dữ liệu phân trang từ repository
+        Page<InventoryImport> inventoryImportsPage = inventoryImportRepository.getAllPendingImport(pageable);
+        List<InventoryImport> inventoryImports = inventoryImportsPage.getContent();
+
+        List<InventoryImportResponse> inventoryImportResponses = inventoryImports.stream()
+                .map(inventoryImport -> inventoryImportMapper.toDto(inventoryImport))
+                .collect(Collectors.toList());
+
+        // Tạo và trả về PageDTO với thông tin phân trang
         return PageDTO.<InventoryImportResponse>builder()
                 .page(page)
                 .size(size)

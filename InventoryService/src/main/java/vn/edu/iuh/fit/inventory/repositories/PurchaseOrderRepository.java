@@ -1,5 +1,7 @@
 package vn.edu.iuh.fit.inventory.repositories;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -11,6 +13,6 @@ import java.util.List;
 public interface PurchaseOrderRepository extends JpaRepository<PurchaseOrder, Long> {
     // Lấy tất cả phiếu mua hàng theo status = PENDING
     @Query("SELECT po FROM PurchaseOrder po WHERE po.status = 'PENDING'")
-    List<PurchaseOrder> getAllPendingPurchaseOrder();
+    Page<PurchaseOrder> getAllPendingPurchaseOrder(Pageable pageable);
 
 }

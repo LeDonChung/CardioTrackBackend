@@ -3,7 +3,9 @@ package vn.edu.iuh.fit.inventory.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import vn.edu.iuh.fit.inventory.exceptions.InventoryDetailException;
 import vn.edu.iuh.fit.inventory.models.dtos.PageDTO;
+import vn.edu.iuh.fit.inventory.models.dtos.requests.InventoryDetailRequest;
 import vn.edu.iuh.fit.inventory.models.dtos.responses.BaseResponse;
 import vn.edu.iuh.fit.inventory.models.dtos.responses.CategoryResponse;
 import vn.edu.iuh.fit.inventory.models.dtos.responses.InventoryDetailResponse;
@@ -66,6 +68,135 @@ public class InventoryDetailController {
                 BaseResponse
                         .<CategoryResponse>builder()
                         .data(categoryResponse)
+                        .success(true)
+                        .build()
+        );
+    }
+
+    //Add inventory_detail
+    @PostMapping
+    public ResponseEntity<BaseResponse<InventoryDetailResponse>> save(@RequestBody InventoryDetailRequest inventoryDetailRequest) throws InventoryDetailException {
+        InventoryDetailResponse inventoryDetailResponse = inventoryDetailService.save(inventoryDetailRequest);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<InventoryDetailResponse>builder()
+                        .data(inventoryDetailResponse)
+                        .success(true)
+                        .build()
+        );
+}
+    //Get medicine by category
+    @GetMapping("/medicine-by-category/{id}")
+    public ResponseEntity<BaseResponse<PageDTO<InventoryDetailResponse>>> getMedicineByCategory(@PathVariable Long id,
+                                                                                                 @RequestParam(defaultValue = "0") int page,
+                                                                                                 @RequestParam(defaultValue = "10") int size,
+                                                                                                 @RequestParam(required = false) String sortBy,
+                                                                                                 @RequestParam(required = false) String sortName) {
+        PageDTO<InventoryDetailResponse> pageDTO = inventoryDetailService.getMedicineByCategory(id, page, size, sortBy, sortName);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<PageDTO<InventoryDetailResponse>>builder()
+                        .data(pageDTO)
+                        .success(true)
+                        .build()
+        );
+    }
+
+    @GetMapping("/total-quantity")
+    public Long getTotalQuantity() {
+        return inventoryDetailService.getTotalQuantity();
+    }
+
+    // Tìm chi tiết kho theo medicine và shelfId
+    @GetMapping("/find-inventory-detail")
+    public ResponseEntity<BaseResponse<InventoryDetailResponse>> findInventoryDetailByMedicineAndShelf(@RequestParam Long medicineId, @RequestParam Long shelfId) {
+        InventoryDetailResponse inventoryDetailResponse = inventoryDetailService.findInventoryDetailByMedicineAndShelf(medicineId, shelfId);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<InventoryDetailResponse>builder()
+                        .data(inventoryDetailResponse)
+                        .success(true)
+                        .build()
+        );
+    }
+
+    // Tìm tổng số lượng của 1 thuốc trong kho (1 thuốc có thể nằm trên nhiều kệ)
+    @GetMapping("/total-quantity-medicine/{medicineId}")
+    public Long getTotalQuantityMedicine(@PathVariable Long medicineId) {
+        return inventoryDetailService.getTotalQuantityMedicine(medicineId);
+    }
+
+    // Cập nhật (trừ) số lượng của một thuốc trong kho khi đặt hàng
+    @PutMapping("/update-quantity-medicine/{medicineId}")
+    public ResponseEntity<BaseResponse<Integer>> updateQuantityByMedicine(@PathVariable Long medicineId, @RequestParam Long quantity) {
+        int result = inventoryDetailService.updateQuantityByMedicine(medicineId, quantity);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<Integer>builder()
+                        .data(result)
+                        .success(true)
+                        .build()
+        );
+    }
+
+    // Cập nhật (thêm) số lượng của một thuốc khi hủy đơn (thêm lại vào kho)
+    @PutMapping("/restore-quantity-medicine/{medicineId}")
+    public ResponseEntity<BaseResponse<Integer>> restoreQuantityByMedicine(@PathVariable Long medicineId, @RequestParam Long quantity) {
+        int result = inventoryDetailService.restoreQuantityByMedicine(medicineId, quantity);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<Integer>builder()
+                        .data(result)
+                        .success(true)
+                        .build()
+        );
+    }
+
+    // Danh sách thuốc gần hết hạn
+    @GetMapping("/medicines-near-expiration")
+    public ResponseEntity<BaseResponse<PageDTO<InventoryDetailResponse>>> getMedicinesNearExpiration(@RequestParam(defaultValue = "0") int page,
+                                                                                                     @RequestParam(defaultValue = "10") int size,
+                                                                                                     @RequestParam(required = false) String sortBy,
+                                                                                                     @RequestParam(required = false) String sortName) {
+        PageDTO<InventoryDetailResponse> pageDTO = inventoryDetailService.getMedicinesNearExpiration(page, size, sortBy, sortName);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<PageDTO<InventoryDetailResponse>>builder()
+                        .data(pageDTO)
+                        .success(true)
+                        .build()
+        );
+    }
+
+    // Danh sách thuốc đã hết hạn
+    @GetMapping("/medicines-expired")
+    public ResponseEntity<BaseResponse<PageDTO<InventoryDetailResponse>>> getMedicinesExpired(@RequestParam(defaultValue = "0") int page,
+                                                                                              @RequestParam(defaultValue = "10") int size,
+                                                                                              @RequestParam(required = false) String sortBy,
+                                                                                              @RequestParam(required = false) String sortName) {
+        PageDTO<InventoryDetailResponse> pageDTO = inventoryDetailService.getMedicinesExpired(page, size, sortBy, sortName);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<PageDTO<InventoryDetailResponse>>builder()
+                        .data(pageDTO)
+                        .success(true)
+                        .build()
+        );
+    }
+
+
+    @GetMapping("/inventory-details-expiration")
+    public ResponseEntity<BaseResponse<PageDTO<InventoryDetailResponse>>> getInventoryDetailsExpiration(
+                                                                                                         @RequestParam(defaultValue = "0") int page,
+                                                                                                         @RequestParam(defaultValue = "10") int size,
+                                                                                                         @RequestParam(required = false) String sortBy,
+                                                                                                         @RequestParam(required = false) String sortName,
+                                                                                                         @RequestParam(required = false) Long medicineId) {
+        PageDTO<InventoryDetailResponse> pageDTO = inventoryDetailService.getInventoryDetailsExpiration(page, size, sortBy, sortName, medicineId);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<PageDTO<InventoryDetailResponse>>builder()
+                        .data(pageDTO)
                         .success(true)
                         .build()
         );
