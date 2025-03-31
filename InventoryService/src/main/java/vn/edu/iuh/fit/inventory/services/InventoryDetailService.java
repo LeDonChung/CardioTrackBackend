@@ -1,5 +1,6 @@
 package vn.edu.iuh.fit.inventory.services;
 
+import org.springframework.data.domain.Page;
 import vn.edu.iuh.fit.inventory.exceptions.InventoryDetailException;
 import vn.edu.iuh.fit.inventory.models.dtos.PageDTO;
 import vn.edu.iuh.fit.inventory.models.dtos.requests.InventoryDetailRequest;
@@ -28,14 +29,19 @@ public interface InventoryDetailService {
     //Tổng số lượng thuốc trong kho
     Long getTotalQuantity();
 
-//    //Cập nhật (thêm) số lượng của một thuốc khi hủy đơn (thêm lại vào kho)
-//    void updateAddTotalProduct(Long medicineId, int quantity);
-//
-//    //Cập nhật (trừ) số lượng của một thuốc trong kho khi đặt hàng
-//    void updateSubtractTotalProduct(Long medicineId, int quantity);
-
     // Tìm chi tiết kho theo medicine và shelfId
     InventoryDetailResponse findInventoryDetailByMedicineAndShelf(Long medicineId, Long shelfId);
 
     //Tìm tổng số lượng của 1 thuốc trong kho (1 thuốc có thể nằm trên nhiều kệ)
+    Long getTotalQuantityMedicine(Long medicineId);
+
+    int updateQuantityByMedicine(Long medicineId, Long quantity);
+
+    // Lấy danh sách thuốc gần hết hạn (6 tháng)
+    PageDTO<InventoryDetailResponse> getMedicinesNearExpiration(int page, int size, String sortBy, String sortName);
+
+    // Lấy danh sách thuốc đã hết hạn
+    PageDTO<InventoryDetailResponse> getMedicinesExpired(int page, int size, String sortBy, String sortName);
+
+    PageDTO<InventoryDetailResponse> getInventoryDetailsExpiration(int page, int size, String sortBy, String sortName, Long  medicineId);
 }

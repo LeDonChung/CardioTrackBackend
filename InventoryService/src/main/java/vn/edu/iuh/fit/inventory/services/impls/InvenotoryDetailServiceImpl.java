@@ -1,5 +1,6 @@
 package vn.edu.iuh.fit.inventory.services.impls;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -7,7 +8,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import vn.edu.iuh.fit.inventory.clients.CategoryClient;
 import vn.edu.iuh.fit.inventory.clients.ProductServiceClient;
 import vn.edu.iuh.fit.inventory.exceptions.InventoryDetailException;
@@ -20,6 +20,8 @@ import vn.edu.iuh.fit.inventory.repositories.InventoryDetailRepository;
 import vn.edu.iuh.fit.inventory.services.InventoryDetailService;
 import vn.edu.iuh.fit.inventory.utils.SystemConstraints;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -153,25 +155,147 @@ public class InvenotoryDetailServiceImpl implements InventoryDetailService {
         return inventoryDetailRepository.getTotalQuantity();
     }
 
-//    //Cập nhật (thêm) số lượng của một medicine khi hủy đơn (thêm lại vào kho)
-//    @Override
-//    @Transactional
-//    public void updateAddTotalProduct(Long medicineId, int quantity) {
-//        inventoryDetailRepository.updateAddTotalProduct(medicineId, quantity);
-//    }
-//
-//    //Cập nhật (trừ) số lượng của một medicine trong kho khi đặt hàng
-//    @Override
-//    @Transactional
-//    public void updateSubtractTotalProduct(Long medicineId, int quantity) {
-//        inventoryDetailRepository.updateSubtractTotalProduct(medicineId, quantity);
-//    }
-
     // Tìm chi tiết kho theo medicine và shelfId
     @Override
     public InventoryDetailResponse findInventoryDetailByMedicineAndShelf(Long medicineId, Long shelfId) {
         InventoryDetail inventoryDetail = inventoryDetailRepository.findInventoryDetailByMedicineAndShelf(medicineId, shelfId);
         return (inventoryDetail != null) ? inventoryDetailMapper.toDto(inventoryDetail) : null;
+    }
+
+    // Tìm tổng số lượng của 1 thuốc trong kho (1 thuốc có thể nằm trên nhiều kệ)
+    @Override
+    public Long getTotalQuantityMedicine(Long medicineId) {
+        return inventoryDetailRepository.getTotalQuantityMedicine(medicineId);
+    }
+
+    @Override
+    @Transactional
+    public int updateQuantityByMedicine(Long medicineId, Long quantity) {
+        //lay danh sach medicine, sap xep tang theo so luong
+        Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE, Sort.by(Sort.Direction.ASC, "quantity"));
+        Page<InventoryDetail> inventoryDetailPage = inventoryDetailRepository.getInventoryDetailsSortedByQuantity(medicineId, pageable);
+
+        Long quantityToSell = quantity;
+        int updated = 0;
+
+        //lap qua cac shelf de tru so luong
+        for (InventoryDetail inventoryDetail : inventoryDetailPage.getContent()){
+            if(quantityToSell <= 0) break;
+
+            long quantityInStock = inventoryDetail.getQuantity();
+            long quantityToSubtract = Math.min(quantityInStock, quantityToSell);
+
+            int result = inventoryDetailRepository.updateQuantityByShelfAndMedicine(quantityToSubtract, inventoryDetail.getShelf().getId(), medicineId);
+            updated += result;
+
+            quantityToSell -= quantityToSubtract;
+        }
+
+        if (quantityToSell > 0) {
+            throw new InventoryDetailException(SystemConstraints.NOT_ENOUGH_MEDICINE);
+        }
+
+        return updated;
+    }
+
+    @Override
+    public PageDTO<InventoryDetailResponse> getMedicinesNearExpiration(int page, int size, String sortBy, String sortName) {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime expirationDate = now.plusMonths(6);
+
+        Timestamp expirationTimestamp = Timestamp.valueOf(expirationDate);
+
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Order.asc(sortBy))); // Hoặc desc nếu cần
+
+        Page<InventoryDetail> pageInventoryDetails = inventoryDetailRepository.findMedicinesExpirationDate(expirationTimestamp, pageRequest);
+
+        List<InventoryDetailResponse> inventoryDetailResponses = pageInventoryDetails.getContent().stream()
+                .map(inventoryDetail -> {
+                    InventoryDetailResponse inventoryDetailResponse = inventoryDetailMapper.toDto(inventoryDetail);
+                    inventoryDetailResponse.setNearExpiration(true);
+                    return inventoryDetailResponse;
+                })
+                .collect(Collectors.toList());
+
+        return PageDTO.<InventoryDetailResponse>builder()
+                .page(page)
+                .size(size)
+                .sortBy(sortBy)
+                .sortName(sortName)
+                .data(inventoryDetailResponses)
+                .totalPage(pageInventoryDetails.getTotalPages())
+                .build();
+
+    }
+
+    @Override
+    public PageDTO<InventoryDetailResponse> getMedicinesExpired(int page, int size, String sortBy, String sortName) {
+        LocalDateTime now = LocalDateTime.now();
+
+        Timestamp nowTimestamp = Timestamp.valueOf(now);
+
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Order.asc(sortBy))); // Hoặc desc nếu cần
+
+        Page<InventoryDetail> pageInventoryDetails = inventoryDetailRepository.findMedicinesExpired(pageRequest);
+
+        List<InventoryDetailResponse> inventoryDetailResponses = pageInventoryDetails.getContent().stream()
+                .map(inventoryDetail -> {
+                    InventoryDetailResponse inventoryDetailResponse = inventoryDetailMapper.toDto(inventoryDetail);
+                    inventoryDetailResponse.setExpired(true);
+                    return inventoryDetailResponse;
+                })
+                .collect(Collectors.toList());
+
+        return PageDTO.<InventoryDetailResponse>builder()
+                .page(page)
+                .size(size)
+                .sortBy(sortBy)
+                .sortName(sortName)
+                .data(inventoryDetailResponses)
+                .totalPage(pageInventoryDetails.getTotalPages())
+                .build();
+    }
+
+    @Override
+    public PageDTO<InventoryDetailResponse> getInventoryDetailsExpiration(int page, int size, String sortBy, String sortName, Long medicineId) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortName), sortBy));
+
+        Page<InventoryDetail> pageInventoryDetails;
+
+        if (medicineId != null) {
+            pageInventoryDetails = inventoryDetailRepository.findAllByMedicine(medicineId, pageable);
+        } else {
+            pageInventoryDetails = inventoryDetailRepository.findAll(pageable);
+        }
+
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime nearExpirationThreshold = now.plusMonths(6);
+
+        List<InventoryDetailResponse> inventoryDetailResponses = pageInventoryDetails.getContent().stream()
+                .map(inventoryDetail -> {
+                    InventoryDetailResponse response = inventoryDetailMapper.toDto(inventoryDetail);
+
+                    if (inventoryDetail.getExpirationDate() != null) {
+                        LocalDateTime expirationDate = inventoryDetail.getExpirationDate().toLocalDateTime();
+
+                        if (expirationDate.isBefore(now)) {
+                            response.setExpired(true); // Đã hết hạn
+                        } else if (expirationDate.isBefore(nearExpirationThreshold)) {
+                            response.setNearExpiration(true); // Gần hết hạn
+                        }
+                    }
+                    return response;
+                })
+                .collect(Collectors.toList());
+
+        return PageDTO.<InventoryDetailResponse>builder()
+                .page(page)
+                .size(size)
+                .sortBy(sortBy)
+                .sortName(sortName)
+                .data(inventoryDetailResponses)
+                .totalPage(pageInventoryDetails.getTotalPages())
+                .build();
     }
 
 }
