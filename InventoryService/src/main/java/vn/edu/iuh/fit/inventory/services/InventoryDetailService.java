@@ -28,5 +28,14 @@ public interface InventoryDetailService {
     //Tổng số lượng thuốc trong kho
     Long getTotalQuantity();
 
+    //Cập nhật (thêm) số lượng của một thuốc khi hủy đơn (thêm lại vào kho)
+    void updateAddTotalProduct(Long medicineId, int quantity);
+
+    //Cập nhật (trừ) số lượng của một thuốc trong kho khi đặt hàng
+    void updateSubtractTotalProduct(Long medicineId, int quantity);
+
+    // Tìm chi tiết kho theo medicine và shelfId
+    InventoryDetailResponse findInventoryDetailByMedicineAndShelf(Long medicineId, Long shelfId);
+
     //Tìm tổng số lượng của 1 thuốc trong kho (1 thuốc có thể nằm trên nhiều kệ)
 }

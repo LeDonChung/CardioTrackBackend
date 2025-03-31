@@ -106,4 +106,43 @@ public class InventoryDetailController {
     public Long getTotalQuantity() {
         return inventoryDetailService.getTotalQuantity();
     }
+
+    // Cập nhật (thêm) số lượng của một thuốc khi hủy đơn (thêm lại vào kho)
+    @PutMapping("/update-add-total-product")
+    public ResponseEntity<BaseResponse<String>> updateAddTotalProduct(@RequestParam Long medicineId, @RequestParam int quantity) {
+        inventoryDetailService.updateAddTotalProduct(medicineId, quantity);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<String>builder()
+                        .data("Update total product success")
+                        .success(true)
+                        .build()
+        );
+    }
+
+    // Cập nhật (trừ) số lượng của một thuốc trong kho khi đặt hàng
+    @PutMapping("/update-subtract-total-product")
+    public ResponseEntity<BaseResponse<String>> updateSubtractTotalProduct(@RequestParam Long medicineId, @RequestParam int quantity) {
+        inventoryDetailService.updateSubtractTotalProduct(medicineId, quantity);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<String>builder()
+                        .data("Update total product success")
+                        .success(true)
+                        .build()
+        );
+    }
+
+    // Tìm chi tiết kho theo medicine và shelfId
+    @GetMapping("/find-inventory-detail")
+    public ResponseEntity<BaseResponse<InventoryDetailResponse>> findInventoryDetailByMedicineAndShelf(@RequestParam Long medicineId, @RequestParam Long shelfId) {
+        InventoryDetailResponse inventoryDetailResponse = inventoryDetailService.findInventoryDetailByMedicineAndShelf(medicineId, shelfId);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<InventoryDetailResponse>builder()
+                        .data(inventoryDetailResponse)
+                        .success(true)
+                        .build()
+        );
+    }
 }

@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import vn.edu.iuh.fit.inventory.clients.CategoryClient;
 import vn.edu.iuh.fit.inventory.clients.ProductServiceClient;
 import vn.edu.iuh.fit.inventory.exceptions.InventoryDetailException;
@@ -107,6 +108,14 @@ public class InvenotoryDetailServiceImpl implements InventoryDetailService {
 
         if (request.getId() == null) {
             inventoryDetail = inventoryDetailMapper.toEntity(request);
+        }else{
+            Optional<InventoryDetail> oldInventoryDetail = inventoryDetailRepository.findById(request.getId());
+            if(oldInventoryDetail.isEmpty()){
+                throw new InventoryDetailException(SystemConstraints.INVENTORYDETAIL_NOT_FOUND);
+            }else{
+                inventoryDetail = inventoryDetailMapper.partialUpdate(request, oldInventoryDetail.get());
+
+            }
         }
 
         inventoryDetail = inventoryDetailRepository.save(inventoryDetail);
@@ -142,6 +151,27 @@ public class InvenotoryDetailServiceImpl implements InventoryDetailService {
     @Override
     public Long getTotalQuantity() {
         return inventoryDetailRepository.getTotalQuantity();
+    }
+
+    //Cập nhật (thêm) số lượng của một medicine khi hủy đơn (thêm lại vào kho)
+    @Override
+    @Transactional
+    public void updateAddTotalProduct(Long medicineId, int quantity) {
+        inventoryDetailRepository.updateAddTotalProduct(medicineId, quantity);
+    }
+
+    //Cập nhật (trừ) số lượng của một medicine trong kho khi đặt hàng
+    @Override
+    @Transactional
+    public void updateSubtractTotalProduct(Long medicineId, int quantity) {
+        inventoryDetailRepository.updateSubtractTotalProduct(medicineId, quantity);
+    }
+
+    // Tìm chi tiết kho theo medicine và shelfId
+    @Override
+    public InventoryDetailResponse findInventoryDetailByMedicineAndShelf(Long medicineId, Long shelfId) {
+        InventoryDetail inventoryDetail = inventoryDetailRepository.findInventoryDetailByMedicineAndShelf(medicineId, shelfId);
+        return (inventoryDetail != null) ? inventoryDetailMapper.toDto(inventoryDetail) : null;
     }
 
 }

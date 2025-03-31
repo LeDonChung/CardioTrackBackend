@@ -116,10 +116,23 @@ public class ShelfController {
         );
     }
 
-    //Cập nhật số lượng sản phẩm của shelf
-    @PutMapping("/updateTotalProduct")
-    public ResponseEntity<BaseResponse<String>> updateTotalProduct(@RequestParam Long id, @RequestParam int quantity) {
+    //Cập nhật (thêm) số lượng sản phẩm của shelf khi nhập hàng hoặc hủy đơn(thêm lại vào kệ)
+    @PutMapping("/update-add-total-product")
+    public ResponseEntity<BaseResponse<String>> updateAddTotalProduct(@RequestParam Long id, @RequestParam int quantity) {
         shelfService.updateTotalProduct(id, quantity);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<String>builder()
+                        .data("Update total product success")
+                        .success(true)
+                        .build()
+        );
+    }
+
+    // Cập nhật (trừ) số lượng sản phẩm của shelf khi đặt hàng
+    @PutMapping("/update-subtract-total-product")
+    public ResponseEntity<BaseResponse<String>> updateSubtractTotalProduct(@RequestParam Long id, @RequestParam int quantity) {
+        shelfService.updateSubtractTotalProduct(id, quantity);
         return ResponseEntity.ok(
                 BaseResponse
                         .<String>builder()
