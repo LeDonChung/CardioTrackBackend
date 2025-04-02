@@ -1,5 +1,6 @@
 package vn.edu.iuh.fit.notification.services.impl;
 
+import io.github.resilience4j.retry.annotation.Retry;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import vn.edu.iuh.fit.notification.exceptions.NotificationException;
 import vn.edu.iuh.fit.notification.model.dto.request.OrderDetailRequest;
 import vn.edu.iuh.fit.notification.model.dto.request.OrderRequest;
 import vn.edu.iuh.fit.notification.model.dto.request.UserRequest;
@@ -56,8 +58,15 @@ public class MailServiceImpl implements MailService {
         mailSender.send(message);
     }
 
+    public boolean fallbackNotificationOrder(OrderRequest order, Exception exception) throws NotificationException {
+        throw new NotificationException(
+                "Dịch vụ không có sẵn. Vui lòng thử lại sau"
+        );
+    }
+
     @Override
-    public boolean sendNotificationOrder(OrderRequest order) {
+    @Retry(name = "notificationRetry", fallbackMethod = "fallbackNotificationOrder")
+    public boolean sendNotificationOrder(OrderRequest order) throws Exception {
         if(order == null){
             return false;
         }
@@ -92,10 +101,10 @@ public class MailServiceImpl implements MailService {
         try {
             sendMailNotificationOrder(order, contentBuilder.toString(), subject);
             return true;
-        } catch (MessagingException e) {
-            e.printStackTrace();
+        } catch (Exception e1) {
+            e1.printStackTrace();
         }
-        return false;
+        throw new Exception("Error");
     }
 
     @Override

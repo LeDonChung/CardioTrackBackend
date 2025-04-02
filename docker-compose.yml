@@ -96,7 +96,7 @@ services:
       - SERVER_PORT=9101
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka
       - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.mariadb.jdbc.Driver
-      - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb-health:3306/tchealth  # ✅ sử dụng đúng tên container mới
+      - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb-health:3306/tchealth 
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
       - SPRING_JPA_SHOW_SQL=true
@@ -115,9 +115,9 @@ services:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_DATABASE=tchealth
     ports:
-      - "3300:3306"   # ✅ expose port riêng
+      - "3300:3306"  
     volumes:
-      - mariadb-health-data:/var/lib/mysql  # ✅ volume riêng để lưu trữ
+      - mariadb-health-data:/var/lib/mysql 
     networks:
       - my-network      
       
@@ -193,7 +193,7 @@ services:
       - SPRING_DATASOURCE_PASSWORD=root
       - SPRING_JPA_SHOW_SQL=true
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
-      - CHATGPT_OPEN_API_KEY=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
+      - CHATGPT_OPEN_API_KEY=
       - CHATGPT_MODEL=gpt-3.5-turbo-1106
       - CHATGPT_ASSISTANT_ID=asst_knW06tfTd1ofGEDCKF9SHC0N
     networks:
