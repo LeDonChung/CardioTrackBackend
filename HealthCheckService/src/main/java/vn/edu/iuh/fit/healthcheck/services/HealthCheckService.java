@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.cdimascio.dotenv.Dotenv;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.Value;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -22,14 +22,8 @@ import java.util.List;
 @Service
 public class HealthCheckService {
 
-
-    @Getter
-    @Setter
-private String OPENAI_API_KEY;
-    public HealthCheckService() {
-        Dotenv dotenv = Dotenv.load();  // Nạp các biến môi trường từ .env file
-        this.OPENAI_API_KEY = dotenv.get("OPENAI_API_KEY");  // Lấy giá trị của OPENAI_API_KEY từ .env file
-    }
+    @Value("${OPENAI_API_KEY}")
+    private String OPENAI_API_KEY;
 
     public String getOpenAIKey() {
         return OPENAI_API_KEY;

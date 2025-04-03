@@ -12,9 +12,6 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 public class HealthCheckServiceApplication {
 
     public static void main(String[] args) {
-        // Load environment variables from .env file
-        Dotenv dotenv = Dotenv.load();
-        System.setProperty("OPENAI_API_KEY", dotenv.get("OPENAI_API_KEY"));
         SpringApplication.run(HealthCheckServiceApplication.class, args);
     }
 

@@ -39,8 +39,6 @@ public interface InventoryDetailService {
     int updateQuantityByMedicine(Long medicineId, Long quantity);
 
     int cancelQuantityByMedicine(Long medicineId, Long quantity);
-    // Cập nhật (thêm) số lượng của một thuốc trong kho khi hủy đơn
-    int restoreQuantityByMedicine(Long medicineId, Long quantity);
 
     // Lấy danh sách thuốc gần hết hạn (6 tháng)
     PageDTO<InventoryDetailResponse> getMedicinesNearExpiration(int page, int size, String sortBy, String sortName);

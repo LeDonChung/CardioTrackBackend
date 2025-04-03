@@ -151,18 +151,6 @@ public class InventoryDetailController {
                           .build()
           );
     }
-    // Cập nhật (thêm) số lượng của một thuốc khi hủy đơn (thêm lại vào kho)
-    @PutMapping("/restore-quantity-medicine/{medicineId}")
-    public ResponseEntity<BaseResponse<Integer>> restoreQuantityByMedicine(@PathVariable Long medicineId, @RequestParam Long quantity) {
-        int result = inventoryDetailService.restoreQuantityByMedicine(medicineId, quantity);
-        return ResponseEntity.ok(
-                BaseResponse
-                        .<Integer>builder()
-                        .data(result)
-                        .success(true)
-                        .build()
-        );
-    }
 
     // Danh sách thuốc gần hết hạn (6 tháng)
     @GetMapping("/medicines-near-expiration")
