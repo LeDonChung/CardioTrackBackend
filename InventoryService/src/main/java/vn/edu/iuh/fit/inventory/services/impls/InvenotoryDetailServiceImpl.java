@@ -17,6 +17,7 @@ import vn.edu.iuh.fit.inventory.models.dtos.requests.InventoryDetailRequest;
 import vn.edu.iuh.fit.inventory.models.dtos.responses.*;
 import vn.edu.iuh.fit.inventory.models.entities.InventoryDetail;
 import vn.edu.iuh.fit.inventory.repositories.InventoryDetailRepository;
+import vn.edu.iuh.fit.inventory.repositories.ShelfRepository;
 import vn.edu.iuh.fit.inventory.services.InventoryDetailService;
 import vn.edu.iuh.fit.inventory.utils.SystemConstraints;
 
@@ -39,6 +40,9 @@ public class InvenotoryDetailServiceImpl implements InventoryDetailService {
 
     @Autowired
     private CategoryClient categoryClient;
+
+    @Autowired
+    private ShelfRepository shelfRepository;
 
     //get all inventory detail
     @Override
@@ -190,6 +194,8 @@ public class InvenotoryDetailServiceImpl implements InventoryDetailService {
             updated += result;
 
             quantityToSell -= quantityToSubtract;
+
+            shelfRepository.updateSubtractTotalProduct(inventoryDetail.getShelf().getId(), (int) quantityToSubtract);
         }
 
         if (quantityToSell > 0) {
@@ -199,26 +205,31 @@ public class InvenotoryDetailServiceImpl implements InventoryDetailService {
         return updated;
     }
 
-    // Cập nhật (thêm) số lượng của một thuốc khi hủy đơn (thêm lại vào kho)
+    // Cập nhật (cộng) số lượng của một thuốc trong kho khi hủy đơn
     @Override
     @Transactional
-    public int restoreQuantityByMedicine(Long medicineId, Long quantity) {
-        // Lấy danh sách thuốc trên các kệ, sắp xếp theo số lượng tăng dần
-        Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE, Sort.by(Sort.Direction.ASC, "quantity"));
-        Page<InventoryDetail> inventoryDetailPage = inventoryDetailRepository.getInventoryDetailsSortedByQuantity(medicineId, pageable);
+    public int cancelQuantityByMedicine(Long medicineId, Long quantity) {
+        List<InventoryDetail> availableShelves = inventoryDetailRepository.getAvailableShelvesForMedicine(medicineId);
 
         Long quantityToRestore = quantity;
         int updated = 0;
 
-        // Duyệt qua từng kệ để cộng thuốc lại vào kho
-        for (InventoryDetail inventoryDetail : inventoryDetailPage.getContent()) {
+        for (InventoryDetail inventoryDetail : availableShelves) {
             if (quantityToRestore <= 0) break;
 
-            long quantityToAdd = Math.min(quantityToRestore, inventoryDetail.getQuantity()); // Cộng tối đa số cần phục hồi
-            int result = inventoryDetailRepository.restoreQuantityByShelfAndMedicine(quantityToAdd, inventoryDetail.getShelf().getId(), medicineId);
+            long availableSpace = inventoryDetail.getShelf().getCapacity() - inventoryDetail.getQuantity();
+            long quantityToAddToShelf = Math.min(availableSpace, quantityToRestore);
+
+            int result = inventoryDetailRepository.addQuantityByShelfAndMedicine(quantityToAddToShelf, inventoryDetail.getShelf().getId(), medicineId);
             updated += result;
 
-            quantityToRestore += quantityToAdd;
+            quantityToRestore -= quantityToAddToShelf;
+
+            shelfRepository.updateAddTotalProduct(inventoryDetail.getShelf().getId(), (int) quantityToAddToShelf);
+        }
+
+        if (quantityToRestore > 0) {
+            throw new InventoryDetailException(SystemConstraints.SHELF_FULL);
         }
 
         return updated;

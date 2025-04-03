@@ -110,7 +110,7 @@ public class ShelfServiceImpl implements ShelfService {
         }
         Shelf shelfEntity = shelf.get();
         // Cập nhật số lượng sản phẩm
-        sheltRepository.updateTotalProduct(id, quantity);
+        sheltRepository.updateAddTotalProduct(id, quantity);
         // Lưu lại kệ đã cập nhật
         sheltRepository.save(shelfEntity);
     }
