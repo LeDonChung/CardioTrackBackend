@@ -29,12 +29,18 @@ public interface InventoryDetailService {
     //Tổng số lượng thuốc trong kho
     Long getTotalQuantity();
 
+    // Tìm chi tiết kho theo medicine và shelfId
+    InventoryDetailResponse findInventoryDetailByMedicineAndShelf(Long medicineId, Long shelfId);
+
     //Tìm tổng số lượng của 1 thuốc trong kho (1 thuốc có thể nằm trên nhiều kệ)
     Long getTotalQuantityMedicine(Long medicineId);
 
+    // Cập nhật (trừ) số lượng của một thuốc trong kho khi đặt hàng
     int updateQuantityByMedicine(Long medicineId, Long quantity);
 
     int cancelQuantityByMedicine(Long medicineId, Long quantity);
+    // Cập nhật (thêm) số lượng của một thuốc trong kho khi hủy đơn
+    int restoreQuantityByMedicine(Long medicineId, Long quantity);
 
     // Lấy danh sách thuốc gần hết hạn (6 tháng)
     PageDTO<InventoryDetailResponse> getMedicinesNearExpiration(int page, int size, String sortBy, String sortName);

@@ -100,6 +100,7 @@ public class ShelfServiceImpl implements ShelfService {
         return shelves.stream().map(shelf -> sheftMapper.toDto(shelf)).collect(Collectors.toList());
     }
 
+    //Cập nhật (thêm) số lượng sản phẩm của shelf khi nhập hàng hoặc hủy đơn(thêm lại vào kệ)
     @Override
     @Transactional
     public void updateTotalProduct(Long id, int quantity) {
@@ -110,6 +111,21 @@ public class ShelfServiceImpl implements ShelfService {
         Shelf shelfEntity = shelf.get();
         // Cập nhật số lượng sản phẩm
         sheltRepository.updateTotalProduct(id, quantity);
+        // Lưu lại kệ đã cập nhật
+        sheltRepository.save(shelfEntity);
+    }
+
+    // Cập nhật (trừ) số lượng sản phẩm của shelf khi đặt hàng
+    @Override
+    @Transactional
+    public void updateSubtractTotalProduct(Long id, int quantity) {
+        Optional<Shelf> shelf = sheltRepository.findById(id);
+        if (shelf.isEmpty()) {
+            throw new ShelfException("Shelf not found");
+        }
+        Shelf shelfEntity = shelf.get();
+        // Cập nhật số lượng sản phẩm
+        sheltRepository.updateSubtractTotalProduct(id, quantity);
         // Lưu lại kệ đã cập nhật
         sheltRepository.save(shelfEntity);
     }

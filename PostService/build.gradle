@@ -62,3 +62,10 @@ dependencyManagement {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+bootJar {
+    mainClass = 'vn.edu.iuh.fit.post.PostServiceApplication'
+}
+build {
+    dependsOn bootJar
+}

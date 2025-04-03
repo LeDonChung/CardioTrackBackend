@@ -9,8 +9,8 @@ import vn.edu.iuh.fit.student.thanhtuyen.chatservice.services.UserService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/messages")
-@CrossOrigin(origins = "http://localhost:3000")
+@RequestMapping("/api/v1/messages")
+@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
 public class MessageController {
 
     @Autowired

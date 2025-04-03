@@ -107,13 +107,28 @@ public class InventoryDetailController {
         return inventoryDetailService.getTotalQuantity();
     }
 
+    // Tìm chi tiết kho theo medicine và shelfId
+    @GetMapping("/find-inventory-detail")
+    public ResponseEntity<BaseResponse<InventoryDetailResponse>> findInventoryDetailByMedicineAndShelf(@RequestParam Long medicineId, @RequestParam Long shelfId) {
+        InventoryDetailResponse inventoryDetailResponse = inventoryDetailService.findInventoryDetailByMedicineAndShelf(medicineId, shelfId);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<InventoryDetailResponse>builder()
+                        .data(inventoryDetailResponse)
+                        .success(true)
+                        .build()
+        );
+    }
+
+    // Tìm tổng số lượng của 1 thuốc trong kho (1 thuốc có thể nằm trên nhiều kệ)
     @GetMapping("/total-quantity-medicine/{medicineId}")
     public Long getTotalQuantityMedicine(@PathVariable Long medicineId) {
         return inventoryDetailService.getTotalQuantityMedicine(medicineId);
     }
 
-    @PutMapping("/update-quantity-medicine/{medicineId}/{quantity}")
-    public ResponseEntity<BaseResponse<Integer>> updateQuantityByMedicine(@PathVariable Long medicineId, @PathVariable Long quantity) {
+    // Cập nhật (trừ) số lượng của một thuốc trong kho khi đặt hàng
+    @PutMapping("/update-quantity-medicine/{medicineId}")
+    public ResponseEntity<BaseResponse<Integer>> updateQuantityByMedicine(@PathVariable Long medicineId, @RequestParam Long quantity) {
         int result = inventoryDetailService.updateQuantityByMedicine(medicineId, quantity);
         return ResponseEntity.ok(
                 BaseResponse
@@ -128,6 +143,18 @@ public class InventoryDetailController {
     public ResponseEntity<BaseResponse<Integer>> cancelQuantityByMedicine(@PathVariable Long medicineId, @PathVariable Long quantity) {
         int result = inventoryDetailService.cancelQuantityByMedicine(medicineId, quantity);
         return ResponseEntity.ok(
+                  BaseResponse
+                          .<Integer>builder()
+                          .data(result)
+                          .success(true)
+                          .build()
+          );
+    }
+    // Cập nhật (thêm) số lượng của một thuốc khi hủy đơn (thêm lại vào kho)
+    @PutMapping("/restore-quantity-medicine/{medicineId}")
+    public ResponseEntity<BaseResponse<Integer>> restoreQuantityByMedicine(@PathVariable Long medicineId, @RequestParam Long quantity) {
+        int result = inventoryDetailService.restoreQuantityByMedicine(medicineId, quantity);
+        return ResponseEntity.ok(
                 BaseResponse
                         .<Integer>builder()
                         .data(result)
@@ -136,7 +163,7 @@ public class InventoryDetailController {
         );
     }
 
-
+    // Danh sách thuốc gần hết hạn
     @GetMapping("/medicines-near-expiration")
     public ResponseEntity<BaseResponse<PageDTO<InventoryDetailResponse>>> getMedicinesNearExpiration(@RequestParam(defaultValue = "0") int page,
                                                                                                      @RequestParam(defaultValue = "10") int size,
@@ -152,6 +179,7 @@ public class InventoryDetailController {
         );
     }
 
+    // Danh sách thuốc đã hết hạn
     @GetMapping("/medicines-expired")
     public ResponseEntity<BaseResponse<PageDTO<InventoryDetailResponse>>> getMedicinesExpired(@RequestParam(defaultValue = "0") int page,
                                                                                               @RequestParam(defaultValue = "10") int size,
@@ -166,6 +194,7 @@ public class InventoryDetailController {
                         .build()
         );
     }
+
 
     @GetMapping("/inventory-details-expiration")
     public ResponseEntity<BaseResponse<PageDTO<InventoryDetailResponse>>> getInventoryDetailsExpiration(

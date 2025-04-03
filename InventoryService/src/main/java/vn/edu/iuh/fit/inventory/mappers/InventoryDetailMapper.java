@@ -16,5 +16,16 @@ public interface InventoryDetailMapper {
     InventoryDetailResponse toDto(InventoryDetail inventoryrDetail);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    InventoryDetail partialUpdate(InventoryDetailRequest inventoryDetailRequest, @MappingTarget InventoryDetail inventoryDetail);
+    default InventoryDetail partialUpdate(InventoryDetailRequest inventoryDetailRequest, @MappingTarget InventoryDetail inventoryDetail) {
+        if (inventoryDetailRequest.getQuantity() != null) {
+            inventoryDetail.setQuantity(inventoryDetail.getQuantity() + inventoryDetailRequest.getQuantity());
+        }
+        return inventoryDetail;  // ✅ Trả về đối tượng đã cập nhật
+    }
+
+//    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+//    InventoryDetail updateQuantity(InventoryDetailRequest inventoryDetailRequest, @MappingTarget InventoryDetail inventoryDetail) {
+//        inventoryDetail.setQuantity(inventoryDetail.getQuantity() + inventoryDetailRequest.getQuantity());
+//        partialUpdate(inventoryDetailRequest, inventoryDetail);
+//    }
 }

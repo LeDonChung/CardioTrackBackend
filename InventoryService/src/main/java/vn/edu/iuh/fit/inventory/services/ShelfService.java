@@ -21,8 +21,11 @@ public interface ShelfService {
     //hiển thị thông tin của các shelf có capacity - totalProduct lớn hơn một giá trị nhập từ bàn phím
     List<ShelfResponse> findShelfsWithCapacityGreaterThan(int threshold);
 
-    //Cập nhật số lượng sản phẩm của shelf
+    //Cập nhật (thêm) số lượng sản phẩm của shelf khi nhập hàng hoặc hủy đơn(thêm lại vào kệ)
     void updateTotalProduct(Long id, int quantity);
+
+    // Cập nhật (trừ) số lượng sản phẩm của shelf khi đặt hàng
+    void updateSubtractTotalProduct(Long id, int quantity);
 
     PageDTO<ShelfResponse> findLocationPage(int page, int size, String sortBy, String sortName, String location);
 

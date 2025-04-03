@@ -52,6 +52,9 @@ dependencies {
 
     implementation 'com.infobip:infobip-api-java-client:6.0.0'
 
+    implementation "io.github.resilience4j:resilience4j-spring-boot3"
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
+
 }
 
 dependencyManagement {
@@ -62,4 +65,11 @@ dependencyManagement {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+bootJar {
+    mainClass = 'vn.edu.iuh.fit.notification.NotificationServiceApplication'
+}
+build {
+    dependsOn bootJar
 }

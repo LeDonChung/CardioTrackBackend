@@ -1,10 +1,9 @@
 from flask import Flask, request, jsonify
-import app.erureka_client
 import services
+import os
+import app.erureka_client
 
 app = Flask(__name__)
-
-services.train_model()
 
 
 @app.route('/api/v1/recommend/<int:product_id>', methods=['GET'])
@@ -27,6 +26,16 @@ def recommend_order():
     return jsonify({"data": recommendations})
 
 
+EUREKA_INSTANCE_HOSTNAME = os.getenv("EUREKA_INSTANCE_HOSTNAME")
+
+
+@app.route('/api/v1/recommend/training', methods=['GET'])
+def training():
+    services.train_model_order()
+    services.train_model()
+    return jsonify({"message": "Training started!"})
+
+
 if __name__ == '__main__':
-    services.schedule_training()  # Bắt đầu lên lịch huấn luyện
-    app.run(port=9016, debug=True)
+    services.schedule_training()
+    app.run(host=EUREKA_INSTANCE_HOSTNAME, port=os.getenv("SERVICE_PORT"), debug=True)

@@ -16,4 +16,5 @@ public class SystemConstraints {
     public static final String USER_NOT_FOUND = "Người dùng không tồn tại.";
     public static final String PLS_VERIFY_OTP = "Vui lòng xác thực OTP.";
     public static final String ADDRESS_NOT_FOUND = "Địa chỉ không tồn tại.";
+    public static final String SERVICE_UNAVAILABLE = "Dịch vụ người dùng không khả dụng.";
 }
