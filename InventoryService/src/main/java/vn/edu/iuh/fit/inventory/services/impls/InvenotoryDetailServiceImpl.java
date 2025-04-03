@@ -226,6 +226,33 @@ public class InvenotoryDetailServiceImpl implements InventoryDetailService {
 
     // Lấy danh sách thuốc gần hết hạn (6 tháng)
     @Override
+    @Transactional
+    public int cancelQuantityByMedicine(Long medicineId, Long quantity) {
+        List<InventoryDetail> availableShelves = inventoryDetailRepository.getAvailableShelvesForMedicine(medicineId);
+
+        Long quantityToRestore = quantity;
+        int updated = 0;
+
+        for (InventoryDetail inventoryDetail : availableShelves) {
+            if (quantityToRestore <= 0) break;
+
+            long availableSpace = inventoryDetail.getShelf().getCapacity() - inventoryDetail.getQuantity();
+            long quantityToAddToShelf = Math.min(availableSpace, quantityToRestore);
+
+            int result = inventoryDetailRepository.addQuantityByShelfAndMedicine(quantityToAddToShelf, inventoryDetail.getShelf().getId(), medicineId);
+            updated += result;
+
+            quantityToRestore -= quantityToAddToShelf;
+        }
+
+        if (quantityToRestore > 0) {
+            throw new InventoryDetailException(SystemConstraints.SHELF_FULL);
+        }
+
+        return updated;
+    }
+
+    @Override
     public PageDTO<InventoryDetailResponse> getMedicinesNearExpiration(int page, int size, String sortBy, String sortName) {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime expirationDate = now.plusMonths(6);

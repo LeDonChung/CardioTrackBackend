@@ -139,6 +139,17 @@ public class InventoryDetailController {
         );
     }
 
+    @PutMapping("/cancel-quantity-medicine/{medicineId}/{quantity}")
+    public ResponseEntity<BaseResponse<Integer>> cancelQuantityByMedicine(@PathVariable Long medicineId, @PathVariable Long quantity) {
+        int result = inventoryDetailService.cancelQuantityByMedicine(medicineId, quantity);
+        return ResponseEntity.ok(
+                  BaseResponse
+                          .<Integer>builder()
+                          .data(result)
+                          .success(true)
+                          .build()
+          );
+    }
     // Cập nhật (thêm) số lượng của một thuốc khi hủy đơn (thêm lại vào kho)
     @PutMapping("/restore-quantity-medicine/{medicineId}")
     public ResponseEntity<BaseResponse<Integer>> restoreQuantityByMedicine(@PathVariable Long medicineId, @RequestParam Long quantity) {
