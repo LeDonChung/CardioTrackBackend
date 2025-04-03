@@ -83,6 +83,44 @@ services:
     networks:
       - my-network
       
+  health-service:
+    build: ./HealthCheckService
+    container_name: health-service
+    depends_on:
+      - discovery-service
+      - mariadb-health
+    ports:
+      - "9101:9101"
+    environment:
+      - SPRING_APPLICATION_NAME=health-service
+      - SERVER_PORT=9101
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka
+      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.mariadb.jdbc.Driver
+      - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb-health:3306/tchealth 
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - SPRING_JPA_SHOW_SQL=true
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    volumes:
+      - ./HealthCheckService/.env:/app/.env
+    networks:
+      - my-network
+
+
+  mariadb-health:
+    image: mariadb:latest
+    container_name: mariadb-health
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=tchealth
+    ports:
+      - "3300:3306"  
+    volumes:
+      - mariadb-health-data:/var/lib/mysql 
+    networks:
+      - my-network      
+      
   inventory-service:
     build: ./InventoryService
     container_name: inventory-service
@@ -155,7 +193,7 @@ services:
       - SPRING_DATASOURCE_PASSWORD=root
       - SPRING_JPA_SHOW_SQL=true
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
-      - CHATGPT_OPEN_API_KEY=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
+      - CHATGPT_OPEN_API_KEY=
       - CHATGPT_MODEL=gpt-3.5-turbo-1106
       - CHATGPT_ASSISTANT_ID=asst_knW06tfTd1ofGEDCKF9SHC0N
     networks:
@@ -369,6 +407,7 @@ volumes:
   redis-data:
   mariadb-order-data:
   mongo-user-data:
+  mariadb-health-data:
 
 
 networks:

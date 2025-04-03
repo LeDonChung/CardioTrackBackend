@@ -1,0 +1,16 @@
+resilience4j.retry:
+  instances:
+    notificationRetry:
+      maxAttempts: 3
+      waitDuration: 1s
+      enableExponentialBackoff: true
+      exponentialBackoffMultiplier: 2
+      retryExceptions:
+        - org.springframework.web.client.HttpServerErrorException
+        - java.io.IOException
+        - java.lang.reflect.UndeclaredThrowableException
+        - jakarta.mail.MessagingException
+        - java.net.UnknownHostException
+        - java.net.ConnectException
+        - org.eclipse.angus.mail.util.MailConnectException
+        - java.lang.Exception
