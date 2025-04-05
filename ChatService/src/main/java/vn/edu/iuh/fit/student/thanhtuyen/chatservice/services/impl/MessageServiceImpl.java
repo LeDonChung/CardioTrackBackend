@@ -37,15 +37,10 @@ public class MessageServiceImpl implements MessageService {
         User user;
         if (messageDto.getSender().getId() != 0) {
             user = userRepository.findById(messageDto.getSender().getId()).orElse(null);
-            if (user == null) {
-                user = User.builder()
-                        .id(messageDto.getSender().getId())
-                        .username(messageDto.getSender().getUsername())
-                        .role("user")
-                        .build();
-                user = userRepository.save(user);
-                System.out.println("New user: " + user);
-            }
+            user.setUsername(messageDto.getSender().getUsername());
+            user = userRepository.save(user);
+            System.out.println("New user: " + user);
+
         }else {
             user = userRepository.findById(messageDto.getReceiver().getId()).orElse(null);
             if (user == null) {

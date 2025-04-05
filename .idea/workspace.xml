@@ -5,9 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="056a8a1b-6a65-4077-aa32-40e075f4f0a1" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/vn/edu/iuh/fit/product/models/entities/Medicine.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/vn/edu/iuh/fit/product/models/entities/Medicine.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProductService/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProductService/src/test/java/vn/edu/iuh/fit/product/ProductServiceApplicationTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/test/java/vn/edu/iuh/fit/product/ProductServiceApplicationTests.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/APIGateway/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/APIGateway/build.gradle" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -17,6 +16,10 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="KubernetesApiPersistence"><![CDATA[{}]]></component>
+  <component name="KubernetesApiProvider"><![CDATA[{
+  "isMigrated": true
+}]]></component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
@@ -38,17 +41,28 @@
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "build-consult-service",
+    "git-widget-placeholder": "retry-notification-chat",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "D:/CardioTrack/CardioTrackBackend",
+    "last_opened_file_path": "D:/HK2_2024_2025/KTPM/CardioTrackBackend/APIGateway",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9f38398b9061-18abd8497189-intellij.indexing.shared.core-IU-241.14494.240" />
+        <option value="bundled-js-predefined-1d06a55b98c1-74d2a5396914-JavaScript-IU-241.14494.240" />
+      </set>
+    </attachedChunks>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -61,6 +75,7 @@
       <workItem from="1740038625781" duration="280000" />
       <workItem from="1742128691528" duration="513000" />
       <workItem from="1743176396648" duration="1000" />
+      <workItem from="1743580527397" duration="540000" />
     </task>
     <servers />
   </component>

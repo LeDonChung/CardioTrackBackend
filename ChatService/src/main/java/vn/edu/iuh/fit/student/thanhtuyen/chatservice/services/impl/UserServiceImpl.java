@@ -33,21 +33,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserDto> getAllUsers() {
         List<User> users = userRepository.findAllUser();
-
-
-
         List<UserDto> userDtos = new ArrayList<>();
         for (User user : users) {
             //get all messages of user
             List<Message> messages = messageRepository.findByUserId(user.getId());
             UserDto userDto = userMapper.toDTO(user);
-
             //map messages to messageDtos
             List<MessageDto> messageDtos = new ArrayList<>();
             for (Message message : messages) {
                 messageDtos.add(messageMapper.toDTO(message));
             }
-
             //set messages to userDto
             userDto.setMessages(messageDtos);
             userDtos.add(userDto);

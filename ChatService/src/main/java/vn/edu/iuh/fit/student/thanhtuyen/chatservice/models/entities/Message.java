@@ -17,4 +17,5 @@ public class Message {
     private Long receiverId;
     private String content;
     private LocalDateTime timestamp = LocalDateTime.now();
+    private String imageUrl;
 }
