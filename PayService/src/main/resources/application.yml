@@ -4,6 +4,11 @@ resilience4j:
       paymentService:
         maxAttempts: 3
         waitDuration: 3s
+        retryExceptions:
+          - java.io.IOException
+          - java.util.concurrent.TimeoutException
+          - vn.payos.exception.PayOSException
+          - java.lang.RuntimeException
   circuitbreaker:
     instances:
       paymentService:
