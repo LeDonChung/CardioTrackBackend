@@ -192,8 +192,8 @@ services:
       - SPRING_JPA_SHOW_SQL=true
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
       - CHATGPT_OPEN_API_KEY=
-      - CHATGPT_MODEL=gpt-3.5-turbo-1106
-      - CHATGPT_ASSISTANT_ID=asst_knW06tfTd1ofGEDCKF9SHC0N
+      - CHATGPT_MODEL=gpt-4o
+      - CHATGPT_ASSISTANT_ID=
     networks:
       - my-network
 

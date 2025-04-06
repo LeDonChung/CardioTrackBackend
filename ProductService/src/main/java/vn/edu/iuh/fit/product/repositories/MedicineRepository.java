@@ -26,4 +26,8 @@ public interface MedicineRepository extends JpaRepository<Medicine, Long>, JpaSp
     //Hiển thị danh sách thuốc theo title của danh mục thuôc
     @Query("SELECT m FROM Medicine m JOIN m.categories c WHERE c.title = :title")
     List<Medicine> findAllByCategoryTitle(String title);
+
+    //Lấy thuốc theo sku
+    @Query("SELECT m FROM Medicine m WHERE m.sku = :sku")
+    Medicine findBySku(String sku);
 }

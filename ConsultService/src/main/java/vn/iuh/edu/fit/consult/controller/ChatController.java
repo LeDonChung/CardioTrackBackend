@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import vn.iuh.edu.fit.consult.models.request.MessageRequest;
+import vn.iuh.edu.fit.consult.models.response.MedicineResponse;
 import vn.iuh.edu.fit.consult.models.response.MessageResponse;
 import vn.iuh.edu.fit.consult.service.ChatService;
 
@@ -35,6 +36,15 @@ public class ChatController {
     ) throws IOException {
         return ResponseEntity.ok(
                 chatService.getMessages(userId)
+        );
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<MedicineResponse>> searchData(
+            @RequestParam("file") String file
+    ) throws IOException {
+        return ResponseEntity.ok(
+                chatService.searchData(file)
         );
     }
 }

@@ -136,4 +136,16 @@ public class MedicineController {
                         .build()
         );
     }
+
+    @GetMapping("/get-by-sku")
+    public ResponseEntity<BaseResponse<MedicineResponse>> findBySku(@RequestParam String sku) {
+        MedicineResponse medicineResponse = medicineService.getMedicineBySku(sku);
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<MedicineResponse>builder()
+                        .data(medicineResponse)
+                        .success(true)
+                        .build()
+        );
+    }
 }

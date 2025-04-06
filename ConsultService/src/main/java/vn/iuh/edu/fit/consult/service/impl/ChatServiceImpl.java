@@ -12,21 +12,24 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 import vn.iuh.edu.fit.consult.entity.User;
 import vn.iuh.edu.fit.consult.models.request.MessageRequest;
 import vn.iuh.edu.fit.consult.models.request.MessageRequestOpenAI;
 import vn.iuh.edu.fit.consult.models.request.ThreadRunRequest;
+import vn.iuh.edu.fit.consult.models.response.BaseResponse;
+import vn.iuh.edu.fit.consult.models.response.MedicineResponse;
 import vn.iuh.edu.fit.consult.models.response.MessageResponse;
+import vn.iuh.edu.fit.consult.models.response.SearchDataResponse;
 import vn.iuh.edu.fit.consult.repository.UserRepository;
 import vn.iuh.edu.fit.consult.service.ChatService;
+import vn.iuh.edu.fit.consult.service.ProductClient;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Service
 public class ChatServiceImpl implements ChatService {
@@ -45,6 +48,9 @@ public class ChatServiceImpl implements ChatService {
     private final Gson gson = new Gson();
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ProductClient productClient;
 
 
     private HttpHeaders createHeaders() throws IOException {
@@ -219,6 +225,61 @@ public class ChatServiceImpl implements ChatService {
         Optional<User> user = userRepository.findById(userId);
         return user.isPresent();
     }
+
+    @Override
+    public List<MedicineResponse> searchData(String file) throws IOException {
+        try {
+            Map<String, Object> threadResponse = createThread();
+            String threadId = (String) threadResponse.get("id");
+            System.out.println("Thread ID: " + threadId);
+            MessageRequest message = MessageRequest.builder()
+                    .message(
+                            List.of(
+                                    Map.of("type", "text", "text", Map.of("value", "Xem hình ảnh này và trả về danh sách sản phẩm tương tự. Trả về định dạng: {\"product_ids\": [\"sp01\", \"sp02\"]}. Nếu không tìm thấy. Trả về định dạng: {\"product_ids\": []}")),
+                                    Map.of("type", "image_url", "image_url", Map.of("url", file))
+                            ).toString()
+                    )
+                    .build();
+
+            sendUserMessage(threadId, message);
+            // Gửi yêu cầu chạy thread
+            Map<String, Object> runResponse = runThreadToAssistant(threadId).get(10, TimeUnit.SECONDS);
+
+            // Lấy kết quả cuối cùng
+            MessageResponse finalMessage = awaitRunCompletion(threadId, runResponse.get("id").toString());
+            List<String> productIds = parseProductIdsFromMessage(finalMessage.getContent());
+            System.out.println("Product IDs: " + productIds);
+            // call api
+            List<MedicineResponse> medicineResponses = new ArrayList<>();
+            if (productIds != null && !productIds.isEmpty()) {
+                for (String productId : productIds) {
+                    BaseResponse<MedicineResponse> response = productClient.getMedicineBySku(productId);
+                    System.out.println("Medicine Response: " + response.getData());
+                    if (response.getData() != null) {
+                        medicineResponses.add(response.getData());
+                    }
+                }
+            }
+            return medicineResponses;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private List<String> parseProductIdsFromMessage(String content) {
+        try {
+            Map<String, Object> jsonMap = gson.fromJson(content, Map.class);
+            if (jsonMap.containsKey("product_ids")) {
+                return (List<String>) jsonMap.get("product_ids");
+            }
+            return Collections.emptyList();
+        } catch (Exception e) {
+            return Collections.emptyList();
+        }
+    }
+
+
 
     public List<MessageResponse> getMessages(String threadId) throws IOException {
         List<MessageResponse> responses = new ArrayList<>();
