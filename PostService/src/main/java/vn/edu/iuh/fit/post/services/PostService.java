@@ -4,6 +4,7 @@ import vn.edu.iuh.fit.post.exceptions.PostException;
 import vn.edu.iuh.fit.post.model.dto.response.PostResponse;
 import vn.edu.iuh.fit.post.model.dto.request.PostRequest;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface PostService {
@@ -21,6 +22,7 @@ public interface PostService {
 
     //lấy danh sách bài viet
     List<PostResponse> getPosts() throws PostException;
+
     // lấy danh sách bài viết của tôi
     List<PostResponse> getMyPosts(Long authorId) throws PostException;
 }
