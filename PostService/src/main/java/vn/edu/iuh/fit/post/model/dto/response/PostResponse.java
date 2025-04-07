@@ -22,4 +22,5 @@ public class PostResponse {
 
     private UserResponse userResponse;
 
+    private String imgTitle;
 }

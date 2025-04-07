@@ -80,6 +80,11 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb-post:3306/tcpost # Kết nối đến MariaDB container mới và cơ sở dữ liệu tcpost
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
+      - AWS_ACCESS_KEY_ID=
+      - AWS_SECRET_KEY=
+      - AWS_S3_BUCKET_NAME=
+    env_file:
+      - ./PostService/.env
     networks:
       - my-network
       
