@@ -5,6 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="70db72c5-1a60-4ac9-a4c1-44856a11a0bb" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../AuthService/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../AuthService/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ChatService/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/../ChatService/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ChatService/src/main/java/vn/edu/iuh/fit/student/thanhtuyen/chatservice/configs/WebSocketConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/../ChatService/src/main/java/vn/edu/iuh/fit/student/thanhtuyen/chatservice/configs/WebSocketConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ChatService/src/main/java/vn/edu/iuh/fit/student/thanhtuyen/chatservice/services/S3Service.java" beforeDir="false" afterPath="$PROJECT_DIR$/../ChatService/src/main/java/vn/edu/iuh/fit/student/thanhtuyen/chatservice/services/S3Service.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ChatService/src/main/java/vn/edu/iuh/fit/student/thanhtuyen/chatservice/services/impl/MessageServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../ChatService/src/main/java/vn/edu/iuh/fit/student/thanhtuyen/chatservice/services/impl/MessageServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ChatService/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../ChatService/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../HealthCheckService/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/../HealthCheckService/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProductService/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../ProductService/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../UserService/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../UserService/src/main/resources/application.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/../docker-compose.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -46,6 +57,22 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;api-send-and-upload-image&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/HK2_2024_2025/KTPM/CardioTrackBackend/ConfigService&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9f38398b9061-18abd8497189-intellij.indexing.shared.core-IU-241.14494.240" />
+        <option value="bundled-js-predefined-1d06a55b98c1-74d2a5396914-JavaScript-IU-241.14494.240" />
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
@@ -75,6 +102,8 @@
       <option name="presentableId" value="Default" />
       <updated>1741849064991</updated>
       <workItem from="1741849066173" duration="4000" />
+      <workItem from="1743934699063" duration="20000" />
+      <workItem from="1743951082511" duration="28000" />
       <workItem from="1743661796044" duration="41000" />
     </task>
     <servers />
