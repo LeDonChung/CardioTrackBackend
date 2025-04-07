@@ -12,7 +12,7 @@ resilience4j:
         waitDuration: 3s
   rateLimiter:
     instances:
-      orderService:
+      orderServiceRateLimiter:
         limitForPeriod: 100
         limitRefreshPeriod: 1m
         timeoutDuration: 500ms # Timeout for acquiring a permission
