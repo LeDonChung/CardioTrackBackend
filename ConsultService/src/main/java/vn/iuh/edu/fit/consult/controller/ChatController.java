@@ -6,11 +6,13 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import vn.iuh.edu.fit.consult.models.request.MessageRequest;
+import vn.iuh.edu.fit.consult.models.response.BaseResponse;
 import vn.iuh.edu.fit.consult.models.response.MedicineResponse;
 import vn.iuh.edu.fit.consult.models.response.MessageResponse;
 import vn.iuh.edu.fit.consult.service.ChatService;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -40,11 +42,15 @@ public class ChatController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<MedicineResponse>> searchData(
-            @RequestParam("file") String file
-    ) throws IOException {
+    public ResponseEntity<BaseResponse<List<MedicineResponse>>> searchData(@RequestParam("file") String file) throws IOException {
+        List<MedicineResponse> medicineResponses = new ArrayList<>();
+        medicineResponses = chatService.searchData(file);
         return ResponseEntity.ok(
-                chatService.searchData(file)
+                BaseResponse
+                        .<List<MedicineResponse>>builder()
+                        .data(medicineResponses)
+                        .success(true)
+                        .build()
         );
     }
 }

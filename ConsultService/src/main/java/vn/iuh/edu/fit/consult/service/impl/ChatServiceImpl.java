@@ -229,6 +229,7 @@ public class ChatServiceImpl implements ChatService {
     @Override
     public List<MedicineResponse> searchData(String file) throws IOException {
         try {
+            System.out.println("file: " + file);
             Map<String, Object> threadResponse = createThread();
             String threadId = (String) threadResponse.get("id");
             System.out.println("Thread ID: " + threadId);
@@ -253,7 +254,7 @@ public class ChatServiceImpl implements ChatService {
             List<MedicineResponse> medicineResponses = new ArrayList<>();
             if (productIds != null && !productIds.isEmpty()) {
                 for (String productId : productIds) {
-                    BaseResponse<MedicineResponse> response = productClient.getMedicineBySku(productId);
+                    BaseResponse<MedicineResponse> response = productClient.getMedicineBySku(productId).getBody();
                     System.out.println("Medicine Response: " + response.getData());
                     if (response.getData() != null) {
                         medicineResponses.add(response.getData());
