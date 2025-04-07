@@ -2,6 +2,7 @@ package vn.edu.iuh.fit.post.services.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import vn.edu.iuh.fit.post.client.UserServiceClient;
 import vn.edu.iuh.fit.post.exceptions.PostException;
 import vn.edu.iuh.fit.post.jwt.JwtService;
@@ -12,8 +13,11 @@ import vn.edu.iuh.fit.post.model.dto.response.UserResponse;
 import vn.edu.iuh.fit.post.model.entity.Post;
 import vn.edu.iuh.fit.post.repositories.PostRepository;
 import vn.edu.iuh.fit.post.services.PostService;
+import vn.edu.iuh.fit.post.services.S3Service;
 import vn.edu.iuh.fit.post.utils.SystemConstraints;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -29,12 +33,22 @@ public class PostServiceImpl implements PostService {
     @Autowired
     private UserServiceClient userServiceClient;
 
+    @Autowired
+    private S3Service s3Service;
+
     @Override
     public PostResponse createPost(PostRequest postRequest) throws PostException {
 
         Long userId = userServiceClient.findIdByPhoneNumber(jwtService.getCurrentUser()).getBody().getData();
+        if (postRequest.getImgTitle() == null || postRequest.getImgTitle().isEmpty()) {
+            throw new PostException("Image file is missing.");
+        }
 
+        // Không cần upload lại ảnh lên S3 ở đây nữa
+        // postRequest.getImgTitle() đã chứa URL của ảnh được upload lên S3 từ frontend
+        String imgUrl = postRequest.getImgTitle();  // URL của ảnh đã được upload
         Post post = postMapper.toEntity(postRequest);
+        post.setImgTitle(imgUrl);
         post.setCreatedAt(LocalDateTime.now()); // Set thời gian tạo bài viết
         post.setAuthorId(userId);  // Gán userId cho bài viết
         post.setComments(null);
@@ -95,7 +109,13 @@ public class PostServiceImpl implements PostService {
             throw new PostException("Không tìm thấy bài viết với tiêu đề: " + title);
         }
         return posts.stream()
-                .map(postMapper::toResponse)
+                .map(post -> {
+                    // Gọi UserServiceClient để lấy thông tin người tạo bài viết (UserResponse)
+                    UserResponse userResponse = userServiceClient.findUserById(post.getAuthorId()).getBody().getData();
+                    PostResponse postResponse = postMapper.toResponse(post);
+                    postResponse.setFullName(userResponse.getFullName());  // Gán username vào PostResponse
+                    return postResponse;
+                })
                 .toList();
     }
 
