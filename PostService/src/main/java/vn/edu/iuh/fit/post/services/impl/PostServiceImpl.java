@@ -33,9 +33,6 @@ public class PostServiceImpl implements PostService {
     @Autowired
     private UserServiceClient userServiceClient;
 
-    @Autowired
-    private S3Service s3Service;
-
     @Override
     public PostResponse createPost(PostRequest postRequest) throws PostException {
 

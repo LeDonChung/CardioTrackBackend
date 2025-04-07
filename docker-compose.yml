@@ -80,11 +80,9 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb-post:3306/tcpost # Kết nối đến MariaDB container mới và cơ sở dữ liệu tcpost
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
-      - AWS_ACCESS_KEY_ID=
-      - AWS_SECRET_KEY=
-      - AWS_S3_BUCKET_NAME=
-    env_file:
-      - ./PostService/.env
+      - AWS_ACCESS_KEY_ID=AKIAUMYCIH3V7XFPOA5Z
+      - AWS_SECRET_KEY=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
+      - AWS_S3_BUCKET_NAME=trongtiniuh-bucket
     networks:
       - my-network
       
@@ -106,7 +104,7 @@ services:
       - SPRING_DATASOURCE_PASSWORD=root
       - SPRING_JPA_SHOW_SQL=true
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
-      - OPENAI_API_KEY=
+      - OPENAI_API_KEY=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
     networks:
       - my-network
 
@@ -196,7 +194,7 @@ services:
       - SPRING_DATASOURCE_PASSWORD=root
       - SPRING_JPA_SHOW_SQL=true
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
-      - CHATGPT_OPEN_API_KEY=
+      - CHATGPT_OPEN_API_KEY=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
       - CHATGPT_MODEL=gpt-3.5-turbo-1106
       - CHATGPT_ASSISTANT_ID=asst_knW06tfTd1ofGEDCKF9SHC0N
     networks:
@@ -291,9 +289,9 @@ services:
       - EUREKA_CLIENT_FETCH_REGISTRY=true
       - EUREKA_CLIENT_REGISTER_WITH_EUREKA=true
       - EUREKA_CLIENT_ENABLED=true
-      - PAYOS_CLIENT_ID=123
-      - PAYOS_API_KEY=123
-      - PAYOS_CHECKSUM_KEY=123
+      - PAYOS_CLIENT_ID=4aea24c3-640a-4a4e-9772-dc2dcbbb2cc0
+      - PAYOS_API_KEY=d89d4e20-bfc2-491e-ab92-f2af130a61ab
+      - PAYOS_CHECKSUM_KEY=62e13a88caae122463838817056f00ed427323831c48c0835fe6b845a50541a6
     networks:
       - my-network
 

@@ -49,7 +49,6 @@ dependencies {
 
     //upload file to s3
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.cloud:spring-cloud-starter-aws'
 
 
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
