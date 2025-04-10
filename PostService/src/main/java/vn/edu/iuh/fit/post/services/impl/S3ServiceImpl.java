@@ -29,7 +29,7 @@ public class S3ServiceImpl implements S3Service {
     @Autowired
     private S3Client s3Client;
 
-    @Value("${AWS_S3_BUCKET_NAME}")
+    @Value("${AWS_S3_BUCKET_NAME_POST}")
     private String bucketName;
     @Override
     public String uploadFile(MultipartFile file) throws IOException {

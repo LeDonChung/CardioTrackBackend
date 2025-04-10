@@ -54,8 +54,8 @@ services:
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka
       - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.mariadb.jdbc.Driver
       - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb-user:3306/tcuser
-      - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=root
+      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
       - SPRING_JPA_SHOW_SQL=true
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
       - SPRING_DATA_REDIS_HOST=redis
@@ -78,11 +78,11 @@ services:
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka
       - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.mariadb.jdbc.Driver
       - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb-post:3306/tcpost # Kết nối đến MariaDB container mới và cơ sở dữ liệu tcpost
-      - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=root
-      - AWS_ACCESS_KEY_ID=AKIAUMYCIH3V7XFPOA5Z
-      - AWS_SECRET_KEY=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
-      - AWS_S3_BUCKET_NAME=trongtiniuh-bucket
+      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+      - AWS_ACCESS_KEY_ID_POST=${AWS_ACCESS_KEY_ID_POST}
+      - AWS_SECRET_KEY_POST=${AWS_SECRET_KEY_POST}
+      - AWS_S3_BUCKET_NAME_POST=${AWS_S3_BUCKET_NAME_POST}
     networks:
       - my-network
       
@@ -100,11 +100,11 @@ services:
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka
       - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.mariadb.jdbc.Driver
       - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb-health:3306/tchealth 
-      - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=root
+      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
       - SPRING_JPA_SHOW_SQL=true
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
-      - OPENAI_API_KEY=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
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
     networks:
       - my-network
 
@@ -113,7 +113,7 @@ services:
     image: mariadb:latest
     container_name: mariadb-health
     environment:
-      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - MYSQL_DATABASE=tchealth
     ports:
       - "3300:3306"  
@@ -135,8 +135,8 @@ services:
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka
       - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.mariadb.jdbc.Driver
       - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb-inventory:3306/tcinventory
-      - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=root
+      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
       - SPRING_JPA_SHOW_SQL=true
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
       - SPRING_MAIN_ALLOW_BEAN_DEFINITION_OVERRIDING=true
@@ -147,7 +147,7 @@ services:
     image: mariadb:latest
     container_name: mariadb-post
     environment:
-      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - MYSQL_DATABASE=tcpost
     ports:
       - "3301:3306"
@@ -169,8 +169,8 @@ services:
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka
       - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.mariadb.jdbc.Driver
       - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb-product:3306/tcproduct?useUnicode=true&characterEncoding=utf8&characterSetResults=utf8
-      - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=root
+      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
       - SPRING_JPA_SHOW_SQL=true
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
     networks:
@@ -190,13 +190,13 @@ services:
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka
       - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.mariadb.jdbc.Driver
       - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb-consult:3306/tcconsult?useUnicode=true&characterEncoding=utf8&characterSetResults=utf8
-      - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=root
+      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
       - SPRING_JPA_SHOW_SQL=true
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
-      - CHATGPT_OPEN_API_KEY=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
+      - CHATGPT_OPEN_API_KEY=${CHATGPT_OPEN_API_KEY}
       - CHATGPT_MODEL=gpt-3.5-turbo-1106
-      - CHATGPT_ASSISTANT_ID=asst_knW06tfTd1ofGEDCKF9SHC0N
+      - CHATGPT_ASSISTANT_ID=${CHATGPT_ASSISTANT_ID}
     networks:
       - my-network
 
@@ -204,7 +204,7 @@ services:
     image: mariadb:latest
     container_name: mariadb-consult
     environment:
-      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - MYSQL_DATABASE=tcconsult
     ports:
       - "3309:3306"
@@ -217,7 +217,7 @@ services:
     image: mariadb:latest
     container_name: mariadb-user
     environment:
-      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - MYSQL_DATABASE=tcuser
     ports:
       - "3302:3306"
@@ -230,7 +230,7 @@ services:
     image: mariadb:latest
     container_name: mariadb-product
     environment:
-      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - MYSQL_DATABASE=tcproduct
     ports:
       - "3303:3306"
@@ -252,8 +252,8 @@ services:
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka
       - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.mariadb.jdbc.Driver
       - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb-order:3306/tcorder
-      - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=root
+      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
       - SPRING_JPA_SHOW_SQL=true
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
       - SPRING_DATA_REDIS_HOST=redis
@@ -266,7 +266,7 @@ services:
     image: mariadb:latest
     container_name: mariadb-order
     environment:
-      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - MYSQL_DATABASE=tcorder
     ports:
       - "3304:3306"
@@ -289,9 +289,9 @@ services:
       - EUREKA_CLIENT_FETCH_REGISTRY=true
       - EUREKA_CLIENT_REGISTER_WITH_EUREKA=true
       - EUREKA_CLIENT_ENABLED=true
-      - PAYOS_CLIENT_ID=4aea24c3-640a-4a4e-9772-dc2dcbbb2cc0
-      - PAYOS_API_KEY=d89d4e20-bfc2-491e-ab92-f2af130a61ab
-      - PAYOS_CHECKSUM_KEY=62e13a88caae122463838817056f00ed427323831c48c0835fe6b845a50541a6
+      - PAYOS_CLIENT_ID=${PAYOS_CLIENT_ID}
+      - PAYOS_API_KEY=${PAYOS_API_KEY}
+      - PAYOS_CHECKSUM_KEY=${PAYOS_CHECKSUM_KEY}
     networks:
       - my-network
 
@@ -299,7 +299,7 @@ services:
     image: mariadb:latest
     container_name: mariadb-inventory
     environment:
-      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - MYSQL_DATABASE=tcinventory
     ports:
       - "3305:3306"
@@ -355,11 +355,11 @@ services:
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka/
       - SPRING_MAIL_HOST=smtp.gmail.com
       - SPRING_MAIL_PORT=587
-      - SPRING_MAIL_PASSWORD=prep jgti ssbv lqkv
-      - SPRING_MAIL_USERNAME=thanhtuyen9623@gmail.com
-      - INFOBIP_API_KEY=823c1d1c61d7e1e0b8d9b135c1caf332-d11be93d-6772-4479-997e-852dd4e77150
-      - INFOBIP_SENDER=447491163443
-      - INFOBIP_BASE_URL=https://2mz1v6.api.infobip.com
+      - SPRING_MAIL_PASSWORD=${SPRING_MAIL_PASSWORD}
+      - SPRING_MAIL_USERNAME=${SPRING_MAIL_USERNAME}
+      - INFOBIP_API_KEY=${INFOBIP_API_KEY}
+      - INFOBIP_SENDER=${INFOBIP_SENDER}
+      - INFOBIP_BASE_URL=${INFOBIP_BASE_URL}
     networks:
       - my-network
 
@@ -396,10 +396,10 @@ services:
       - SPRING_DATA_REDIS_HOST=redis
       - SPRING_DATA_REDIS_PORT=6379
       - SPRING_DATA_REDIS_TIMEOUT=5000
-      - AWS_ACCESS_KEY_ID=AKIA2RRYEEZN6TBCLSZV
-      - AWS_SECRET_ACCESS_KEY=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
-      - AWS_REGION=ap-southeast-2
-      - AWS_BUCKET_NAME=cardio-track-chat
+      - AWS_ACCESS_KEY_ID_CHAT=${AWS_ACCESS_KEY_ID_CHAT}
+      - AWS_SECRET_ACCESS_KEY_CHAT=${AWS_SECRET_ACCESS_KEY_CHAT}
+      - AWS_REGION_CHAT=${AWS_REGION_CHAT}
+      - AWS_BUCKET_NAME_CHAT=${AWS_BUCKET_NAME_CHAT}
     networks:
       - my-network
 

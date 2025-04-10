@@ -10,13 +10,15 @@ import software.amazon.awssdk.services.s3.S3Client;
 
 @Configuration
 public class S3Config {
-    @Value("${AWS_S3_BUCKET_NAME}")
+    @Value("${AWS_ACCESS_KEY_ID_POST}")
     private String accessKey;
-    @Value("${AWS_ACCESS_KEY_ID}")
+    @Value("${AWS_SECRET_KEY_POST}")
     private String secretKey;
 
     @Bean
     public S3Client s3Client() {
+        System.out.println(accessKey);
+        System.out.println(secretKey);
         return S3Client.builder()
                 .region(Region.of("ap-southeast-1"))
                 .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create(accessKey, secretKey)))
