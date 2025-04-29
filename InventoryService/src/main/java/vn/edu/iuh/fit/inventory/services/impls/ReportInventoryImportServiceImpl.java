@@ -5,22 +5,39 @@ import org.springframework.stereotype.Service;
 import vn.edu.iuh.fit.inventory.repositories.ReportInventoryRepository;
 import vn.edu.iuh.fit.inventory.services.ReportInventoryImportService;
 
+import java.util.List;
+
 @Service
 public class ReportInventoryImportServiceImpl implements ReportInventoryImportService {
     @Autowired
     private ReportInventoryRepository reportImportRepository;
     @Override
-    public int countInventoryImportThisWeek() {
-        return reportImportRepository.countInventoryImportThisWeek();
+    public List<Object[]> countInventoryImportThisWeek() {
+        return reportImportRepository.countAllByWeek();
     }
 
     @Override
-    public int countInventoryImportThisMonth() {
-        return reportImportRepository.countInventoryImportThisMonth();
+    public List<Object[]> countInventoryImportThisMonth() {
+        return reportImportRepository.countAllByMonth();
     }
 
     @Override
-    public int countInventoryImportThisYear() {
-        return reportImportRepository.countInventoryImportThisYear();
+    public List<Object[]> countInventoryImportThisYear() {
+        return reportImportRepository.countAllByYear();
+    }
+
+    @Override
+    public List<Object[]> countCancelledByWeek() {
+        return reportImportRepository.countCancelledByWeek();
+    }
+
+    @Override
+    public List<Object[]> countCancelledByMonth() {
+        return reportImportRepository.countCancelledByMonth();
+    }
+
+    @Override
+    public List<Object[]> countCancelledByYear() {
+        return reportImportRepository.countCancelledByYear();
     }
 }
