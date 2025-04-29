@@ -5,14 +5,9 @@ resilience4j:
         slidingWindowSize: 10
         failureRateThreshold: 50
         waitDurationInOpenState: 10s
-  retry:
-    instances:
-      orderService:
-        maxAttempts: 3
-        waitDuration: 3s
   rateLimiter:
     instances:
       orderServiceRateLimiter:
-        limitForPeriod: 100
+        limitForPeriod: 5
         limitRefreshPeriod: 1m
         timeoutDuration: 500ms # Timeout for acquiring a permission

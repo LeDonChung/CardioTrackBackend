@@ -40,7 +40,6 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @CircuitBreaker(name = "orderService", fallbackMethod = "saveFallback")
-    @Retry(name = "orderService", fallbackMethod = "saveFallback")
     @RateLimiter(name = "orderServiceRateLimiter", fallbackMethod = "saveFallback")
     public OrderResponse save(OrderRequest request) throws OrderException {
         // Check if user is valid

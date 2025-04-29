@@ -15,4 +15,5 @@ public class SystemConstraints {
     public static final String USERNAME_IS_EXISTS = "Số điện thoại đã được đăng ký.";
     public static final String PLS_VERIFY_OTP = "Vui lòng xác thực OTP.";
     public static final String USER_SERVICE_UNAVAILABLE = "Dịch vụ người dùng không khả dụng.";
+    public static final String UNKNOWN_ERROR = "Đã xảy ra lỗi không xác định.";
 }
