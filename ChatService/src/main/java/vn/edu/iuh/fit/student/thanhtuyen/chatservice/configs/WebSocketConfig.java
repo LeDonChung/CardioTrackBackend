@@ -32,13 +32,14 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/api/v1/**")
-                        .allowedOriginPatterns("*")
+                        .allowedOriginPatterns("http://localhost:3000", "http://localhost:3001")  // Liệt kê cụ thể các domain
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
-                        .allowCredentials(true); // Cho phép gửi cookie (nếu có)
+                        .allowCredentials(true);
             }
         };
     }
+
 
 
 }

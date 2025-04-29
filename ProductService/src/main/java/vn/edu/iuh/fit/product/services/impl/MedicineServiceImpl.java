@@ -150,5 +150,14 @@ public class MedicineServiceImpl implements MedicineService {
         return medicineRepository.findAllByCategoryTitle(title).stream().map(medicineMapper::toDto).collect(Collectors.toList());
     }
 
+    @Override
+    public MedicineResponse getMedicineBySku(String sku) throws MedicineException {
+        Medicine medicine = medicineRepository.findBySku(sku);
+        if (medicine == null) {
+            throw new MedicineException(SystemConstraints.MEDICINE_NOT_FOUND);
+        }
+        return medicineMapper.toDto(medicine);
+    }
+
 
 }

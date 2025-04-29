@@ -21,7 +21,9 @@ public class Post {
 
     private String title;
 
-    @Column(columnDefinition = "TEXT")
+    private String imgTitle;
+
+    @Column(columnDefinition = "LONGTEXT")
     private String content;
 
     @Column(name = "author_id", nullable = false) // Đảm bảo tên cột không trùng lặp

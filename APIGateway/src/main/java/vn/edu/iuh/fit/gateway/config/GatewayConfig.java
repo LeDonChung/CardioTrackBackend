@@ -92,6 +92,8 @@ public class GatewayConfig {
                         .uri("lb://consult-service"))
 				.route("health-service", r -> r.path("/api/v1/healthcheck/**")
                         .uri("lb://health-service"))
+                .route("s3-service", r -> r.path("/api/v1/s3/**")
+                        .uri("lb://chat-service"))
                 .build();
     }
 }
