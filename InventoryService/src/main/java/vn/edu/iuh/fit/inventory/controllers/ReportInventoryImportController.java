@@ -13,38 +13,38 @@ public class ReportInventoryImportController {
     @Autowired
     private ReportInventoryImportService reportInventoryImportService;
 
-    // Lấy số lượng phiếu nhập kho trong tuần này
-    @RequestMapping("/count-this-week")
+    // Lấy số lượng phiếu nhập kho trong các tuần
+    @RequestMapping("/count-week")
     public List<Object[]> countInventoryImportThisWeek() {
         return reportInventoryImportService.countInventoryImportThisWeek();
     }
 
-    // Lấy số lượng phiếu nhập kho trong tháng này
-    @RequestMapping("/count-this-month")
+    // Lấy số lượng phiếu nhập kho trong các tháng
+    @RequestMapping("/count-month")
     public List<Object[]> countInventoryImportThisMonth() {
         return reportInventoryImportService.countInventoryImportThisMonth();
     }
 
-    // Lấy số lượng phiếu nhập kho trong năm này
-    @RequestMapping("/count-this-year")
+    // Lấy số lượng phiếu nhập kho trong các năm
+    @RequestMapping("/count-year")
     public List<Object[]> countInventoryImportThisYear() {
         return reportInventoryImportService.countInventoryImportThisYear();
     }
 
-    // Lấy số lượng phiếu nhập kho bị huỷ trong tuần này
-    @RequestMapping("/count-cancelled-this-week")
+    // Lấy số lượng phiếu nhập kho bị huỷ trong các tuần
+    @RequestMapping("/count-cancelled-week")
     public List<Object[]> countCancelledByWeek() {
         return reportInventoryImportService.countCancelledByWeek();
     }
 
-    // Lấy số lượng phiếu nhập kho bị huỷ trong tháng này
-    @RequestMapping("/count-cancelled-this-month")
+    // Lấy số lượng phiếu nhập kho bị huỷ trong các tháng
+    @RequestMapping("/count-cancelled-month")
     public List<Object[]> countCancelledByMonth() {
         return reportInventoryImportService.countCancelledByMonth();
     }
 
-    // Lấy số lượng phiếu nhập kho bị huỷ trong năm này
-    @RequestMapping("/count-cancelled-this-year")
+    // Lấy số lượng phiếu nhập kho bị huỷ trong các năm
+    @RequestMapping("/count-cancelled-year")
     public List<Object[]> countCancelledByYear() {
         return reportInventoryImportService.countCancelledByYear();
     }

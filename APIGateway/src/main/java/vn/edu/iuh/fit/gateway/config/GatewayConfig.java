@@ -96,6 +96,8 @@ public class GatewayConfig {
                         .uri("lb://chat-service"))
                 .route("inventory-service", r -> r.path("/api/v1/report-import/**")
                         .uri("lb://inventory-service"))
+                .route("inventory-service", r -> r.path("/api/v1/report-order/**")
+                        .uri("lb://inventory-service"))
                 .build();
     }
 }
