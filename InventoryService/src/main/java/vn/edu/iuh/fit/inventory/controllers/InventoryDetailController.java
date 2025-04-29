@@ -138,8 +138,7 @@ public class InventoryDetailController {
                         .build()
         );
     }
-
-
+    // Cập nhật (cộng) số lượng của một thuốc trong kho khi nhập hàng
     @PutMapping("/cancel-quantity-medicine/{medicineId}/{quantity}")
     public ResponseEntity<BaseResponse<Integer>> cancelQuantityByMedicine(@PathVariable Long medicineId, @PathVariable Long quantity) {
         int result = inventoryDetailService.cancelQuantityByMedicine(medicineId, quantity);
