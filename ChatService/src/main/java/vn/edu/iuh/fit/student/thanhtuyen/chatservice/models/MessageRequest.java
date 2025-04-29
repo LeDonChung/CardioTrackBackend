@@ -15,4 +15,5 @@ public class MessageRequest {
     private UserDto receiver;
     private String content;
     private LocalDateTime timestamp = LocalDateTime.now();
+    private String imageUrl;
 }

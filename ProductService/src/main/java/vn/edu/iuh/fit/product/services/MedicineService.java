@@ -32,4 +32,6 @@ public interface MedicineService {
     List<MedicineResponse> getAll();
 
     List<MedicineResponse> findAllByCategoryTitle(String title);
+
+    MedicineResponse getMedicineBySku(String sku) throws MedicineException;
 }

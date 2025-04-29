@@ -31,21 +31,33 @@ public class MessageServiceImpl implements MessageService {
         Message message = Message.builder()
                 .senderId(messageDto.getSender().getId())
                 .receiverId(messageDto.getReceiver().getId())
-                .content(messageDto.getContent())
                 .timestamp(messageDto.getTimestamp())
                 .build();
+        if(messageDto.getContent() != null) {
+            message.setContent(messageDto.getContent());
+        }
+        if(messageDto.getImageUrl() != null) {
+            message.setImageUrl(messageDto.getImageUrl());
+        }
         User user;
         if (messageDto.getSender().getId() != 0) {
+            User consult = userRepository.findById(0L).orElse(null);
+            if (consult == null) {
+                consult = User.builder()
+                        .id(0L)
+                        .username("Tư vấn viên")
+                        .role("consult")
+                        .build();
+            }
             user = userRepository.findById(messageDto.getSender().getId()).orElse(null);
             if (user == null) {
                 user = User.builder()
                         .id(messageDto.getSender().getId())
-                        .username(messageDto.getSender().getUsername())
                         .role("user")
                         .build();
-                user = userRepository.save(user);
-                System.out.println("New user: " + user);
             }
+            user.setUsername(messageDto.getSender().getUsername());
+            userRepository.save(user);
         }else {
             user = userRepository.findById(messageDto.getReceiver().getId()).orElse(null);
             if (user == null) {

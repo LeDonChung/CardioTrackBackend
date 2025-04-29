@@ -28,6 +28,10 @@ ext {
 }
 
 dependencies {
+    implementation 'software.amazon.awssdk:s3:2.29.43'
+    // https://mvnrepository.com/artifact/software.amazon.awssdk/http-auth
+    implementation 'software.amazon.awssdk:http-auth:2.29.43'
+    implementation 'com.google.guava:guava:31.1-jre'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.cloud:spring-cloud-starter'
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
@@ -40,7 +44,7 @@ dependencies {
     runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     implementation 'org.springframework.boot:spring-boot-starter-security'
-
+    implementation 'io.github.cdimascio:dotenv-java:3.2.0'
     // JJWT Jackson integration for JSON processing
     implementation 'io.jsonwebtoken:jjwt-jackson:0.11.2'
     // Core JJWT API
