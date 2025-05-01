@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import vn.edu.iuh.fit.notification.exceptions.NotificationException;
 import vn.edu.iuh.fit.notification.model.dto.request.OrderDetailRequest;
 import vn.edu.iuh.fit.notification.model.dto.request.OrderRequest;
+import vn.edu.iuh.fit.notification.model.dto.request.OrderResponse;
 import vn.edu.iuh.fit.notification.model.dto.request.UserRequest;
 import vn.edu.iuh.fit.notification.services.MailService;
 import vn.edu.iuh.fit.notification.services.ThymeleafService;
@@ -65,7 +66,6 @@ public class MailServiceImpl implements MailService {
     }
 
     @Override
-    @Retry(name = "notificationRetry", fallbackMethod = "fallbackNotificationOrder")
     public boolean sendNotificationOrder(OrderRequest order) throws Exception {
         if(order == null){
             return false;
@@ -127,10 +127,11 @@ public class MailServiceImpl implements MailService {
 
     @Override
     public boolean sendNotificationRegisterSuccess(UserRequest user) {
+        System.out.println("Send mail notification register success: " + user);
         String subject = "Thông báo đăng ký tài khoản nhà thuốc Thera Care thành công!";
         StringBuilder contentBuilder = new StringBuilder()
                 .append(String.format("<p>Kính gửi %s,</p>", user.getFullName()))
-                .append(String.format("<p>Số điện thoại đã đăng ký: %s.</p>", user.getPhoneNumber()))
+                .append(String.format("<p>Số điện thoại đã đăng ký: %s.</p>", user.getUsername()))
                 .append("<p>Cảm ơn bạn đã đăng ký tài khoản nhà thuốc Thera Care. Tài khoản của bạn đã được kích hoạt và bạn có thể sử dụng dịch vụ của nhà thuốc.</p>")
                 .append("<p>Chúng tôi rất vui mừng khi bạn đã trở thành một phần của cộng đồng nhà thuốc Thera Care. Chúng tôi hy vọng bạn sẽ có những trải nghiệm tuyệt vời khi sử dụng dịch vụ của nhà thuốc.</p>")
                 .append("<p>Chúc bạn một ngày tốt lành!</p>");

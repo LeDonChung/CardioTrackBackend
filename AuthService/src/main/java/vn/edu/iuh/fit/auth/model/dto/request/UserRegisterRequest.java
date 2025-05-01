@@ -14,5 +14,6 @@ public class UserRegisterRequest {
     private String password;
     private String rePassword;
     private String fullName;
+    private String email;
     private String otp;
 }

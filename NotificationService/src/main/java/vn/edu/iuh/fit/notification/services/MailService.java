@@ -2,6 +2,7 @@ package vn.edu.iuh.fit.notification.services;
 
 import jakarta.mail.MessagingException;
 import vn.edu.iuh.fit.notification.model.dto.request.OrderRequest;
+import vn.edu.iuh.fit.notification.model.dto.request.OrderResponse;
 import vn.edu.iuh.fit.notification.model.dto.request.UserRequest;
 
 public interface MailService {

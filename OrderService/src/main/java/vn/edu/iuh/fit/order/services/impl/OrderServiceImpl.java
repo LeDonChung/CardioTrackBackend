@@ -6,6 +6,7 @@ import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import io.github.resilience4j.retry.annotation.Retry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import vn.edu.iuh.fit.order.client.NotificationServiceClient;
 import vn.edu.iuh.fit.order.client.ProductServiceClient;
 import vn.edu.iuh.fit.order.client.UserServiceClient;
 import vn.edu.iuh.fit.order.enums.OrderStatus;
@@ -37,14 +38,17 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private ProductServiceClient productServiceClient;
+    @Autowired
+    private NotificationServiceClient notificationServiceClient;
 
     @Override
     @CircuitBreaker(name = "orderService", fallbackMethod = "saveFallback")
     @RateLimiter(name = "orderServiceRateLimiter", fallbackMethod = "saveFallback")
     public OrderResponse save(OrderRequest request) throws OrderException {
         // Check if user is valid
+        UserResponse user = null;
         if (request.getCustomer() != null) {
-            UserResponse user = userServiceClient.getUserById(request.getCustomer()).getBody().getData();
+            user = userServiceClient.getUserById(request.getCustomer()).getBody().getData();
             if (user == null) {
                 throw new OrderException("Người dùng không tồn tại.");
             }
@@ -85,7 +89,10 @@ public class OrderServiceImpl implements OrderService {
         orderRepository.save(order);
 
         OrderResponse response = orderMapper.toDto(order);
+        response.setCustomer(user);
         response.setAddressDetail(addressResponse);
+        System.out.println("response: " + response);
+        notificationServiceClient.sendNotificationOrderToEmail(response);
         return response;
     }
 
@@ -96,7 +103,7 @@ public class OrderServiceImpl implements OrderService {
             throw new OrderException("Số lượng request đặt hàng vượt quá giới hạn (100 request/phút), vui lòng thử lại sau.");
         }
         // Các trường hợp lỗi khác
-        throw new OrderException("Hiện tại không thể xử lý yêu cầu đặt hàng, vui lòng thử lại sau.");
+        throw new OrderException("Đã xảy ra lỗi khi đặt hàng. Vui lòng thử lại sau ");
     }
 
     @Override

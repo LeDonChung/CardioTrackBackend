@@ -1,9 +1,12 @@
 package vn.edu.iuh.fit.user.services.impl;
 
+import io.github.resilience4j.retry.annotation.Retry;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
+import vn.edu.iuh.fit.user.client.NotificationServiceClient;
 import vn.edu.iuh.fit.user.exceptions.JwtException;
 import vn.edu.iuh.fit.user.exceptions.UserException;
 import vn.edu.iuh.fit.user.jwt.JwtService;
@@ -49,9 +52,11 @@ public class UserServiceImpl implements UserService {
     private JwtService jwtService;
     @Autowired
     private OTPService otpService;
+    @Autowired
+    private NotificationServiceClient notificationServiceClient;
     @Override
     public UserResponse register(UserRegisterRequest request) throws UserException {
-
+        System.out.println("UserRe" + request.getEmail());
         Optional<User> userOptional = userRepository.findByUsername(request.getUsername());
         if (userOptional.isPresent()) {
             throw new UserException(SystemConstraints.USERNAME_IS_EXISTS);
@@ -59,16 +64,20 @@ public class UserServiceImpl implements UserService {
 
         Role role = roleRepository.findByCode("USER");
 
-
+        System.out.println("UserRe" + request.getEmail());
         User user = userMapper.toEntity(request);
+        System.out.println("User" + user.getEmail());
 
         user.setRoles(Set.of(role));
         user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setEmail(request.getEmail());
         user.setEnabled(true);
         user.setVerify(true);
 
+
         User savedUser = userRepository.save(user);
 
+        notificationServiceClient.sendNotificationRegisterSuccessToEmail(request);
 
 
         return userMapper.toUserResponse(savedUser);
@@ -95,10 +104,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Boolean sendOtp(String phoneNumber) throws UserException {
+    @Retry(name = "sendOtpRetry", fallbackMethod = "fallbackSendOtp")
+    public Boolean sendOtp(String phoneNumber) {
+        // Nếu số điện thoại là 0 -> +84
+        if(phoneNumber.startsWith("0")) {
+            phoneNumber = "+84" + phoneNumber.substring(1);
+        }
         String otp = otpService.generateOTP(phoneNumber);
         log.info("Phone: " + phoneNumber + " OTP: " + otp);
+        // Gửi OTP qua SMS
+        notificationServiceClient.sendOTP(phoneNumber, otp);
         return otp != null;
+    }
+
+    public Boolean fallbackSendOtp(String phoneNumber, Throwable t) throws UserException {
+        log.error("Failed to send OTP after retries for phone number: " + phoneNumber);
+        throw new UserException(SystemConstraints.SERVICE_UNAVAILABLE);
     }
 
     @Override

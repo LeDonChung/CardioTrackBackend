@@ -15,3 +15,13 @@ resilience4j.retry:
         - org.springframework.web.client.HttpServerErrorException
         - java.io.IOException
         - java.lang.reflect.UndeclaredThrowableException
+    sendOtpRetry:
+      maxAttempts: 3
+      waitDuration: 3s
+      enableExponentialBackoff: true
+      exponentialBackoffMultiplier: 2
+      retryExceptions:
+        - org.springframework.web.client.HttpServerErrorException
+        - java.io.IOException
+        - feign.FeignException
+        - feign.RetryableException
