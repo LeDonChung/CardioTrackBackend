@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 import vn.edu.iuh.fit.user.client.NotificationServiceClient;
 import vn.edu.iuh.fit.user.exceptions.JwtException;
 import vn.edu.iuh.fit.user.exceptions.UserException;
@@ -55,7 +56,7 @@ public class UserServiceImpl implements UserService {
     private NotificationServiceClient notificationServiceClient;
     @Override
     public UserResponse register(UserRegisterRequest request) throws UserException {
-
+        System.out.println("UserRe" + request.getEmail());
         Optional<User> userOptional = userRepository.findByUsername(request.getUsername());
         if (userOptional.isPresent()) {
             throw new UserException(SystemConstraints.USERNAME_IS_EXISTS);
@@ -63,16 +64,20 @@ public class UserServiceImpl implements UserService {
 
         Role role = roleRepository.findByCode("USER");
 
-
+        System.out.println("UserRe" + request.getEmail());
         User user = userMapper.toEntity(request);
+        System.out.println("User" + user.getEmail());
 
         user.setRoles(Set.of(role));
         user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setEmail(request.getEmail());
         user.setEnabled(true);
         user.setVerify(true);
 
+
         User savedUser = userRepository.save(user);
 
+        notificationServiceClient.sendNotificationRegisterSuccessToEmail(request);
 
 
         return userMapper.toUserResponse(savedUser);

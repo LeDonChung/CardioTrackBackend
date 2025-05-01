@@ -10,6 +10,7 @@ public interface OrderMapper {
     @Mapping(target = "addressId", ignore = true)
     Order toEntity(OrderRequest orderRequest);
 
+    @Mapping(target = "customer", ignore = true)
     OrderResponse toDto(Order order);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)

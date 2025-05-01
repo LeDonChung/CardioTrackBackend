@@ -25,7 +25,7 @@ public class OrderResponse {
 
     private double feeShip;
 
-    private Long customer;
+    private UserResponse customer;
 
     private AddressResponse addressDetail;
 
