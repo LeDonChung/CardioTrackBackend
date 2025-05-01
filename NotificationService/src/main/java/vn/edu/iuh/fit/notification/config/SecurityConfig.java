@@ -56,6 +56,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(customizer -> customizer
                         .requestMatchers("/api/v1/product/home").permitAll()
                         .requestMatchers("/api/v1/notification/**").permitAll()
+                        .requestMatchers("/api/v1/notification/mail/notification-order").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(customizer -> customizer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

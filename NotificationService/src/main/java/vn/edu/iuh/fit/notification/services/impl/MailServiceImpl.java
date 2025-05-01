@@ -31,7 +31,7 @@ public class MailServiceImpl implements MailService {
     @Autowired
     private ThymeleafService thymeleafService;
 
-    private double calculatorTotalPrice(OrderResponse order) {
+    private double calculatorTotalPrice(OrderRequest order) {
         double totalPrice = 0;
 
         for (OrderDetailRequest orderDetail : order.getOrderDetails()) {
@@ -42,7 +42,7 @@ public class MailServiceImpl implements MailService {
     }
 
     @Override
-    public void sendMailNotificationOrder(OrderResponse order, String content, String subject) throws MessagingException {
+    public void sendMailNotificationOrder(OrderRequest order, String content, String subject) throws MessagingException {
         MimeMessage message = mailSender.createMimeMessage();
         String to = order.getCustomer().getEmail();
         MimeMessageHelper helper = new MimeMessageHelper(message,
@@ -66,7 +66,7 @@ public class MailServiceImpl implements MailService {
     }
 
     @Override
-    public boolean sendNotificationOrder(OrderResponse order) throws Exception {
+    public boolean sendNotificationOrder(OrderRequest order) throws Exception {
         if(order == null){
             return false;
         }

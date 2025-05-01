@@ -103,7 +103,7 @@ public class OrderServiceImpl implements OrderService {
             throw new OrderException("Số lượng request đặt hàng vượt quá giới hạn (100 request/phút), vui lòng thử lại sau.");
         }
         // Các trường hợp lỗi khác
-        throw new OrderException("Hiện tại không thể xử lý yêu cầu đặt hàng, vui lòng thử lại sau.");
+        throw new OrderException("Đã xảy ra lỗi khi đặt hàng. Vui lòng thử lại sau ");
     }
 
     @Override

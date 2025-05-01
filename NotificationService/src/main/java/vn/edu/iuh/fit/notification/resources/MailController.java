@@ -18,7 +18,7 @@ public class MailController {
     private MailService mailService;
 
     @PostMapping("/notification-order")
-    public ResponseEntity<Boolean> sendNotificationOrderToEmail(@RequestBody OrderResponse order){
+    public ResponseEntity<Boolean> sendNotificationOrderToEmail(@RequestBody OrderRequest order){
         try {
             System.out.println("HIII");
             System.out.println("sendNotificationOrderToEmail: " + order);

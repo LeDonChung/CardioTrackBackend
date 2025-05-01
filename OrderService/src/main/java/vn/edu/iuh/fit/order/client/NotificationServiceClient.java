@@ -6,10 +6,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import vn.edu.iuh.fit.order.model.dto.response.OrderResponse;
 
-@FeignClient(name = "notification-service", path = "/api/v1/notification/mail")
+@FeignClient(name = "notification-service", path = "/api/v1/notification")
 public interface NotificationServiceClient {
 
-    @PostMapping("/notification-order")
+    @PostMapping("/mail/notification-order")
     public ResponseEntity<Boolean> sendNotificationOrderToEmail(@RequestBody OrderResponse order);
 
 }
