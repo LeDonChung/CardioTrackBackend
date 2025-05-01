@@ -25,6 +25,10 @@ public class OTPServiceImpl implements OTPService {
 
     @Override
     public boolean validateOTP(String phoneNumber, String otp) throws UserException {
+        // Nếu phoneNumber 0 -> + 84
+        if (phoneNumber.startsWith("0") && phoneNumber.length() == 10) {
+            phoneNumber = "+84" + phoneNumber.substring(1);
+        }
         String storedOtp = (String) redisTemplate.opsForValue().get(phoneNumber);
         // Check if the OTP is expired
         if (storedOtp == null) {

@@ -8,7 +8,9 @@ import com.infobip.api.SmsApi;
 import com.infobip.model.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import vn.edu.iuh.fit.notification.exceptions.NotificationException;
 import vn.edu.iuh.fit.notification.services.SMSService;
+import vn.edu.iuh.fit.notification.utils.SystemConstraints;
 
 import java.util.Collections;
 import java.util.List;
@@ -24,7 +26,7 @@ public class SMSServiceImpl implements SMSService {
 
 
     @Override
-    public String sendOTP(String phoneNumber, String otp) {
+    public String sendOTP(String phoneNumber, String otp) throws NotificationException {
         var apiClient = ApiClient.forApiKey(ApiKey.from(API_KEY)).withBaseUrl(BaseUrl.from(BASE_URL)).build();
 
         var sendSmsApi = new SmsApi(apiClient);
@@ -41,7 +43,7 @@ public class SMSServiceImpl implements SMSService {
             return "OTP sent successfully";
         } catch (ApiException apiException) {
             apiException.printStackTrace();
+            throw new NotificationException(SystemConstraints.SERVICE_UNAVAILABLE);
         }
-        return "OTP sent failed";
     }
 }

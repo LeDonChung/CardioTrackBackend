@@ -15,7 +15,7 @@ public interface UserService {
 
     UserResponse getMe(String substring);
 
-    Boolean sendOtp(String phoneNumber) throws UserException;
+    Boolean sendOtp(String phoneNumber);
 
     Boolean verifyOtp(String phoneNumber, String otp) throws UserException;
 

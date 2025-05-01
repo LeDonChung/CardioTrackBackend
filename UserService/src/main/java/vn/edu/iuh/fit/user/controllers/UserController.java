@@ -36,9 +36,9 @@ public class UserController {
             throw new UserException("Mật khẩu và xác nhận mật khẩu không trùng khớp.");
         }
 
-//        if(!userService.verifyOtp(request.getUsername(), request.getOtp())){
-//            throw new UserException(SystemConstraints.PLS_VERIFY_OTP);
-//        }
+        if(!userService.verifyOtp(request.getUsername(), request.getOtp())){
+            throw new UserException(SystemConstraints.PLS_VERIFY_OTP);
+        }
 
 
         UserResponse result = userService.register(request);
