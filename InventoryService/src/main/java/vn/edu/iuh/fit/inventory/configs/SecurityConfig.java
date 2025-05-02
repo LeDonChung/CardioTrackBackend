@@ -56,6 +56,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/report-import/**").permitAll()
                         .requestMatchers("/api/v1/report-order/**").permitAll()
                         .requestMatchers("/api/v1/report-medicine-import/**").permitAll()
+                        .requestMatchers("/api/v1/report-medicine-status/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(customizer -> customizer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
