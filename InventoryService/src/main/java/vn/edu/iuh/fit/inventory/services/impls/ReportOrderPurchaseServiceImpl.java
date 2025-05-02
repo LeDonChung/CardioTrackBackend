@@ -49,4 +49,16 @@ public class ReportOrderPurchaseServiceImpl implements ReportOrderPurchaseServic
         return reportPurchaseRepository.countCancelledByYear();
     }
 
+    // Thống kê số lượng thuốc nhập theo nhà cung cấp
+    @Override
+    public List<Object[]> countMedicineImportBySupplier() {
+        return reportPurchaseRepository.countTotalQuantityBySupplier();
+    }
+
+    // Thống kê số lượng thuốc nhập bị huỷ theo nhà cung cấp
+    @Override
+    public List<Object[]> countCancelledBySupplier() {
+        return reportPurchaseRepository.countCanceledQuantityBySupplier();
+    }
+
 }

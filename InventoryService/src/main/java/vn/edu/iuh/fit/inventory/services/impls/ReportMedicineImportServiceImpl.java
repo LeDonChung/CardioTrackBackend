@@ -27,4 +27,19 @@ public class ReportMedicineImportServiceImpl implements ReportMedicineImportServ
     public List<Object[]> countMedicineQuantityByYear() {
         return reportMedicineImportDetailRepository.countMedicineQuantityByYear();
     }
+
+    @Override
+    public List<Object[]> countCategoryByWeek() {
+        return reportMedicineImportDetailRepository.countCategoryByWeek();
+    }
+
+    @Override
+    public List<Object[]> countCategoryByMonth() {
+        return reportMedicineImportDetailRepository.countCategoryByMonth();
+    }
+
+    @Override
+    public List<Object[]> countCategoryByYear() {
+        return reportMedicineImportDetailRepository.countCategoryByYear();
+    }
 }

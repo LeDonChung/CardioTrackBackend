@@ -49,4 +49,16 @@ public class ReportOrderPurchaseController {
     public List<Object[]> countCancelledByYear() {
         return reportOrderPurchaseService.countCancelledByYear();
     }
+
+    // Thống kê số lượng thuốc nhập theo nhà cung cấp
+    @RequestMapping("/count-medicine-import-by-supplier")
+    public List<Object[]> countMedicineImportBySupplier() {
+        return reportOrderPurchaseService.countMedicineImportBySupplier();
+    }
+
+    // Thống kê số lượng thuốc nhập bị huỷ theo nhà cung cấp
+    @RequestMapping("/count-cancelled-by-supplier")
+    public List<Object[]> countCancelledBySupplier() {
+        return reportOrderPurchaseService.countCancelledBySupplier();
+    }
 }

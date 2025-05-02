@@ -44,4 +44,39 @@ public interface ReportMedicineImportDetailRepository extends JpaRepository<Inve
         ORDER BY year
     """, nativeQuery = true)
     List<Object[]> countMedicineQuantityByYear();
+
+    // 🔢 Số lượng danh mục theo tuần
+    @Query(value = """
+        SELECT YEAR(ii.import_date) AS year,
+               WEEK(ii.import_date, 1) AS week,
+               COUNT(DISTINCT iid.category) AS total_categories
+        FROM inventory_import_details iid
+        JOIN inventory_imports ii ON iid.import_id = ii.import_id
+        GROUP BY YEAR(ii.import_date), WEEK(ii.import_date, 1)
+        ORDER BY year, week
+    """, nativeQuery = true)
+    List<Object[]> countCategoryByWeek();
+
+    // 🔢 Số lượng danh mục theo tháng
+    @Query(value = """
+        SELECT YEAR(ii.import_date) AS year,
+               MONTH(ii.import_date) AS month,
+               COUNT(DISTINCT iid.category) AS total_categories
+        FROM inventory_import_details iid
+        JOIN inventory_imports ii ON iid.import_id = ii.import_id
+        GROUP BY YEAR(ii.import_date), MONTH(ii.import_date)
+        ORDER BY year, month
+    """, nativeQuery = true)
+    List<Object[]> countCategoryByMonth();
+
+    // 🔢 Số lượng danh mục theo năm
+    @Query(value = """
+        SELECT YEAR(ii.import_date) AS year,
+               COUNT(DISTINCT iid.category) AS total_categories
+        FROM inventory_import_details iid
+        JOIN inventory_imports ii ON iid.import_id = ii.import_id
+        GROUP BY YEAR(ii.import_date)
+        ORDER BY year
+    """, nativeQuery = true)
+    List<Object[]> countCategoryByYear();
 }

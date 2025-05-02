@@ -75,4 +75,31 @@ public interface ReportOderPurchaseRepository extends JpaRepository<PurchaseOrde
         ORDER BY year
         """, nativeQuery = true)
         List<Object[]> countCancelledByYear();
+
+    // Thống kê số lượng thuốc nhập theo nhà cung cấp
+    @Query(value = """
+    SELECT s.name AS supplier_name,
+           SUM(pod.quantity) AS total_quantity
+    FROM purchase_orders po
+    JOIN purchase_order_details pod ON po.purchase_order_id = pod.purchase_order_id
+    JOIN suppliers s ON po.supplier_id = s.supplier_id
+    GROUP BY s.name
+    ORDER BY total_quantity DESC
+    """, nativeQuery = true)
+    List<Object[]> countTotalQuantityBySupplier();
+
+    // Thống kê số lượng thuốc nhập bị huỷ theo nhà cung cấp
+    @Query(value = """
+    SELECT s.name AS supplier_name,
+           SUM(pod.quantity) AS total_quantity
+    FROM purchase_orders po
+    JOIN purchase_order_details pod ON po.purchase_order_id = pod.purchase_order_id
+    JOIN suppliers s ON po.supplier_id = s.supplier_id
+    WHERE po.status = 'CANCELED'
+    GROUP BY s.name
+    ORDER BY total_quantity DESC
+    """, nativeQuery = true)
+    List<Object[]> countCanceledQuantityBySupplier();
+
+
 }

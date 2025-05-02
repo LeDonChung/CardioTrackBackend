@@ -11,4 +11,13 @@ public interface ReportMedicineImportService {
 
     // Số lượng thuốc nhập theo năm
     List<Object[]> countMedicineQuantityByYear();
+
+    // 🔢 Số lượng danh mục theo tuần
+    List<Object[]> countCategoryByWeek();
+
+    // 🔢 Số lượng danh mục theo tháng
+    List<Object[]> countCategoryByMonth();
+
+    // 🔢 Số lượng danh mục theo năm
+    List<Object[]> countCategoryByYear();
 }
