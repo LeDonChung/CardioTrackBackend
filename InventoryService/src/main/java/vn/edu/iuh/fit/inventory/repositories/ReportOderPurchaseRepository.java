@@ -47,7 +47,7 @@ public interface ReportOderPurchaseRepository extends JpaRepository<PurchaseOrde
                 WEEK(order_date, 1) AS week,
                 COUNT(*) AS total
         FROM purchase_orders
-        WHERE status = 'CANCELLED'
+        WHERE status = 'CANCELED'
         GROUP BY YEAR(order_date), WEEK(order_date, 1)
         ORDER BY year, week
         """, nativeQuery = true)
@@ -59,7 +59,7 @@ public interface ReportOderPurchaseRepository extends JpaRepository<PurchaseOrde
                 MONTH(order_date) AS month,
                 COUNT(*) AS total
         FROM purchase_orders
-        WHERE status = 'CANCELLED'
+        WHERE status = 'CANCELED'
         GROUP BY YEAR(order_date), MONTH(order_date)
         ORDER BY year, month
         """, nativeQuery = true)
@@ -70,7 +70,7 @@ public interface ReportOderPurchaseRepository extends JpaRepository<PurchaseOrde
         SELECT YEAR(order_date) AS year,
                 COUNT(*) AS total
         FROM purchase_orders
-        WHERE status = 'CANCELLED'
+        WHERE status = 'CANCELED'
         GROUP BY YEAR(order_date)
         ORDER BY year
         """, nativeQuery = true)
