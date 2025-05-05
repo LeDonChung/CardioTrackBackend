@@ -43,7 +43,7 @@ pipeline {
             steps {
                 script {
                     sh 'docker-compose --version'
-                    sh 'docker-compose --env-file .env up -d'
+                    sh 'docker-compose --env-file .env build'
 
                     def services = env.SERVICES.split()
                     services.each { service ->
