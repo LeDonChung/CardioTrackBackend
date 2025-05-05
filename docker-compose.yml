@@ -1,6 +1,7 @@
 services:
   discovery-service:
     build: ./DiscoveryService
+    image: ledonchung/discovery-service
     container_name: discovery-service
     ports:
       - "8761:8761"
@@ -12,6 +13,7 @@ services:
 
   api-gateway:
     build: ./APIGateway
+    image: ledonchung/api-gateway
     container_name: api-gateway
     depends_on:
       - discovery-service
@@ -26,6 +28,7 @@ services:
 
   auth-service:
     build: ./AuthService
+    image: ledonchung/auth-service
     container_name: auth-service
     depends_on:
       - discovery-service
@@ -41,6 +44,7 @@ services:
 
   user-service:
     build: ./UserService
+    image: ledonchung/user-service
     container_name: user-service
     depends_on:
       - discovery-service
@@ -66,6 +70,7 @@ services:
 
   post-service:
     build: ./PostService # Đảm bảo bạn đã thiết lập đúng đường dẫn build
+    image: ledonchung/post-service
     container_name: post-service
     depends_on:
       - discovery-service
@@ -88,6 +93,7 @@ services:
       
   health-service:
     build: ./HealthCheckService
+    image: ledonchung/health-service
     container_name: health-service
     depends_on:
       - discovery-service
@@ -124,6 +130,7 @@ services:
       
   inventory-service:
     build: ./InventoryService
+    image: ledonchung/inventory-service
     container_name: inventory-service
     depends_on:
       - discovery-service
@@ -158,6 +165,7 @@ services:
 
   product-service:
     build: ./ProductService
+    image: ledonchung/product-service
     container_name: product-service
     depends_on:
       - discovery-service
@@ -178,6 +186,7 @@ services:
     
   consult-service:
     build: ./ConsultService
+    image: ledonchung/consult-service
     container_name: consult-service
     depends_on:
       - discovery-service
@@ -241,6 +250,7 @@ services:
 
   order-service:
     build: ./OrderService
+    image: ledonchung/order-service
     container_name: order-service
     depends_on:
       - discovery-service
@@ -277,6 +287,7 @@ services:
 
   pay-service:
     build: ./PayService
+    image: ledonchung/pay-service
     container_name: pay-service
     depends_on:
       - discovery-service
@@ -320,6 +331,7 @@ services:
 
   recommend-service:
     build: ./RecommendService
+    image: ledonchung/recommend-service
     container_name: recommend-service
     ports:
       - "9016:9016"
@@ -341,6 +353,7 @@ services:
 
   notification-service:
     build: ./NotificationService
+    image: ledonchung/notification-service
     container_name: notification-service
     depends_on:
       - discovery-service
@@ -377,6 +390,7 @@ services:
 
   chat-service:
     build: ./ChatService
+    image: ledonchung/chat-service
     container_name: chat-service
     depends_on:
       - discovery-service
