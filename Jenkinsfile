@@ -73,7 +73,7 @@ pipeline {
             steps {
                 script {
                     sh 'docker version'
-                    sh 'docker compose version'
+                    sh '/usr/bin/docker docker compose version'
                     // sh 'docker compose up -d'
 
                     // def services = env.SERVICES.split()
