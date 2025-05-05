@@ -72,6 +72,7 @@ pipeline {
         stage('Build Docker Images') {
             steps {
                 script {
+                    sh 'echo $PATH'
                     sh 'docker version'
                     sh 'docker-compose --version'
                     // sh 'docker compose up -d'
