@@ -1,0 +1,420 @@
+services:
+  discovery-service:
+    image: ledonchung/discovery-service
+    container_name: discovery-service
+    ports:
+      - "8761:8761"
+    environment:
+      - SPRING_APPLICATION_NAME=discovery-service
+      - SERVER_PORT=8761
+    networks:
+      - my-network
+
+  api-gateway:
+    image: ledonchung/apigateway
+    container_name: apigateway
+    depends_on:
+      - discovery-service
+    ports:
+      - "8888:8888"
+    environment:
+      - SPRING_APPLICATION_NAME=api-gateway
+      - SERVER_PORT=8888
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka/
+    networks:
+      - my-network
+
+  auth-service:
+    image: ledonchung/auth-service
+    container_name: auth-service
+    depends_on:
+      - discovery-service
+      - user-service
+    ports:
+      - "9090:9090"
+    environment:
+      - SPRING_APPLICATION_NAME=auth-service
+      - SERVER_PORT=9090
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka/
+    networks:
+      - my-network
+
+  user-service:
+    image: ledonchung/user-service
+    container_name: user-service
+    depends_on:
+      - discovery-service
+      - mariadb-user
+      - redis
+    ports:
+      - "9091:9091"
+    environment:
+      - SPRING_APPLICATION_NAME=user-service
+      - SERVER_PORT=9091
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka
+      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.mariadb.jdbc.Driver
+      - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb-user:3306/tcuser
+      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+      - SPRING_JPA_SHOW_SQL=true
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_DATA_REDIS_HOST=redis
+      - SPRING_DATA_REDIS_PORT=6379
+      - SPRING_DATA_REDIS_TIMEOUT=5000
+    networks:
+      - my-network
+
+  post-service:
+    image: ledonchung/post-service
+    container_name: post-service
+    depends_on:
+      - discovery-service
+      - mariadb-post # Cập nhật để sử dụng mariadb-post thay vì mariadb-user
+    ports:
+      - "9099:9099"
+    environment:
+      - SPRING_APPLICATION_NAME=post-service
+      - SERVER_PORT=9099
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka
+      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.mariadb.jdbc.Driver
+      - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb-post:3306/tcpost # Kết nối đến MariaDB container mới và cơ sở dữ liệu tcpost
+      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+      - AWS_ACCESS_KEY_ID_POST=${AWS_ACCESS_KEY_ID_POST}
+      - AWS_SECRET_KEY_POST=${AWS_SECRET_KEY_POST}
+      - AWS_S3_BUCKET_NAME_POST=${AWS_S3_BUCKET_NAME_POST}
+    networks:
+      - my-network
+      
+  health-service:
+    image: ledonchung/health-check-service
+    container_name: health-service
+    depends_on:
+      - discovery-service
+      - mariadb-health
+    ports:
+      - "9101:9101"
+    environment:
+      - SPRING_APPLICATION_NAME=health-service
+      - SERVER_PORT=9101
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka
+      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.mariadb.jdbc.Driver
+      - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb-health:3306/tchealth 
+      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+      - SPRING_JPA_SHOW_SQL=true
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    networks:
+      - my-network
+
+
+  mariadb-health:
+    image: mariadb:latest
+    container_name: mariadb-health
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=tchealth
+    ports:
+      - "3300:3306"  
+    volumes:
+      - mariadb-health-data:/var/lib/mysql 
+    networks:
+      - my-network      
+      
+  inventory-service:
+    image: ledonchung/inventory-service
+    container_name: inventory-service
+    depends_on:
+      - discovery-service
+    ports:
+      - "9096:9096"
+    environment:
+      - SPRING_APPLICATION_NAME=inventory-service
+      - SERVER_PORT=9096
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka
+      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.mariadb.jdbc.Driver
+      - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb-inventory:3306/tcinventory
+      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+      - SPRING_JPA_SHOW_SQL=true
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_MAIN_ALLOW_BEAN_DEFINITION_OVERRIDING=true
+    networks:
+      - my-network
+
+  mariadb-post:
+    image: mariadb:latest
+    container_name: mariadb-post
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=tcpost
+    ports:
+      - "3301:3306"
+    volumes:
+      - mariadb-post-data:/var/lib/mysql
+    networks:
+      - my-network
+
+  product-service:
+    image: ledonchung/product-service
+    container_name: product-service
+    depends_on:
+      - discovery-service
+    ports:
+      - "9092:9092"
+    environment:
+      - SPRING_APPLICATION_NAME=product-service
+      - SERVER_PORT=9092
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka
+      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.mariadb.jdbc.Driver
+      - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb-product:3306/tcproduct?useUnicode=true&characterEncoding=utf8&characterSetResults=utf8
+      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+      - SPRING_JPA_SHOW_SQL=true
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    networks:
+      - my-network
+    
+  consult-service:
+    image: ledonchung/consult-service
+    container_name: consult-service
+    depends_on:
+      - discovery-service
+      - mariadb-consult
+    ports:
+      - "9078:9078"
+    environment:
+      - SPRING_APPLICATION_NAME=consult-service
+      - SERVER_PORT=9078
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka
+      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.mariadb.jdbc.Driver
+      - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb-consult:3306/tcconsult?useUnicode=true&characterEncoding=utf8&characterSetResults=utf8
+      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+      - SPRING_JPA_SHOW_SQL=true
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - CHATGPT_OPEN_API_KEY=${CHATGPT_OPEN_API_KEY}
+      - CHATGPT_MODEL=gpt-3.5-turbo-1106
+      - CHATGPT_ASSISTANT_ID=${CHATGPT_ASSISTANT_ID}
+    networks:
+      - my-network
+
+  mariadb-consult:
+    image: mariadb:latest
+    container_name: mariadb-consult
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=tcconsult
+    ports:
+      - "3309:3306"
+    volumes:
+      - mariadb-consult-data:/var/lib/mysql
+    networks:
+      - my-network
+        
+  mariadb-user:
+    image: mariadb:latest
+    container_name: mariadb-user
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=tcuser
+    ports:
+      - "3302:3306"
+    volumes:
+      - mariadb-user-data:/var/lib/mysql
+    networks:
+      - my-network
+
+  mariadb-product:
+    image: mariadb:latest
+    container_name: mariadb-product
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=tcproduct
+    ports:
+      - "3303:3306"
+    volumes:
+      - mariadb-product-data:/var/lib/mysql
+    networks:
+      - my-network
+
+  order-service:
+    image: ledonchung/order-service
+    container_name: order-service
+    depends_on:
+      - discovery-service
+    ports:
+      - "9095:9095"
+    environment:
+      - SPRING_APPLICATION_NAME=order-service
+      - SERVER_PORT=9095
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka
+      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.mariadb.jdbc.Driver
+      - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb-order:3306/tcorder
+      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+      - SPRING_JPA_SHOW_SQL=true
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_DATA_REDIS_HOST=redis
+      - SPRING_DATA_REDIS_PORT=6379
+      - SPRING_DATA_REDIS_TIMEOUT=5000
+    networks:
+      - my-network
+
+  mariadb-order:
+    image: mariadb:latest
+    container_name: mariadb-order
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=tcorder
+    ports:
+      - "3304:3306"
+    volumes:
+      - mariadb-order-data:/var/lib/mysql
+    networks:
+      - my-network
+
+  pay-service:
+    image: ledonchung/pay-service
+    container_name: pay-service
+    depends_on:
+      - discovery-service
+    ports:
+      - "9094:9094"
+    environment:
+      - SPRING_APPLICATION_NAME=Pay-Service
+      - SERVER_PORT=9094
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka
+      - EUREKA_CLIENT_FETCH_REGISTRY=true
+      - EUREKA_CLIENT_REGISTER_WITH_EUREKA=true
+      - EUREKA_CLIENT_ENABLED=true
+      - PAYOS_CLIENT_ID=${PAYOS_CLIENT_ID}
+      - PAYOS_API_KEY=${PAYOS_API_KEY}
+      - PAYOS_CHECKSUM_KEY=${PAYOS_CHECKSUM_KEY}
+    networks:
+      - my-network
+
+  mariadb-inventory:
+    image: mariadb:latest
+    container_name: mariadb-inventory
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=tcinventory
+    ports:
+      - "3305:3306"
+    volumes:
+      - mariadb-inventory-data:/var/lib/mysql
+    networks:
+      - my-network
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data # Volume lưu trữ dữ liệu Redis nếu cần
+    networks:
+      - my-network
+
+  recommend-service:
+    image: ledonchung/recommend-service
+    container_name: recommend-service
+    ports:
+      - "9016:9016"
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka
+      - SERVICE_NAME=recommend-service
+      - SERVICE_PORT=9016
+      - EUREKA_INSTANCE_HOSTNAME=recommend-service
+    depends_on:
+      - redis
+      - api-gateway
+      - discovery-service
+      - order-service
+      - product-service
+    networks:
+      - my-network
+
+  notification-service:
+    image: ledonchung/notification-service
+    container_name: notification-service
+    depends_on:
+      - discovery-service
+      - user-service
+      - auth-service
+      - api-gateway
+    ports:
+      - "9093:9093"
+    environment:
+      - SPRING_APPLICATION_NAME=notification-service
+      - SERVER_PORT=9093
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka/
+      - SPRING_MAIL_HOST=smtp.gmail.com
+      - SPRING_MAIL_PORT=587
+      - SPRING_MAIL_PASSWORD=${SPRING_MAIL_PASSWORD}
+      - SPRING_MAIL_USERNAME=${SPRING_MAIL_USERNAME}
+      - INFOBIP_API_KEY=${INFOBIP_API_KEY}
+      - INFOBIP_SENDER=${INFOBIP_SENDER}
+      - INFOBIP_BASE_URL=${INFOBIP_BASE_URL}
+    networks:
+      - my-network
+
+  mongo-chat:
+    image: mongo:latest
+    container_name: mongo-chat
+    environment:
+      - MONGO_INITDB_DATABASE=chat_app
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-user-data:/var/lib/mongo
+    networks:
+      - my-network
+
+  chat-service:
+    image: ledonchung/chat-service
+    container_name: chat-service
+    depends_on:
+      - discovery-service
+      - user-service
+      - auth-service
+      - api-gateway
+      - mongo-chat
+    ports:
+      - "9097:9097"
+    environment:
+      - SPRING_APPLICATION_NAME=chat-service
+      - SERVER_PORT=9097
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka/
+      - SPRING_DATA_MONGODB_URI=mongodb://mongo-chat:27017/chat_app
+      - SPRING_DATA_MONGODB_PORT=27017
+      - SPRING_DATA_MONGODB_DATABASE=chat_app
+      - SPRING_DATA_REDIS_HOST=redis
+      - SPRING_DATA_REDIS_PORT=6379
+      - SPRING_DATA_REDIS_TIMEOUT=5000
+      - AWS_ACCESS_KEY_ID_CHAT=${AWS_ACCESS_KEY_ID_CHAT}
+      - AWS_SECRET_ACCESS_KEY_CHAT=${AWS_SECRET_ACCESS_KEY_CHAT}
+      - AWS_REGION_CHAT=${AWS_REGION_CHAT}
+      - AWS_BUCKET_NAME_CHAT=${AWS_BUCKET_NAME_CHAT}
+    networks:
+      - my-network
+
+volumes:
+  mariadb-user-data:
+  mariadb-consult-data:
+  mariadb-post-data:
+  mariadb-inventory-data:
+  mariadb-product-data:
+  redis-data:
+  mariadb-order-data:
+  mongo-user-data:
+  mariadb-health-data:
+
+
+networks:
+  my-network:
+    driver: bridge
