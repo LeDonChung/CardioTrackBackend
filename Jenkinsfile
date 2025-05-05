@@ -5,7 +5,7 @@ pipeline {
     }
     environment {
         DOCKER_HUB_REPO = 'ledonchung'
-        SERVICES = 'DiscoveryService APIGateway AuthService ChatService InventoryService NotificationService OrderService PayService PostService ProductService UserService ConsultService HealthCheckService'
+        SERVICES = 'DiscoveryService APIGateway AuthService ChatService InventoryService NotificationService OrderService PayService PostService ProductService UserService ConsultService HealthCheckService RecommendService'
     }
     stages {
         stage('Checkout') {
@@ -23,47 +23,52 @@ pipeline {
             }
         }
 
-        // stage('Build JARs') {
-        //     steps {
-        //         script {
-        //             def services = env.SERVICES.split()
-        //             services.each { service ->
-        //                 stage("Build ${service}") {
-        //                     dir(service) {
-        //                         sh 'chmod +x gradlew'
-        //                         sh './gradlew clean build -x test'
-        //                     }
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
+        stage('Build JARs') {
+            steps {
+                script {
+                    def services = env.SERVICES.split()
+                    services.each { service ->
+                        if (service != 'RecommendService') {
+                            stage("Build ${service}") {
+                                dir(service) {
+                                    sh 'chmod +x gradlew'
+                                    sh './gradlew clean build -x test'
+                                }
+                            }
+                        } else {
+                            echo "Skipping build for ${service} (non-Java service)"
+                        }
+                    }
+                }
+            }
+        }
 
-        // stage('Build Docker Images') {
-        //     steps {
-        //         script {
-        //             sh 'docker-compose --env-file .env build'
-        //         }
-        //     }
-        // }
+        stage('Build Docker Images') {
+            steps {
+                script {
+                    sh 'docker-compose --env-file .env build'
+                }
+            }
+        }
 
-        // stage('Push to Docker Hub') {
-        //     steps {
-        //         withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-        //             sh 'echo $DOCKER_PASSWORD | docker login --username $DOCKER_USERNAME --password-stdin'
-        //             script {
-        //                 def services = env.SERVICES.split()
-        //                 services.each { service ->
-        //                     def kebab = service.replaceAll(/(?<=[a-z])(?=[A-Z])/, '-').toLowerCase()
-        //                     def imageBase = "${DOCKER_HUB_REPO}/${kebab}"
-        //                     sh "docker tag ${imageBase} ${imageBase}:${env.BUILD_NUMBER}"
-        //                     sh "docker push ${imageBase}:${env.BUILD_NUMBER}"
-        //                     sh "docker push ${imageBase}:latest"
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
+        stage('Push to Docker Hub') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                    sh 'echo $DOCKER_PASSWORD | docker login --username $DOCKER_USERNAME --password-stdin'
+                    script {
+                        def services = env.SERVICES.split()
+                        services.each { service ->
+                            def kebab = service.replaceAll(/(?<=[a-z])(?=[A-Z])/, '-').toLowerCase()
+                            def imageBase = "${DOCKER_HUB_REPO}/${kebab}"
+                            sh "docker tag ${imageBase} ${imageBase}:${env.BUILD_NUMBER}"
+                            sh "docker push ${imageBase}:${env.BUILD_NUMBER}"
+                            sh "docker push ${imageBase}:latest"
+                        }
+                        
+                    }
+                }
+            }
+        }
         stage('Deploy to Ocean') {
             steps {
                 withCredentials([
