@@ -53,25 +53,26 @@ pipeline {
         //     }
         // }
 
-        stage('Build JARs') {
-            steps {
-                script {
-                    def services = env.SERVICES.split()
-                    services.each { service ->
-                        stage("Build ${service}") {
-                            dir(service) {
-                                sh 'chmod +x gradlew'
-                                sh './gradlew clean build -x test'
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        // stage('Build JARs') {
+        //     steps {
+        //         script {
+        //             def services = env.SERVICES.split()
+        //             services.each { service ->
+        //                 stage("Build ${service}") {
+        //                     dir(service) {
+        //                         sh 'chmod +x gradlew'
+        //                         sh './gradlew clean build -x test'
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
 
         stage('Build Docker Images') {
             steps {
                 script {
+                    sh 'docker version'
                     sh 'docker-compose version'
                     sh 'docker-compose up -d'
 
