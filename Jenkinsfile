@@ -72,7 +72,7 @@ pipeline {
         stage('Build Docker Images') {
             steps {
                 script {
-                    sh 'docker compose build'
+                    sh 'docker-compose up -d'
 
                     def services = env.SERVICES.split()
                     services.each { service ->
