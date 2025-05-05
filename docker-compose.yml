@@ -93,7 +93,7 @@ services:
       
   health-service:
     build: ./HealthCheckService
-    image: ledonchung/health-service
+    image: ledonchung/health-check-service
     container_name: health-service
     depends_on:
       - discovery-service
