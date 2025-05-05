@@ -12,7 +12,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'jenkins', url: 'https://github.com/LeDonChung/CardioTrackBackend.git'
+                git branch: 'deploy', url: 'https://github.com/LeDonChung/CardioTrackBackend.git'
             }
         }
         stage('Load .env') {
