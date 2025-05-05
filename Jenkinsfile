@@ -54,7 +54,7 @@ pipeline {
                     script {
                         def services = env.SERVICES.split()
                         services.each { service ->
-                            def kebab = service.replaceAll(/([a-z])([A-Z])/, '$1-$2').toLowerCase()
+                            def kebab = service.replaceAll(/(?<=[a-z])(?=[A-Z])/, '-').toLowerCase()
                             def imageBase = "${DOCKER_HUB_REPO}/${kebab}"
                             sh "docker tag ${imageBase} ${imageBase}:${env.BUILD_NUMBER}"
                             sh "docker push ${imageBase}:${env.BUILD_NUMBER}"
