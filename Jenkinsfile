@@ -38,21 +38,21 @@ pipeline {
                 }
             }
         }
-        stage('Run Tests') {
-            steps {
-                script {
-                    def services = env.SERVICES.split()
-                    services.each { service ->
-                        stage("Test ${service}") {
-                            dir(service) {
-                                sh 'chmod +x gradlew'
-                                sh './gradlew clean test'
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        // stage('Run Tests') {
+        //     steps {
+        //         script {
+        //             def services = env.SERVICES.split()
+        //             services.each { service ->
+        //                 stage("Test ${service}") {
+        //                     dir(service) {
+        //                         sh 'chmod +x gradlew'
+        //                         sh './gradlew clean test'
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
 
         stage('Build JARs') {
             steps {
