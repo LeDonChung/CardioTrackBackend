@@ -48,7 +48,7 @@ pipeline {
                     def services = env.SERVICES.split()
                     services.each { service ->
                         def kebabName = service.replaceAll(/([a-z])([A-Z])/, '$1-$2').toLowerCase()
-                        def actualImageName = "cardiotrackbackend-${kebabName}"
+                        def actualImageName = "cardiotrack-${kebabName}"
                         def imageName = "${DOCKER_HUB_REPO}/${kebabName}:${env.BUILD_NUMBER}"
                         def latestImageName = "${DOCKER_HUB_REPO}/${kebabName}:latest"
                         sh "docker tag ${actualImageName} ${imageName}"
