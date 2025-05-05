@@ -42,7 +42,7 @@ pipeline {
             steps {
                 script {
                     def services = env.SERVICES.split()
-                    parallel services.collectEntries { service ->
+                    services.each { service ->
                         ["Test ${service}", {
                             dir(service) {
                                 sh 'chmod +x gradlew'
@@ -57,7 +57,7 @@ pipeline {
             steps {
                 script {
                     def services = env.SERVICES.split()
-                    parallel services.collectEntries { service ->
+                    services.each { service ->
                         ["Build ${service}", {
                             dir(service) {
                                 sh 'chmod +x gradlew'
