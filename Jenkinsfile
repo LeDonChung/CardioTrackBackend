@@ -17,6 +17,7 @@ pipeline {
         stage('Load .env') {
             steps {
                 withCredentials([file(credentialsId: 'env-ct', variable: 'ENV_FILE')]) {
+                    sh 'rm -f .env'
                     sh 'cp "$ENV_FILE" .env'
                 }
             }
