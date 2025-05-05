@@ -43,31 +43,33 @@ pipeline {
                 script {
                     def services = env.SERVICES.split()
                     services.each { service ->
-                        ["Test ${service}", {
+                        stage("Test ${service}") {
                             dir(service) {
                                 sh 'chmod +x gradlew'
                                 sh './gradlew clean test'
                             }
-                        }]
+                        }
                     }
                 }
             }
         }
+
         stage('Build JARs') {
             steps {
                 script {
                     def services = env.SERVICES.split()
                     services.each { service ->
-                        ["Build ${service}", {
+                        stage("Build ${service}") {
                             dir(service) {
                                 sh 'chmod +x gradlew'
                                 sh './gradlew clean build -x test'
                             }
-                        }]
+                        }
                     }
                 }
             }
         }
+
         stage('Build Docker Images') {
             steps {
                 script {
