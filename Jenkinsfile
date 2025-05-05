@@ -23,24 +23,6 @@ pipeline {
             }
         }
 
-
-        // Optional: Enable this if needed
-        // stage('Run Tests') {
-        //     steps {
-        //         script {
-        //             def services = env.SERVICES.split()
-        //             services.each { service ->
-        //                 stage("Test ${service}") {
-        //                     dir(service) {
-        //                         sh 'chmod +x gradlew'
-        //                         sh './gradlew clean test'
-        //                     }
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
-
         stage('Build JARs') {
             steps {
                 script {
@@ -65,11 +47,12 @@ pipeline {
 
                     def services = env.SERVICES.split()
                     services.each { service ->
-                        def serviceName = service.toLowerCase()
-                        def imageName = "${DOCKER_HUB_REPO}/${serviceName}:${env.BUILD_NUMBER}"
-                        def latestImageName = "${DOCKER_HUB_REPO}/${serviceName}:latest"
-                        sh "docker tag ${serviceName} ${imageName}"
-                        sh "docker tag ${serviceName} ${latestImageName}"
+                        def kebabName = service.replaceAll(/([a-z])([A-Z])/, '$1-$2').toLowerCase()
+                        def actualImageName = "cardiotrackbackend-${kebabName}"
+                        def imageName = "${DOCKER_HUB_REPO}/${kebabName}:${env.BUILD_NUMBER}"
+                        def latestImageName = "${DOCKER_HUB_REPO}/${kebabName}:latest"
+                        sh "docker tag ${actualImageName} ${imageName}"
+                        sh "docker tag ${actualImageName} ${latestImageName}"
                     }
                 }
             }
@@ -82,9 +65,9 @@ pipeline {
                     script {
                         def services = env.SERVICES.split()
                         services.each { service ->
-                            def serviceName = service.toLowerCase()
-                            def imageName = "${DOCKER_HUB_REPO}/${serviceName}:${env.BUILD_NUMBER}"
-                            def latestImageName = "${DOCKER_HUB_REPO}/${serviceName}:latest"
+                            def kebabName = service.replaceAll(/([a-z])([A-Z])/, '$1-$2').toLowerCase()
+                            def imageName = "${DOCKER_HUB_REPO}/${kebabName}:${env.BUILD_NUMBER}"
+                            def latestImageName = "${DOCKER_HUB_REPO}/${kebabName}:latest"
                             sh "docker push ${imageName}"
                             sh "docker push ${latestImageName}"
                         }
