@@ -47,23 +47,23 @@ pipeline {
         //     }
         // }
 
-        // stage('Push to Docker Hub') {
-        //     steps {
-        //         withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-        //             sh 'echo $DOCKER_PASSWORD | docker login --username $DOCKER_USERNAME --password-stdin'
-        //             script {
-        //                 def services = env.SERVICES.split()
-        //                 services.each { service ->
-        //                     def kebab = service.replaceAll(/(?<=[a-z])(?=[A-Z])/, '-').toLowerCase()
-        //                     def imageBase = "${DOCKER_HUB_REPO}/${kebab}"
-        //                     sh "docker tag ${imageBase} ${imageBase}:${env.BUILD_NUMBER}"
-        //                     sh "docker push ${imageBase}:${env.BUILD_NUMBER}"
-        //                     sh "docker push ${imageBase}:latest"
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
+        stage('Push to Docker Hub') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                    sh 'echo $DOCKER_PASSWORD | docker login --username $DOCKER_USERNAME --password-stdin'
+                    // script {
+                    //     def services = env.SERVICES.split()
+                    //     services.each { service ->
+                    //         def kebab = service.replaceAll(/(?<=[a-z])(?=[A-Z])/, '-').toLowerCase()
+                    //         def imageBase = "${DOCKER_HUB_REPO}/${kebab}"
+                    //         sh "docker tag ${imageBase} ${imageBase}:${env.BUILD_NUMBER}"
+                    //         sh "docker push ${imageBase}:${env.BUILD_NUMBER}"
+                    //         sh "docker push ${imageBase}:latest"
+                    //     }
+                    // }
+                }
+            }
+        }
         stage('Deploy to Ocean') {
             steps {
                 withCredentials([sshUserPrivateKey(credentialsId: 'ocean-ssh', keyFileVariable: 'KEY', usernameVariable: 'USER')]) {
