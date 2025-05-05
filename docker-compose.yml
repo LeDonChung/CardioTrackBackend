@@ -13,8 +13,8 @@ services:
 
   api-gateway:
     build: ./APIGateway
-    image: ledonchung/api-gateway
-    container_name: api-gateway
+    image: ledonchung/apigateway
+    container_name: apigateway
     depends_on:
       - discovery-service
     ports:
