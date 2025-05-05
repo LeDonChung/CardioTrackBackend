@@ -71,12 +71,20 @@ pipeline {
                         def remoteHost = "159.65.13.19"
                         def deployDir = "/home/$USER/cardio-track"
         
+                        // Gửi file .env từ Jenkins sang Ocean (nếu cần)
+                        sh """
+                            scp -i $KEY -o StrictHostKeyChecking=no .env $USER@$remoteHost:${deployDir}/.env || true
+                        """
+        
+                        // SSH vào server để clone repo và chạy docker-compose
                         sh """
                             ssh -i $KEY -o StrictHostKeyChecking=no $USER@$remoteHost << 'EOF'
+                            set -e
                             if [ ! -d "${deployDir}" ]; then
                               git clone -b deploy https://github.com/LeDonChung/CardioTrackBackend.git ${deployDir}
                             else
                               cd ${deployDir}
+                              git fetch origin
                               git checkout deploy
                               git pull origin deploy
                             fi
@@ -90,6 +98,7 @@ pipeline {
                 }
             }
         }
+
 
     }
     post {
