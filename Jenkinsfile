@@ -16,25 +16,12 @@ pipeline {
 
         stage('Load .env') {
             steps {
-                script {
-                    def envVarsList = []
-                    withCredentials([file(credentialsId: 'env-ct', variable: 'ENV_FILE')]) {
-                        if (fileExists(env.ENV_FILE)) {
-                            def envVars = readFile(env.ENV_FILE).split('\n')
-                            envVars.each { line ->
-                                if (line.trim() && !line.startsWith('#')) {
-                                    def (key, value) = line.split('=', 2)
-                                    envVarsList << "${key.trim()}=${value.trim()}"
-                                }
-                            }
-                        }
-                    }
-                    withEnv(envVarsList) {
-                        echo "Loaded environment variables"
-                    }
+                withCredentials([file(credentialsId: 'env-ct', variable: 'ENV_FILE')]) {
+                    sh 'cp "$ENV_FILE" .env'
                 }
             }
         }
+
 
         // Optional: Enable this if needed
         // stage('Run Tests') {
@@ -73,7 +60,7 @@ pipeline {
             steps {
                 script {
                     sh 'docker-compose --version'
-                    sh 'docker-compose up -d'
+                    sh 'docker-compose --env-file .env up -d'
 
                     def services = env.SERVICES.split()
                     services.each { service ->
