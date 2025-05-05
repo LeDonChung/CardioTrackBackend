@@ -1,6 +1,5 @@
 services:
   discovery-service:
-    build: ./DiscoveryService
     image: ledonchung/discovery-service
     container_name: discovery-service
     ports:
@@ -12,7 +11,6 @@ services:
       - my-network
 
   api-gateway:
-    build: ./APIGateway
     image: ledonchung/apigateway
     container_name: apigateway
     depends_on:
@@ -27,7 +25,6 @@ services:
       - my-network
 
   auth-service:
-    build: ./AuthService
     image: ledonchung/auth-service
     container_name: auth-service
     depends_on:
@@ -43,7 +40,6 @@ services:
       - my-network
 
   user-service:
-    build: ./UserService
     image: ledonchung/user-service
     container_name: user-service
     depends_on:
@@ -69,7 +65,6 @@ services:
       - my-network
 
   post-service:
-    build: ./PostService # Đảm bảo bạn đã thiết lập đúng đường dẫn build
     image: ledonchung/post-service
     container_name: post-service
     depends_on:
@@ -92,7 +87,6 @@ services:
       - my-network
       
   health-service:
-    build: ./HealthCheckService
     image: ledonchung/health-check-service
     container_name: health-service
     depends_on:
@@ -129,7 +123,6 @@ services:
       - my-network      
       
   inventory-service:
-    build: ./InventoryService
     image: ledonchung/inventory-service
     container_name: inventory-service
     depends_on:
@@ -164,7 +157,6 @@ services:
       - my-network
 
   product-service:
-    build: ./ProductService
     image: ledonchung/product-service
     container_name: product-service
     depends_on:
@@ -185,7 +177,6 @@ services:
       - my-network
     
   consult-service:
-    build: ./ConsultService
     image: ledonchung/consult-service
     container_name: consult-service
     depends_on:
@@ -249,7 +240,6 @@ services:
       - my-network
 
   order-service:
-    build: ./OrderService
     image: ledonchung/order-service
     container_name: order-service
     depends_on:
@@ -286,7 +276,6 @@ services:
       - my-network
 
   pay-service:
-    build: ./PayService
     image: ledonchung/pay-service
     container_name: pay-service
     depends_on:
@@ -330,7 +319,6 @@ services:
       - my-network
 
   recommend-service:
-    build: ./RecommendService
     image: ledonchung/recommend-service
     container_name: recommend-service
     ports:
@@ -352,7 +340,6 @@ services:
       - my-network
 
   notification-service:
-    build: ./NotificationService
     image: ledonchung/notification-service
     container_name: notification-service
     depends_on:
@@ -389,7 +376,6 @@ services:
       - my-network
 
   chat-service:
-    build: ./ChatService
     image: ledonchung/chat-service
     container_name: chat-service
     depends_on:
