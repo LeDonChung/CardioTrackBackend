@@ -47,7 +47,8 @@ pipeline {
 
                     def services = env.SERVICES.split()
                     services.each { service ->
-                        def kebabName = service.replaceAll(/([a-z])([A-Z])/, '$1-$2').toLowerCase()
+                        // def kebabName = service.replaceAll(/([a-z])([A-Z])/, '$1-$2').toLowerCase()
+                        def kebabName = service
                         def actualImageName = "cardiotrack-${kebabName}"
                         def imageName = "${DOCKER_HUB_REPO}/${kebabName}:${env.BUILD_NUMBER}"
                         def latestImageName = "${DOCKER_HUB_REPO}/${kebabName}:latest"
@@ -65,7 +66,8 @@ pipeline {
                     script {
                         def services = env.SERVICES.split()
                         services.each { service ->
-                            def kebabName = service.replaceAll(/([a-z])([A-Z])/, '$1-$2').toLowerCase()
+                            // def kebabName = service.replaceAll(/([a-z])([A-Z])/, '$1-$2').toLowerCase()
+                            def kebabName = service
                             def imageName = "${DOCKER_HUB_REPO}/${kebabName}:${env.BUILD_NUMBER}"
                             def latestImageName = "${DOCKER_HUB_REPO}/${kebabName}:latest"
                             sh "docker push ${imageName}"
