@@ -73,7 +73,7 @@ pipeline {
         stage('Build Docker Images') {
             steps {
                 script {
-                    sh 'docker-compose build'
+                    sh 'docker compose build'
                     def services = env.SERVICES.split()
                     services.each { service ->
                         def imageName = "${DOCKER_HUB_REPO}/${service.toLowerCase()}:${env.BUILD_NUMBER}"
