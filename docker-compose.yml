@@ -276,7 +276,7 @@ services:
       - my-network
 
   pay-service:
-    build: ./Payservice
+    build: ./PayService
     container_name: pay-service
     depends_on:
       - discovery-service
