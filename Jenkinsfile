@@ -42,18 +42,7 @@ pipeline {
         stage('Build Docker Images') {
             steps {
                 script {
-                    sh 'docker-compose --version'
                     sh 'docker-compose --env-file .env build'
-
-                    def services = env.SERVICES.split()
-                    services.each { service ->
-                        def kebabName = service.replaceAll(/([a-z])([A-Z])/, '$1-$2').toLowerCase()
-                        def actualImageName = "cardiotrack-${kebabName}"
-                        def imageName = "${DOCKER_HUB_REPO}/${kebabName}:${env.BUILD_NUMBER}"
-                        def latestImageName = "${DOCKER_HUB_REPO}/${kebabName}:latest"
-                        sh "docker tag ${actualImageName} ${imageName}"
-                        sh "docker tag ${actualImageName} ${latestImageName}"
-                    }
                 }
             }
         }
@@ -65,11 +54,11 @@ pipeline {
                     script {
                         def services = env.SERVICES.split()
                         services.each { service ->
-                            def kebabName = service.replaceAll(/([a-z])([A-Z])/, '$1-$2').toLowerCase()
-                            def imageName = "${DOCKER_HUB_REPO}/${kebabName}:${env.BUILD_NUMBER}"
-                            def latestImageName = "${DOCKER_HUB_REPO}/${kebabName}:latest"
-                            sh "docker push ${imageName}"
-                            sh "docker push ${latestImageName}"
+                            def kebab = service.replaceAll(/([a-z])([A-Z])/, '$1-$2').toLowerCase()
+                            def imageBase = "${DOCKER_HUB_REPO}/${kebab}"
+                            sh "docker tag ${imageBase} ${imageBase}:${env.BUILD_NUMBER}"
+                            sh "docker push ${imageBase}:${env.BUILD_NUMBER}"
+                            sh "docker push ${imageBase}:latest"
                         }
                     }
                 }
