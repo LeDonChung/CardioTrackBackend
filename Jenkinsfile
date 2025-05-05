@@ -13,10 +13,10 @@ pipeline {
                 git branch: 'deploy', url: 'https://github.com/LeDonChung/CardioTrackBackend.git'
             }
         }
+
         stage('Load .env') {
             steps {
                 script {
-                    // Load .env from credentials and prepare environment variables
                     def envVarsList = []
                     withCredentials([file(credentialsId: 'env-ct', variable: 'ENV_FILE')]) {
                         if (fileExists(env.ENV_FILE)) {
@@ -29,15 +29,14 @@ pipeline {
                             }
                         }
                     }
-
-                    // Apply environment variables using withEnv
                     withEnv(envVarsList) {
-                        // Variables are now available in the environment
-                        echo "Loaded environment variables: ${envVarsList}"
+                        echo "Loaded environment variables"
                     }
                 }
             }
         }
+
+        // Optional: Enable this if needed
         // stage('Run Tests') {
         //     steps {
         //         script {
@@ -73,17 +72,20 @@ pipeline {
         stage('Build Docker Images') {
             steps {
                 script {
-                    sh 'docker-compose build'
+                    sh 'docker compose build'
+
                     def services = env.SERVICES.split()
                     services.each { service ->
-                        def imageName = "${DOCKER_HUB_REPO}/${service.toLowerCase()}:${env.BUILD_NUMBER}"
-                        def latestImageName = "${DOCKER_HUB_REPO}/${service.toLowerCase()}:latest"
-                        sh "docker tag ${service.toLowerCase()}:${env.BUILD_NUMBER} ${imageName}"
-                        sh "docker tag ${service.toLowerCase()}:${env.BUILD_NUMBER} ${latestImageName}"
+                        def serviceName = service.toLowerCase()
+                        def imageName = "${DOCKER_HUB_REPO}/${serviceName}:${env.BUILD_NUMBER}"
+                        def latestImageName = "${DOCKER_HUB_REPO}/${serviceName}:latest"
+                        sh "docker tag ${serviceName} ${imageName}"
+                        sh "docker tag ${serviceName} ${latestImageName}"
                     }
                 }
             }
         }
+
         stage('Push to Docker Hub') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
@@ -91,8 +93,9 @@ pipeline {
                     script {
                         def services = env.SERVICES.split()
                         services.each { service ->
-                            def imageName = "${DOCKER_HUB_REPO}/${service.toLowerCase()}:${env.BUILD_NUMBER}"
-                            def latestImageName = "${DOCKER_HUB_REPO}/${service.toLowerCase()}:latest"
+                            def serviceName = service.toLowerCase()
+                            def imageName = "${DOCKER_HUB_REPO}/${serviceName}:${env.BUILD_NUMBER}"
+                            def latestImageName = "${DOCKER_HUB_REPO}/${serviceName}:latest"
                             sh "docker push ${imageName}"
                             sh "docker push ${latestImageName}"
                         }
