@@ -53,38 +53,36 @@ pipeline {
         //     }
         // }
 
-        // stage('Build JARs') {
-        //     steps {
-        //         script {
-        //             def services = env.SERVICES.split()
-        //             services.each { service ->
-        //                 stage("Build ${service}") {
-        //                     dir(service) {
-        //                         sh 'chmod +x gradlew'
-        //                         sh './gradlew clean build -x test'
-        //                     }
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
+        stage('Build JARs') {
+            steps {
+                script {
+                    def services = env.SERVICES.split()
+                    services.each { service ->
+                        stage("Build ${service}") {
+                            dir(service) {
+                                sh 'chmod +x gradlew'
+                                sh './gradlew clean build -x test'
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
         stage('Build Docker Images') {
             steps {
                 script {
-                    sh 'echo $PATH'
-                    sh 'docker version'
                     sh 'docker-compose --version'
-                    // sh 'docker compose up -d'
+                    sh 'docker-compose up -d'
 
-                    // def services = env.SERVICES.split()
-                    // services.each { service ->
-                    //     def serviceName = service.toLowerCase()
-                    //     def imageName = "${DOCKER_HUB_REPO}/${serviceName}:${env.BUILD_NUMBER}"
-                    //     def latestImageName = "${DOCKER_HUB_REPO}/${serviceName}:latest"
-                    //     sh "docker tag ${serviceName} ${imageName}"
-                    //     sh "docker tag ${serviceName} ${latestImageName}"
-                    // }
+                    def services = env.SERVICES.split()
+                    services.each { service ->
+                        def serviceName = service.toLowerCase()
+                        def imageName = "${DOCKER_HUB_REPO}/${serviceName}:${env.BUILD_NUMBER}"
+                        def latestImageName = "${DOCKER_HUB_REPO}/${serviceName}:latest"
+                        sh "docker tag ${serviceName} ${imageName}"
+                        sh "docker tag ${serviceName} ${latestImageName}"
+                    }
                 }
             }
         }
