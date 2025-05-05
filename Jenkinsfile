@@ -4,10 +4,8 @@ pipeline {
         gradle 'Gradle'
     }
     environment {
-        DOCKER_HUB_CREDENTIALS = credentials('docker-hub-credentials')
         DOCKER_HUB_REPO = 'ledonchung'
         SERVICES = 'DiscoveryService APIGateway AuthService ChatService InventoryService NotificationService OrderService PayService PostService ProductService UserService ConsultService HealthCheckService'
-        
     }
     stages {
         stage('Checkout') {
@@ -18,20 +16,25 @@ pipeline {
         stage('Load .env') {
             steps {
                 script {
+                    // Load .env from credentials and prepare environment variables
+                    def envVarsList = []
                     withCredentials([file(credentialsId: 'env-ct', variable: 'ENV_FILE')]) {
                         if (fileExists(env.ENV_FILE)) {
                             def envVars = readFile(env.ENV_FILE).split('\n')
                             envVars.each { line ->
                                 if (line.trim() && !line.startsWith('#')) {
                                     def (key, value) = line.split('=', 2)
-                                    env[key.trim()] = value.trim()
+                                    envVarsList << "${key.trim()}=${value.trim()}"
                                 }
                             }
                         }
                     }
 
-                    env.DOCKER_HUB_USERNAME = DOCKER_HUB_CREDENTIALS_USR
-                    env.DOCKER_HUB_PASSWORD = DOCKER_HUB_CREDENTIALS_PSW
+                    // Apply environment variables using withEnv
+                    withEnv(envVarsList) {
+                        // Variables are now available in the environment
+                        echo "Loaded environment variables: ${envVarsList}"
+                    }
                 }
             }
         }
