@@ -127,4 +127,4 @@ pipeline {
             """
         }
     }
-} tôi chỉ thay đổi 1 service mà phải build lại hết à
+} 
