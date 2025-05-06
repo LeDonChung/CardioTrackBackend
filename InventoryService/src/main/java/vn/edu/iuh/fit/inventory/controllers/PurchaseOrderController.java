@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import vn.edu.iuh.fit.inventory.enums.PurchaseOrderStatus;
 import vn.edu.iuh.fit.inventory.exceptions.PurchaseOrderException;
 import vn.edu.iuh.fit.inventory.models.dtos.PageDTO;
+import vn.edu.iuh.fit.inventory.models.dtos.requests.PurchaseOrderDetailRequest;
 import vn.edu.iuh.fit.inventory.models.dtos.requests.PurchaseOrderRequest;
 import vn.edu.iuh.fit.inventory.models.dtos.responses.BaseResponse;
 import vn.edu.iuh.fit.inventory.models.dtos.responses.PurchaseOrderDetailResponse;
@@ -102,5 +103,30 @@ public class PurchaseOrderController {
                         .success(true)
                         .build()
         );
+    }
+
+    // Thêm đánh giá cho chi tiết phiếu mua hàng
+    @PutMapping("/{id}/review")
+    public ResponseEntity<BaseResponse<String>> addReview(@PathVariable Long id, @RequestBody PurchaseOrderDetailRequest request) {
+        try {
+            // Xử lý đánh giá cho thuốc hoặc danh mục
+            if (request.getCategory() != null && request.getMedicine() == null) {
+                purchaseOrderDetailService.addReviewByCategory(id, request);
+            } else if (request.getMedicine() != null) {
+                purchaseOrderDetailService.addReviewByMedicine(id, request);
+            } else {
+                return ResponseEntity.badRequest().body(
+                        BaseResponse.<String>builder().data("Danh mục hoặc thuốc phải được chọn.").success(false).build()
+                );
+            }
+
+            return ResponseEntity.ok(
+                    BaseResponse.<String>builder().data("Đánh giá đã được cập nhật thành công").success(true).build()
+            );
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(
+                    BaseResponse.<String>builder().data("Có lỗi xảy ra: " + e.getMessage()).success(false).build()
+            );
+        }
     }
 }

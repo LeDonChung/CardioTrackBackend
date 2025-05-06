@@ -12,4 +12,12 @@ public interface PurchaseOrderDetailRepository extends JpaRepository<PurchaseOrd
     // Lấy tất cả chi tiết phiếu nhập theo purchaseOrderId
     @Query("SELECT pod FROM PurchaseOrderDetail pod WHERE pod.purchaseOrder.id = :purchaseOrderId")
     List<PurchaseOrderDetail> getAllPurchaseOrderDetailByPurchaseOrderId(Long purchaseOrderId);
+
+    // Lấy tất cả chi tiết phiếu nhập theo purchaseOrderId và categoryId
+    @Query("SELECT pod FROM PurchaseOrderDetail pod WHERE pod.purchaseOrder.id = :purchaseOrderId AND pod.category = :categoryId")
+    List<PurchaseOrderDetail> findByPurchaseOrderIdAndCategoryId(Long purchaseOrderId, Long categoryId);
+
+    // Lấy tất cả chi tiết phiếu nhập theo purchaseOrderId và medicineId
+    @Query("SELECT pod FROM PurchaseOrderDetail pod WHERE pod.purchaseOrder.id = :purchaseOrderId AND pod.medicine = :medicineId")
+    PurchaseOrderDetail findByPurchaseOrderIdAndMedicineId(Long purchaseOrderId, Long medicineId);
 }

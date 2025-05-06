@@ -11,6 +11,7 @@ import vn.edu.iuh.fit.inventory.models.dtos.responses.CategoryResponse;
 import vn.edu.iuh.fit.inventory.models.dtos.responses.InventoryDetailResponse;
 import vn.edu.iuh.fit.inventory.models.dtos.responses.MedicineResponse;
 import vn.edu.iuh.fit.inventory.services.InventoryDetailService;
+import vn.edu.iuh.fit.inventory.services.InventoryForecastService;
 
 @RestController
 @RequestMapping("/api/v1/inventory")
@@ -200,4 +201,24 @@ public class InventoryDetailController {
                         .build()
         );
     }
+
+//    @Autowired
+//    private InventoryForecastService forecastService;
+//
+//    @PostMapping("/forecast")
+//    public String forecast(@RequestBody InventoryRequest request) {
+//        return forecastService.getForecast(request.getCurrentInventory());
+//    }
 }
+
+//class InventoryRequest {
+//    private int currentInventory;
+//
+//    public int getCurrentInventory() {
+//        return currentInventory;
+//    }
+//
+//    public void setCurrentInventory(int currentInventory) {
+//        this.currentInventory = currentInventory;
+//    }
+//}

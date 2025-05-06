@@ -33,4 +33,7 @@ public class PurchaseOrderDetail {
 
     @Column(name="expiration_date")
     private Timestamp expirationDate;
+
+    @Column(name = "review")
+    private String review;
 }
