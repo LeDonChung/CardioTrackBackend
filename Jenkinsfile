@@ -104,8 +104,10 @@ pipeline {
 
                             echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
 
+                            docker-compose -f docker-compose.deploy.yml --env-file .env down
                             docker-compose -f docker-compose.deploy.yml --env-file .env pull
                             docker-compose -f docker-compose.deploy.yml --env-file .env up -d
+                            
                         """
                     }
                 }
