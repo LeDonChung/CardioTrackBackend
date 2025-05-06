@@ -151,19 +151,6 @@ EOF
     post {
         always {
             sh 'docker logout'
-
-            // 🧹 Cleanup: Xóa các image cũ hơn BUILD_NUMBER
-            sh """
-            for image in \$(docker images --format '{{.Repository}}:{{.Tag}}' | grep '^ledonchung/'); do
-              repo=\$(echo \$image | cut -d':' -f1)
-              tag=\$(echo \$image | cut -d':' -f2)
-
-              if [[ "\$tag" =~ ^[0-9]+\$ ]] && [ "\$tag" -lt ${BUILD_NUMBER} ]; then
-                echo "🧹 Removing old image \$repo:\$tag"
-                docker rmi "\$repo:\$tag" || true
-              fi
-            done
-            """
         }
     }
 }
