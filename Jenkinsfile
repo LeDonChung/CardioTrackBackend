@@ -9,7 +9,6 @@ pipeline {
         DOCKER_HUB_REPO = 'ledonchung'
         SERVICES = 'DiscoveryService APIGateway AuthService ChatService InventoryService NotificationService OrderService PayService PostService ProductService UserService ConsultService HealthCheckService RecommendService'
     }
-
     stages {
         stage('Checkout') {
             steps {
@@ -22,7 +21,6 @@ pipeline {
                 withCredentials([file(credentialsId: 'env-ct', variable: 'ENV_FILE')]) {
                     sh 'rm -f .env'
                     sh 'cp "$ENV_FILE" .env'
-                    sh "echo 'TAG=${BUILD_NUMBER}' >> .env"
                 }
             }
         }
@@ -49,7 +47,9 @@ pipeline {
 
         stage('Build Docker Images') {
             steps {
-                sh 'docker-compose --env-file .env build'
+                script {
+                    sh 'docker-compose --env-file .env build'
+                }
             }
         }
 
@@ -81,14 +81,14 @@ pipeline {
                         def remoteHost = env.OCEAN_HOST
                         def deployDir = "/home/$USER/cardio-track"
 
-                        // Gửi file .env sang server
+                        // Gửi file .env từ Jenkins sang Ocean
                         sh """
-                            scp -i \$KEY -o StrictHostKeyChecking=no .env \$USER@\$remoteHost:${deployDir}/.env || true
+                            scp -i $KEY -o StrictHostKeyChecking=no .env $USER@$remoteHost:${deployDir}/.env || true
                         """
 
-                        // SSH vào server và deploy
+                        // SSH vào server để deploy
                         sh """
-                            ssh -i \$KEY -o StrictHostKeyChecking=no \$USER@\$remoteHost << 'EOF'
+                            ssh -i $KEY -o StrictHostKeyChecking=no $USER@$remoteHost << EOF
                             set -e
 
                             if [ ! -d "${deployDir}" ]; then
@@ -101,23 +101,20 @@ pipeline {
                             fi
 
                             cd ${deployDir}
-                            echo "\$DOCKER_PASSWORD" | docker login --username "\$DOCKER_USERNAME" --password-stdin
+
+                            echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
                             docker-compose -f docker-compose.deploy.yml --env-file .env down
                             docker-compose -f docker-compose.deploy.yml --env-file .env pull
                             docker-compose -f docker-compose.deploy.yml --env-file .env up -d
-EOF
                         """
                     }
                 }
             }
         }
     }
-
     post {
         always {
             sh 'docker logout'
-
-            // 🧹 Xóa các image tag số cũ hơn BUILD_NUMBER
             sh """
             for image in \$(docker images --format '{{.Repository}}:{{.Tag}}' | grep '^${DOCKER_HUB_REPO}/'); do
                 repo=\$(echo \$image | cut -d':' -f1)
@@ -130,4 +127,4 @@ EOF
             """
         }
     }
-}
+} tôi chỉ thay đổi 1 service mà phải build lại hết à
