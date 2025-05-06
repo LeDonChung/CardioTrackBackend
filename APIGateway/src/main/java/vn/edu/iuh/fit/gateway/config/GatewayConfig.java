@@ -25,7 +25,19 @@ public class GatewayConfig {
             "/api/v1/user/find-id-by-phone-number/**"
 
     );
+    @Bean
+    public CorsWebFilter corsWebFilter() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials(true);
+        config.addAllowedOrigin("https://cardio-track-frontend-for-user.vercel.app");
+        config.addAllowedHeader("*");
+        config.addAllowedMethod("*");
 
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+
+        return new CorsWebFilter(source);
+    }
 
     /**
      * Configures the route locator to define the routing rules for the gateway.
