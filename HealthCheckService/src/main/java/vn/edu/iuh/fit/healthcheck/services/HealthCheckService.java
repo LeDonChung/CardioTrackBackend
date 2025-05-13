@@ -54,7 +54,7 @@ public class HealthCheckService {
         // Cập nhật thêm yêu cầu phân tích kết quả
         prompt.append("Dựa trên các câu trả lời trên, hãy cung cấp kết quả ngắn gọn với lời khuyên cụ thể về sức khỏe.");
         // Tạo JSON payload cho yêu cầu gửi tới OpenAI API
-        String requestBody = objectMapper.writeValueAsString(new GPTRequest("gpt-4o-mini", prompt.toString(), 1000, 0.7));
+        String requestBody = objectMapper.writeValueAsString(new GPTRequest("gpt-4o-mini", prompt.toString(), 5000, 0.7));
 
         // Tạo HttpHeaders
         HttpHeaders headers = new HttpHeaders();
