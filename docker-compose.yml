@@ -403,6 +403,19 @@ services:
     networks:
       - my-network
 
+ # Dịch vụ Python
+  inventory-focast-service:
+    build: ./CardioTrackBackend/InventoryService/python  # Đường dẫn tới thư mục python/ trong InventoryService
+    container_name: inventory-focast-service
+    ports:
+      - "5000:5000"
+    networks:
+      - my-network
+    environment:
+      - FLASK_ENV=development
+    depends_on:
+      - mariadb-inventory
+
 volumes:
   mariadb-user-data:
   mariadb-consult-data:

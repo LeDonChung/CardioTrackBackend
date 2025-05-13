@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import vn.edu.iuh.fit.inventory.enums.UserInventoryRole;
 
 @Getter
 @Setter
@@ -12,5 +13,8 @@ import lombok.Setter;
 public class UserRegisterRequest {
     private String username;
     private String password;
+    private Long id;
+    private Long inventory;
+    private UserInventoryRole role;
 }
 
