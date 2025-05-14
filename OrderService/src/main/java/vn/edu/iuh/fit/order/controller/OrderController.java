@@ -22,6 +22,7 @@ public class OrderController {
 
     @PostMapping
     public ResponseEntity<BaseResponse<OrderResponse>> addOrder(@RequestBody OrderRequest request) throws OrderException {
+        System.out.println("Request: " + request);
         OrderResponse order = orderService.save(request);
         return ResponseEntity.ok(
                 BaseResponse
