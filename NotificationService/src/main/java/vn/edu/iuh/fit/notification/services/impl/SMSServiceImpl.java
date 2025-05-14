@@ -23,7 +23,8 @@ public class SMSServiceImpl implements SMSService {
 
     @Value("${infobip.base.url}")
     private String BASE_URL;
-
+    @Value("${infobip.sender}")
+    private String SENDER;
 
     @Override
     public String sendOTP(String phoneNumber, String otp) throws NotificationException {
@@ -32,7 +33,7 @@ public class SMSServiceImpl implements SMSService {
         var sendSmsApi = new SmsApi(apiClient);
 
         SmsMessage message = new SmsMessage()
-                .sender("InfoSMS")
+                .sender(SENDER)
                 .addDestinationsItem(new SmsDestination().to(phoneNumber))
                 .content(new SmsTextContent().text(otp));
         SmsRequest smsMessageRequest = new SmsRequest()
