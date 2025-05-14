@@ -202,23 +202,17 @@ public class InventoryDetailController {
         );
     }
 
-//    @Autowired
-//    private InventoryForecastService forecastService;
-//
-//    @PostMapping("/forecast")
-//    public String forecast(@RequestBody InventoryRequest request) {
-//        return forecastService.getForecast(request.getCurrentInventory());
-//    }
+    // Phương thức gọi từ python để dự đoán nhu cầu
+    @GetMapping("/forecast/demand")
+    public ResponseEntity<BaseResponse<String>> forecastDemand() {
+        String result = inventoryDetailService.forecastDemand();
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<String>builder()
+                        .data(result)
+                        .success(true)
+                        .build()
+        );
+    }
 }
 
-//class InventoryRequest {
-//    private int currentInventory;
-//
-//    public int getCurrentInventory() {
-//        return currentInventory;
-//    }
-//
-//    public void setCurrentInventory(int currentInventory) {
-//        this.currentInventory = currentInventory;
-//    }
-//}

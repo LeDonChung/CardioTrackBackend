@@ -21,6 +21,8 @@ import vn.edu.iuh.fit.inventory.repositories.ShelfRepository;
 import vn.edu.iuh.fit.inventory.services.InventoryDetailService;
 import vn.edu.iuh.fit.inventory.utils.SystemConstraints;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -334,6 +336,28 @@ public class InvenotoryDetailServiceImpl implements InventoryDetailService {
                 .data(inventoryDetailResponses)
                 .totalPage(pageInventoryDetails.getTotalPages())
                 .build();
+    }
+
+    public String forecastDemand() {
+        try {
+            ProcessBuilder builder = new ProcessBuilder("python", "python/inventory_focast.py");
+            builder.redirectErrorStream(true);
+            Process process = builder.start();
+
+            BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(process.getInputStream())
+            );
+            String resultJson = reader.lines().collect(Collectors.joining());
+
+            int exitCode = process.waitFor();
+            if (exitCode != 0) {
+                throw new RuntimeException("Python script exited with code " + exitCode);
+            }
+
+            return resultJson;  // Giả sử Python trả về một con số duy nhất
+        } catch (Exception e) {
+            throw new RuntimeException("Error calling Python script: " + e.getMessage(), e);
+        }
     }
 
 }
