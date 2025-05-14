@@ -1,6 +1,7 @@
 package vn.edu.iuh.fit.post.services;
 
 import vn.edu.iuh.fit.post.exceptions.PostException;
+import vn.edu.iuh.fit.post.model.dto.response.CommentResponse;
 import vn.edu.iuh.fit.post.model.dto.response.PostResponse;
 import vn.edu.iuh.fit.post.model.dto.request.PostRequest;
 
@@ -25,4 +26,6 @@ public interface PostService {
 
     // lấy danh sách bài viết của tôi
     List<PostResponse> getMyPosts(Long authorId) throws PostException;
+
+    PostResponse findById(Long postId) throws PostException;
 }

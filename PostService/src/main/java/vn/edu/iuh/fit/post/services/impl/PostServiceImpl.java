@@ -7,6 +7,7 @@ import vn.edu.iuh.fit.post.client.UserServiceClient;
 import vn.edu.iuh.fit.post.exceptions.PostException;
 import vn.edu.iuh.fit.post.jwt.JwtService;
 import vn.edu.iuh.fit.post.mappers.PostMapper;
+import vn.edu.iuh.fit.post.model.dto.response.CommentResponse;
 import vn.edu.iuh.fit.post.model.dto.response.PostResponse;
 import vn.edu.iuh.fit.post.model.dto.request.PostRequest;
 import vn.edu.iuh.fit.post.model.dto.response.UserResponse;
@@ -150,6 +151,25 @@ public class PostServiceImpl implements PostService {
                     return postResponse;
                 })
                 .toList();
+    }
+
+    @Override
+    public PostResponse findById(Long postId) throws PostException {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new PostException(SystemConstraints.POST_NOT_FOUND));
+
+        // Gọi UserServiceClient để lấy thông tin người tạo bài viết (UserResponse)
+        UserResponse userResponse = userServiceClient.findUserById(post.getAuthorId()).getBody().getData();
+        PostResponse postResponse = postMapper.toResponse(post);
+        List<CommentResponse> commentResponses = postResponse.getComments().stream().map(commentResponse -> {
+            // Gọi UserServiceClient để lấy thông tin người tạo bình luận (UserResponse)
+            UserResponse commentUserResponse = userServiceClient.findUserById(commentResponse.getAuthorId()).getBody().getData();
+            commentResponse.setFullName(commentUserResponse.getFullName());  // Gán username vào CommentResponse
+            return commentResponse;
+        }).toList();
+        postResponse.setComments(commentResponses);  // Gán danh sách bình luận vào PostResponse
+        postResponse.setFullName(userResponse.getFullName());  // Gán username vào PostResponse
+        return postResponse;
     }
 
 

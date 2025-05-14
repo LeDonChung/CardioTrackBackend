@@ -23,7 +23,8 @@ public class Post {
 
     private String imgTitle;
 
-    @Column(columnDefinition = "LONGTEXT")
+    @Column(columnDefinition = "TEXT")
+    @Lob
     private String content;
 
     @Column(name = "author_id", nullable = false) // Đảm bảo tên cột không trùng lặp

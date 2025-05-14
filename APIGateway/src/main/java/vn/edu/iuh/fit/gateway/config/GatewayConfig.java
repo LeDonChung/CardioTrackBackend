@@ -6,6 +6,7 @@ import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import vn.edu.iuh.fit.gateway.filter.JwtAuthenticationFilter;
+import vn.edu.iuh.fit.gateway.filter.RateLimitingFilter;
 import java.util.List;
 
 /**
@@ -15,6 +16,9 @@ import java.util.List;
 public class GatewayConfig {
     @Autowired
     private JwtAuthenticationFilter jwtAuthFilter;
+
+    @Autowired
+    private RateLimitingFilter rateLimitingFilter;
 
     // Define the list of public endpoints
     private static final List<String> PUBLIC_ENDPOINTS = List.of(
@@ -50,6 +54,7 @@ public class GatewayConfig {
                 .route("address-service", r -> r.path("/api/v1/address/**")
                         .uri("lb://user-service"))
                 .route("order-service", r -> r.path("/api/v1/order/**")
+                        .filters(f -> f.filter(rateLimitingFilter))
                         .uri("lb://order-service"))
                 .route("category-service", r -> r.path("/api/v1/category/**")
                         .uri("lb://product-service"))
