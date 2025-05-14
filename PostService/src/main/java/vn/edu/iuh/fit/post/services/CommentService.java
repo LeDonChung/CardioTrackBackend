@@ -4,6 +4,8 @@ import vn.edu.iuh.fit.post.exceptions.PostException;
 import vn.edu.iuh.fit.post.model.dto.request.CommentRequest;
 import vn.edu.iuh.fit.post.model.dto.response.CommentResponse;
 
+import java.util.List;
+
 public interface CommentService {
     //tạo comment
     CommentResponse createComment(CommentRequest commentRequest) throws PostException;

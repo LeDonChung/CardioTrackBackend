@@ -12,7 +12,8 @@ import lombok.Setter;
 public class CommentResponse {
     private Long id;
     private String content;
-    private String authorId;  // Lấy từ UserService
+    private Long authorId;  // Lấy từ UserService
+    private String fullName; // Lấy từ UserService
     private String createdAt;
     private Long postId;
 }
