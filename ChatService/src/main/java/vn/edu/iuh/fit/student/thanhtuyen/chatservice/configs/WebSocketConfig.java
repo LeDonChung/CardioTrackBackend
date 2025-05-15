@@ -32,7 +32,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/api/v1/**")
-                        .allowedOriginPatterns("http://localhost:3000", "http://localhost:3001", "https://cardio-track-frontend-for-user.vercel.app")  // Liệt kê cụ thể các domain
+                        .allowedOriginPatterns("http://localhost:3000", "http://localhost:3001", "https://cardio-track-frontend-for-user.vercel.app", "https://cardiotrack-frontend-consult.vercel.app")  // Liệt kê cụ thể các domain
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true);
