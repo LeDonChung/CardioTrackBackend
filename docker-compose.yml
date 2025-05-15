@@ -299,7 +299,7 @@ services:
     image: mariadb:latest
     container_name: mariadb-inventory
     environment:
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=root
       - MYSQL_DATABASE=tcinventory
     ports:
       - "3305:3306"

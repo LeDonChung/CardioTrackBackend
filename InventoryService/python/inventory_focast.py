@@ -6,11 +6,11 @@ from sklearn.model_selection import train_test_split
 
 def connect_to_db():
     return mysql.connector.connect(
-        host="localhost",
-        port=3306,
-        user="root",
-        password="sapassword",
-        database="tcinventory",
+        host="mariadb-inventory",  # Tên service của MySQL trong Docker Compose
+        port=3306,  # Cổng mặc định trong container
+        user="root",  
+        password="root",  
+        database="tcinventory",  
         charset='utf8mb4',
         collation='utf8mb4_general_ci'
     )

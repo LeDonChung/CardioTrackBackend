@@ -340,9 +340,10 @@ public class InvenotoryDetailServiceImpl implements InventoryDetailService {
 
     public String forecastDemand() {
         try {
-            ProcessBuilder builder = new ProcessBuilder("python", "python/inventory_focast.py");
+            ProcessBuilder builder = new ProcessBuilder("/usr/bin/python3", "python/inventory_focast.py");
             builder.redirectErrorStream(true);
             Process process = builder.start();
+
 
             BufferedReader reader = new BufferedReader(
                     new InputStreamReader(process.getInputStream())
