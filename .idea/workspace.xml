@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="056a8a1b-6a65-4077-aa32-40e075f4f0a1" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="056a8a1b-6a65-4077-aa32-40e075f4f0a1" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -36,9 +34,9 @@
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "no-report-inventory-FE",
+    "git-widget-placeholder": "main",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "D:/HK8_2024-25/KTTK_PhanMem/BTLon/CardioTrackBackend/InventoryService",
+    "last_opened_file_path": "D:/HK8_2024-25/KTTK_PhanMem/BTLon/CardioTrackBackend",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -68,7 +66,6 @@
       <workItem from="1742128691528" duration="513000" />
       <workItem from="1743176396648" duration="1000" />
       <workItem from="1744016949770" duration="2976000" />
-      <workItem from="1744023215439" duration="15000" />
     </task>
     <servers />
   </component>

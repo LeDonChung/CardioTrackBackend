@@ -1,9 +1,17 @@
 package vn.edu.iuh.fit.inventory.services;
 
+import java.util.List;
+
 public interface ReportInventoryImportService {
-    int countInventoryImportThisWeek();
+    List<Object[]> countInventoryImportThisWeek();
 
-    int countInventoryImportThisMonth();
+    List<Object[]> countInventoryImportThisMonth();
 
-    int countInventoryImportThisYear();
+    List<Object[]> countInventoryImportThisYear();
+
+    List<Object[]> countCancelledByWeek();
+
+    List<Object[]> countCancelledByMonth();
+
+    List<Object[]> countCancelledByYear();
 }

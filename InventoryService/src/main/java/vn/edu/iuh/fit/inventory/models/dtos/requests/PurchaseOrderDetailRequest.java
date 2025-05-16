@@ -25,4 +25,6 @@ public class PurchaseOrderDetailRequest {
     private double discount;
 
     private Timestamp expirationDate;
+
+    private String review;
 }

@@ -99,6 +99,14 @@ public class GatewayConfig {
                         .uri("lb://health-service"))
                 .route("s3-service", r -> r.path("/api/v1/s3/**")
                         .uri("lb://chat-service"))
+                .route("inventory-service", r -> r.path("/api/v1/report-import/**")
+                        .uri("lb://inventory-service"))
+                .route("inventory-service", r -> r.path("/api/v1/report-order/**")
+                        .uri("lb://inventory-service"))
+                .route("inventory-service", r -> r.path("/api/v1/report-medicine-import/**")
+                        .uri("lb://inventory-service"))
+                .route("inventory-service", r -> r.path("/api/v1/report-medicine-status/**")
+                        .uri("lb://inventory-service"))
                 .build();
     }
 }
