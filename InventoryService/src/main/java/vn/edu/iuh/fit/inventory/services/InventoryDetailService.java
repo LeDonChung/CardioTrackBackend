@@ -47,4 +47,7 @@ public interface InventoryDetailService {
     PageDTO<InventoryDetailResponse> getMedicinesExpired(int page, int size, String sortBy, String sortName);
 
     PageDTO<InventoryDetailResponse> getInventoryDetailsExpiration(int page, int size, String sortBy, String sortName, Long  medicineId);
+
+    // Phương thức gọi từ python để dự đoán nhu cầu
+    String forecastDemand();
 }

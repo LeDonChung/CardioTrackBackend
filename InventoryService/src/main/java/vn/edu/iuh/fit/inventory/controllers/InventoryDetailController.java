@@ -11,6 +11,7 @@ import vn.edu.iuh.fit.inventory.models.dtos.responses.CategoryResponse;
 import vn.edu.iuh.fit.inventory.models.dtos.responses.InventoryDetailResponse;
 import vn.edu.iuh.fit.inventory.models.dtos.responses.MedicineResponse;
 import vn.edu.iuh.fit.inventory.services.InventoryDetailService;
+import vn.edu.iuh.fit.inventory.services.InventoryForecastService;
 
 @RestController
 @RequestMapping("/api/v1/inventory")
@@ -138,8 +139,7 @@ public class InventoryDetailController {
                         .build()
         );
     }
-
-
+    // Cập nhật (cộng) số lượng của một thuốc trong kho khi nhập hàng
     @PutMapping("/cancel-quantity-medicine/{medicineId}/{quantity}")
     public ResponseEntity<BaseResponse<Integer>> cancelQuantityByMedicine(@PathVariable Long medicineId, @PathVariable Long quantity) {
         int result = inventoryDetailService.cancelQuantityByMedicine(medicineId, quantity);
@@ -201,4 +201,18 @@ public class InventoryDetailController {
                         .build()
         );
     }
+
+    // Phương thức gọi từ python để dự đoán nhu cầu
+    @GetMapping("/forecast/demand")
+    public ResponseEntity<BaseResponse<String>> forecastDemand() {
+        String result = inventoryDetailService.forecastDemand();
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<String>builder()
+                        .data(result)
+                        .success(true)
+                        .build()
+        );
+    }
 }
+
