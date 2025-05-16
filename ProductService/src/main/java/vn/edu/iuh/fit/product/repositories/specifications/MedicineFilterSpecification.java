@@ -86,7 +86,7 @@ public class MedicineFilterSpecification {
             // Sắp xếp động
             if (sortBy != null) {
                 Order order;
-                if ("finalPrice".equalsIgnoreCase(sortBy)) {
+                if ("price".equalsIgnoreCase(sortBy)) {
                     order = "desc".equalsIgnoreCase(sortOrder)
                             ? criteriaBuilder.desc(finalPrice)
                             : criteriaBuilder.asc(finalPrice);
