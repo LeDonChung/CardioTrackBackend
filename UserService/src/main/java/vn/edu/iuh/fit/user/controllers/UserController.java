@@ -28,6 +28,7 @@ import java.util.concurrent.CompletableFuture;
 public class UserController {
     @Autowired
     private UserService userService;
+
     @PostMapping("/register")
     public ResponseEntity<BaseResponse<UserResponse>> register(@RequestBody UserRegisterRequest request) throws UserException {
         log.info("Register user: " + request);
@@ -36,7 +37,7 @@ public class UserController {
             throw new UserException("Mật khẩu và xác nhận mật khẩu không trùng khớp.");
         }
 
-        if(!userService.verifyOtp(request.getUsername(), request.getOtp())){
+        if (!userService.verifyOtp(request.getUsername(), request.getOtp())) {
             throw new UserException(SystemConstraints.PLS_VERIFY_OTP);
         }
 
@@ -130,6 +131,7 @@ public class UserController {
                         .build()
         );
     }
+
     @PostMapping("/address")
     public ResponseEntity<BaseResponse<AddressResponse>> addAddress(@RequestBody AddressRequest address) throws UserException {
         AddressResponse a = userService.addAddress(address);
@@ -157,18 +159,19 @@ public class UserController {
                 HttpStatus.OK
         );
     }
-//tìm địa chỉ user
-@GetMapping("/addresses/{id}")
-public ResponseEntity<BaseResponse<List<AddressResponse>>> getUserAddresses(@PathVariable("id") Long id) {
-    List<AddressResponse> addresses = userService.getAddressesByUserId(id);
-    return ResponseEntity.ok(
-            BaseResponse.<List<AddressResponse>>builder()
-                    .code(String.valueOf(HttpStatus.OK.value()))
-                    .success(true)
-                    .data(addresses)
-                    .build()
-    );
-}
+
+    //tìm địa chỉ user
+    @GetMapping("/addresses/{id}")
+    public ResponseEntity<BaseResponse<List<AddressResponse>>> getUserAddresses(@PathVariable("id") Long id) {
+        List<AddressResponse> addresses = userService.getAddressesByUserId(id);
+        return ResponseEntity.ok(
+                BaseResponse.<List<AddressResponse>>builder()
+                        .code(String.valueOf(HttpStatus.OK.value()))
+                        .success(true)
+                        .data(addresses)
+                        .build()
+        );
+    }
 
 
     //hàm update user by id
