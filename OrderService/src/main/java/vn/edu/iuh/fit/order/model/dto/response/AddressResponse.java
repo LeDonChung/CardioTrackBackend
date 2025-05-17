@@ -8,6 +8,7 @@ import vn.edu.iuh.fit.order.enums.AddressType;
 @Getter
 @Setter
 @Builder
+@ToString
 public class AddressResponse {
     private Long id;
     private String district;

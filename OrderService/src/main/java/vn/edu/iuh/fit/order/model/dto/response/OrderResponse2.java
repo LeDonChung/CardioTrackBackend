@@ -13,6 +13,7 @@ import java.util.List;
 @Setter
 @Getter
 @Builder
+@ToString
 public class OrderResponse2 {
     private Long id;
     private String note;
