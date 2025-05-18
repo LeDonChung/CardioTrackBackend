@@ -34,7 +34,7 @@
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "no-report-inventory-FE",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "D:/HK8_2024-25/KTTK_PhanMem/BTLon/CardioTrackBackend",
     "node.js.detected.package.eslint": "true",
@@ -66,6 +66,7 @@
       <workItem from="1742128691528" duration="513000" />
       <workItem from="1743176396648" duration="1000" />
       <workItem from="1744016949770" duration="2976000" />
+      <workItem from="1747411508056" duration="448000" />
     </task>
     <servers />
   </component>
