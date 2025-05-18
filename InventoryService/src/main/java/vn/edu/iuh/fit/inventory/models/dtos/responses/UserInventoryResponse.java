@@ -10,6 +10,7 @@ import vn.edu.iuh.fit.inventory.enums.UserInventoryRole;
 @Builder
 public class UserInventoryResponse {
     private Long id;
+    private String name;
     private Long user;
     private Long inventory;
     private UserInventoryRole role;

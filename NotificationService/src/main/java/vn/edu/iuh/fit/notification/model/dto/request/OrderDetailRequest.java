@@ -1,17 +1,20 @@
 package vn.edu.iuh.fit.notification.model.dto.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class OrderDetailRequest {
-    private MedicineRequest medicine;
-    private int quantity;
+    private int discount;
+
     private double price;
-    private double discount;
+
+    private int quantity;
+
+    private Long medicine;
+
+    private Long orderId;
 }

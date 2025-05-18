@@ -92,7 +92,7 @@ public class OrderServiceImpl implements OrderService {
         response.setCustomer(user);
         response.setAddressDetail(addressResponse);
         System.out.println("response: " + response);
-//        notificationServiceClient.sendNotificationOrderToEmail(response);
+        notificationServiceClient.sendNotificationOrderToEmail(response);
         return response;
     }
 

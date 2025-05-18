@@ -1,6 +1,9 @@
-package vn.edu.iuh.fit.notification.model.dto.request;
+package vn.edu.iuh.fit.notification.model.dto.response;
 
 import lombok.*;
+import vn.edu.iuh.fit.notification.model.dto.request.AddressRequest;
+import vn.edu.iuh.fit.notification.model.dto.request.OrderDetailRequest;
+import vn.edu.iuh.fit.notification.model.dto.request.UserRequest;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -10,6 +13,7 @@ import java.util.List;
 @Setter
 @Getter
 @Builder
+@ToString
 public class OrderResponse {
     private Long id;
 
@@ -23,7 +27,7 @@ public class OrderResponse {
 
     private UserRequest customer;
 
-    private AddressDetailRequest addressDetail;
+    private AddressRequest addressDetail;
 
     private List<OrderDetailRequest> orderDetails;
 

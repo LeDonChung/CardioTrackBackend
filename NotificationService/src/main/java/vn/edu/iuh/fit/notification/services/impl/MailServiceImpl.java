@@ -1,6 +1,5 @@
 package vn.edu.iuh.fit.notification.services.impl;
 
-import io.github.resilience4j.retry.annotation.Retry;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,11 +7,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import vn.edu.iuh.fit.notification.clients.ProductServiceClient;
 import vn.edu.iuh.fit.notification.exceptions.NotificationException;
 import vn.edu.iuh.fit.notification.model.dto.request.OrderDetailRequest;
 import vn.edu.iuh.fit.notification.model.dto.request.OrderRequest;
-import vn.edu.iuh.fit.notification.model.dto.request.OrderResponse;
 import vn.edu.iuh.fit.notification.model.dto.request.UserRequest;
+import vn.edu.iuh.fit.notification.model.dto.response.MedicineResponse;
 import vn.edu.iuh.fit.notification.services.MailService;
 import vn.edu.iuh.fit.notification.services.ThymeleafService;
 
@@ -31,12 +31,15 @@ public class MailServiceImpl implements MailService {
     @Autowired
     private ThymeleafService thymeleafService;
 
+    @Autowired
+    private ProductServiceClient productServiceClient;
+
     private double calculatorTotalPrice(OrderRequest order) {
         double totalPrice = 0;
 
         for (OrderDetailRequest orderDetail : order.getOrderDetails()) {
             double price = orderDetail.getPrice() * orderDetail.getQuantity();
-            totalPrice += price - (price * (orderDetail.getDiscount()/100));
+            totalPrice += price - (price * ((orderDetail.getDiscount() * 1.0) / 100.0));
         }
         return totalPrice;
     }
@@ -67,19 +70,23 @@ public class MailServiceImpl implements MailService {
 
     @Override
     public boolean sendNotificationOrder(OrderRequest order) throws Exception {
-        if(order == null){
+        if (order == null) {
             return false;
         }
         String subject = "Xác nhận đơn hàng nhà thuốc Thera Care";
-        String ad = String.format("%s, %s, %s, %s", order.getAddressDetail().getAddress().getStreet(),
-                order.getAddressDetail().getAddress().getWard(), order.getAddressDetail().getAddress().getDistrict(),
-                order.getAddressDetail().getAddress().getProvince());
+        String ad = String.format("%s, %s, %s, %s", order.getAddressDetail().getStreet(),
+                order.getAddressDetail().getWard(), order.getAddressDetail().getDistrict(),
+                order.getAddressDetail().getProvince());
         StringBuilder contentBuilder = new StringBuilder()
                 .append(String.format("<p>Kính gửi %s,</p>", order.getCustomer().getFullName()))
-                .append("<p>Cảm ơn bạn đã đặt hàng tại nhà thuốc của chúng tôi. Đơn hàng của bạn đã được xác nhận và chúng tôi sẽ giao hàng trong vòng 1-3 ngày.</p>")
+                .append("<p>Cảm ơn bạn đã đặt hàng tại nhà thuốc của chúng tôi. Đơn hàng của bạn sẽ được giao hàng trong vòng 1-3 ngày.</p>")
                 .append("<p><strong>Thông tin đơn hàng:</strong></p>")
                 .append(String.format("<p><strong>Ngày đặt hàng:</strong> %s</p>", order.getOrderDate()))
-                .append(String.format("<p><strong>Tổng tiền:</strong> %,.2f VND</p>", calculatorTotalPrice(order)))
+                .append(String.format("<p><strong>Tổng tiền:</strong> %,.0f VND</p>", calculatorTotalPrice(order)))
+                .append(String.format("<p><strong>Phí vận chuyển:</strong> %,.0f VND</p>", order.getFeeShip()))
+                .append(String.format("<p><strong>Trạng thái đơn hàng:</strong> Đang chờ xử lý</p>"))
+                .append(order.isExportInvoice() ? "<p><strong>Yêu cầu xuất hóa đơn:</strong> Có</p>" : "<p><strong>Yêu cầu xuất hóa đơn:</strong> Không</p>")
+                .append(order.getNote() != null && !order.getNote().isEmpty() ? String.format("<p><strong>Ghi chú:</strong> %s</p>", order.getNote()) : "")
                 .append("<p><strong>Thông tin giao hàng:</strong></p>")
                 .append(String.format("<p><strong>Người nhận:</strong> %s</p>", order.getAddressDetail().getFullName()))
                 .append(String.format("<p><strong>Số điện thoại:</strong> <a href='tel:%s'>%s</a></p>", order.getAddressDetail().getPhoneNumber(), order.getAddressDetail().getPhoneNumber()))
@@ -90,14 +97,20 @@ public class MailServiceImpl implements MailService {
 
         int index = 1;
         for (OrderDetailRequest item : order.getOrderDetails()) {
+            if (item.getMedicine() == null) {
+                continue;
+            }
+            MedicineResponse medicine = productServiceClient.getById(item.getMedicine()).getBody().getData();
             contentBuilder.append(String.format(
-                    "<tr><td>%d</td><td>%s</td><td>%d</td><td>%,.2f VND</td><td>%,.2f VND</td><td>%,.2f VND</td></tr>",
-                    index++, item.getMedicine().getName(), item.getQuantity(), item.getPrice(), item.getDiscount(), item.getPrice() * item.getQuantity() - (item.getPrice() * item.getQuantity() * (item.getDiscount()/100))));
+                    "<tr><td>%d</td><td>%s</td><td>%d</td><td>%,.0f VND</td><td>%d%%</td><td>%,.0f VND</td></tr>",
+                    index++, medicine.getName(), item.getQuantity(), item.getPrice(), item.getDiscount(),
+                    item.getPrice() * item.getQuantity() - (item.getPrice() * item.getQuantity() * ((item.getDiscount() * 1.0) / 100.0))));
         }
 
         contentBuilder.append("</table>")
                 .append("<p>Chúng tôi sẽ liên hệ với bạn khi đơn hàng được giao. Nếu có bất kỳ câu hỏi nào, vui lòng liên hệ với chúng tôi.</p>")
                 .append("<p>Nhà thuốc Thera Care xin cảm ơn bạn đã tin tưởng nhà thuốc và mua sắm tại nhà thuốc của chúng tôi!</p>");
+
         try {
             sendMailNotificationOrder(order, contentBuilder.toString(), subject);
             return true;
