@@ -39,7 +39,7 @@ public class MailServiceImpl implements MailService {
 
         for (OrderDetailRequest orderDetail : order.getOrderDetails()) {
             double price = orderDetail.getPrice() * orderDetail.getQuantity();
-            totalPrice += price - (price * (orderDetail.getDiscount() / 100));
+            totalPrice += price - (price * ((orderDetail.getDiscount() * 1.0) / 100.0));
         }
         return totalPrice;
     }
