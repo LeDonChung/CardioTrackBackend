@@ -12,6 +12,7 @@ import java.util.List;
 @Setter
 @Getter
 @Builder
+@ToString
 public class OrderResponse {
     private Long id;
 
