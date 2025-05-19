@@ -2,6 +2,7 @@ pipeline {
     agent any
     tools {
         gradle 'Gradle'
+        terraform 'terraform'
     }
     environment {
         BRANCH_DEPLOY = 'production'
