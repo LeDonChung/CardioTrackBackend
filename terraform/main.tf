@@ -9,3 +9,12 @@ provider "aws" {
 resource "aws_s3_bucket" "trongtiniuh-bucket" {
   bucket = "trongtiniuh-bucket"
 }
+
+terraform {
+  backend "s3" {
+    bucket = "stateforcardiotrack"
+    key    = "cardiotrack/terraform.tfstate"
+    region = "ap-southeast-1" 
+    encrypt = true
+  }
+}
