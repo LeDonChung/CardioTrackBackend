@@ -26,20 +26,20 @@ pipeline {
             }
         }
 
-        stage('Terraform 1') {
-            steps {
-                withCredentials([
-                    string(credentialsId: 'aws-access-key-id', variable: 'AWS_ACCESS_KEY_ID'),
-                    string(credentialsId: 'aws-secret-access-key', variable: 'AWS_SECRET_ACCESS_KEY')
-                ]) {
-                    sh '''
-                        cd terraform
-                        terraform init
-                        terraform import aws_s3_bucket.trongtiniuh-bucket trongtiniuh-bucket -var aws_access_key=${AWS_ACCESS_KEY_ID} -var aws_secret_key=${AWS_SECRET_ACCESS_KEY} || true
-                    '''
-                }
-            }
-        }
+        // stage('Terraform 1') {
+        //     steps {
+        //         withCredentials([
+        //             string(credentialsId: 'aws-access-key-id', variable: 'AWS_ACCESS_KEY_ID'),
+        //             string(credentialsId: 'aws-secret-access-key', variable: 'AWS_SECRET_ACCESS_KEY')
+        //         ]) {
+        //             sh '''
+        //                 cd terraform
+        //                 terraform init
+        //                 terraform import aws_s3_bucket.trongtiniuh-bucket trongtiniuh-bucket -var aws_access_key=${AWS_ACCESS_KEY_ID} -var aws_secret_key=${AWS_SECRET_ACCESS_KEY} || true
+        //             '''
+        //         }
+        //     }
+        // }
 
         stage('Terraform 2') {
             steps {
