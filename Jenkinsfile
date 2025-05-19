@@ -27,6 +27,11 @@ pipeline {
         }
         stage('Terraform Init & Apply') {
             steps {
+                sh '''
+                    cd terraform
+                    terraform init
+                    terraform import aws_s3_bucket.trongtiniuh-bucket trongginiuh-bucket || true
+                '''
                 withCredentials([
                     string(credentialsId: 'aws-access-key-id', variable: 'AWS_ACCESS_KEY_ID'),
                     string(credentialsId: 'aws-secret-access-key', variable: 'AWS_SECRET_ACCESS_KEY')
@@ -34,7 +39,6 @@ pipeline {
                     sh '''
                         cd terraform
                         terraform init
-                        terraform import aws_s3_bucket.trongtiniuh-bucket trongginiuh-bucket
                         terraform apply -auto-approve \
                             -var aws_access_key=${AWS_ACCESS_KEY_ID} \
                             -var aws_secret_key=${AWS_SECRET_ACCESS_KEY}
