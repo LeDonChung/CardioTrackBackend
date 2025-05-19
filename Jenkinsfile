@@ -34,6 +34,7 @@ pipeline {
                     sh '''
                         cd terraform
                         terraform init
+                        terraform import aws_s3_bucket.trongtiniuh-bucket trongginiuh-bucket
                         terraform apply -auto-approve \
                             -var aws_access_key=${AWS_ACCESS_KEY_ID} \
                             -var aws_secret_key=${AWS_SECRET_ACCESS_KEY}
