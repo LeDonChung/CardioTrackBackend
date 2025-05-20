@@ -6,8 +6,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import vn.edu.iuh.fit.user.exceptions.UserException;
+import vn.edu.iuh.fit.user.jwt.JwtService;
 import vn.edu.iuh.fit.user.model.dto.request.AddressRequest;
 import vn.edu.iuh.fit.user.model.dto.request.UserRegisterRequest;
 import vn.edu.iuh.fit.user.model.dto.request.UserUpdateRequest;
@@ -16,6 +19,8 @@ import vn.edu.iuh.fit.user.model.dto.response.BaseResponse;
 import vn.edu.iuh.fit.user.model.dto.response.UserResponse;
 import vn.edu.iuh.fit.user.model.entity.Address;
 import vn.edu.iuh.fit.user.services.UserService;
+import vn.edu.iuh.fit.user.services.security.UserDetailsCustom;
+import vn.edu.iuh.fit.user.services.security.UserDetailsServiceCustom;
 import vn.edu.iuh.fit.user.utils.SystemConstraints;
 
 import java.util.List;
@@ -105,6 +110,39 @@ public class UserController {
                         .build()
         );
     }
+    @Autowired
+    private JwtService jwtService;
+    @Autowired
+    private UserDetailsServiceCustom userDetailsServiceCustom;
+    @PostMapping("/refresh-token")
+    public ResponseEntity<BaseResponse<String>> refreshToken(@RequestParam("refreshToken") String refreshToken) throws UserException {
+        // Lấy thông tin người dùng từ SecurityContext
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            throw new UserException("Không tìm thấy người dùng trong context.");
+        }
+
+        UserDetailsCustom userDetailsCustom = userDetailsServiceCustom.getUserDetails(authentication.getPrincipal().toString());
+
+        // Kiểm tra tính hợp lệ của Refresh Token
+        if (!jwtService.isValidToken(refreshToken)) {
+            throw new UserException("Refresh token không hợp lệ.");
+        }
+
+        // Tạo Access Token mới từ thông tin người dùng
+        String newAccessToken = jwtService.generateToken(userDetailsCustom);  // Sử dụng thông tin người dùng từ SecurityContext
+
+        // Trả về Access Token mới
+        return ResponseEntity.ok(
+                BaseResponse
+                        .<String>builder()
+                        .data(newAccessToken)
+                        .code(HttpStatus.OK.name())
+                        .success(true)
+                        .build()
+        );
+    }
+
 
     @PostMapping("/verify-otp")
     public ResponseEntity<BaseResponse<Boolean>> verifyOtp(@RequestParam("phoneNumber") String phoneNumber, @RequestParam("otp") String otp) throws UserException {

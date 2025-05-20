@@ -5,6 +5,7 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,6 +21,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -32,6 +34,10 @@ public class JwtServiceImpl implements JwtService {
     @Autowired
     private UserDetailsServiceCustom userDetailsService;
     private Claims claims = null;
+
+
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
 
     @Override
     public Claims extractClaims(String token) {
@@ -70,6 +76,31 @@ public class JwtServiceImpl implements JwtService {
                 .setExpiration(Date.from(now.plusSeconds(jwtConfig.getExpiration())))
                 .signWith(getKey(), SignatureAlgorithm.HS256)
                 .compact();
+    }
+
+    @Override
+    public String generateRefreshToken(UserDetailsCustom userDetailsCustom) {
+        log.info("User Detail: " + userDetailsCustom);
+        Instant now = Instant.now();
+
+        List<String> roles = new ArrayList<>();
+
+        userDetailsCustom.getAuthorities().forEach(role -> {
+            roles.add(role.getAuthority());
+        });
+
+        log.info("Roles: {} ", roles);
+        String refreshToken = Jwts.builder()
+                .setSubject(userDetailsCustom.getUsername())
+                .claim("authorities", userDetailsCustom.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
+                .claim("isEnable", userDetailsCustom.isEnabled())
+                .setIssuedAt(Date.from(now))
+                .setExpiration(Date.from(now.plusSeconds(jwtConfig.getExpiration()* 24L*7)))
+                .signWith(getKey(), SignatureAlgorithm.HS256)
+                .compact();
+        // Lưu refresh token vào redis
+        redisTemplate.opsForValue().set(userDetailsCustom.getUsername(), refreshToken, 7, TimeUnit.DAYS);
+        return refreshToken;
     }
 
     @Override

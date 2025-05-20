@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,11 +26,15 @@ import vn.edu.iuh.fit.user.utils.SystemConstraints;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public class JwtUsernamePasswordAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
     @Autowired
     private JwtService jwtService;
+
 
     private final ObjectMapper objectMapper;
 
@@ -60,6 +65,7 @@ public class JwtUsernamePasswordAuthenticationFilter extends AbstractAuthenticat
 
     }
 
+
     @Override
     protected void successfulAuthentication(HttpServletRequest request,
                                             HttpServletResponse response,
@@ -68,11 +74,17 @@ public class JwtUsernamePasswordAuthenticationFilter extends AbstractAuthenticat
         UserDetailsCustom userDetailsCustom = (UserDetailsCustom) authentication.getPrincipal();
 
         String accessToken = jwtService.generateToken(userDetailsCustom);
+        String refreshToken = jwtService.generateRefreshToken(userDetailsCustom);
+
+        Map<String, String> tokens = new HashMap<>();
+        tokens.put("accessToken", accessToken);
+        tokens.put("refreshToken", refreshToken);
+
         BaseResponse<Object> responseObject = BaseResponse
                 .builder()
                 .success(true)
                 .code(String.valueOf(HttpStatus.OK.value()))
-                .data(accessToken)
+                .data(tokens)
                 .build();
         String json = HelperUtils.JSON_WRITER.writeValueAsString(responseObject);
         response.setContentType("application/json; charset=UTF-8");

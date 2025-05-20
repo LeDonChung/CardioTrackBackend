@@ -13,6 +13,7 @@ public interface JwtService {
     Key getKey();
 
     String generateToken(UserDetailsCustom userDetailsCustom);
+    String generateRefreshToken(UserDetailsCustom userDetailsCustom);
 
     boolean isValidToken(String token);
     String getCurrentUser();

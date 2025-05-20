@@ -18,7 +18,7 @@ import java.time.Duration;
 @Component
 public class RateLimitingFilter implements GatewayFilter {
 
-    private static final int MAX_REQUESTS_PER_MINUTE = 4;
+    private static final int MAX_REQUESTS_PER_MINUTE = 7;
     private static final String GLOBAL_KEY = "global_rate_limit";
 
     @Autowired
