@@ -50,10 +50,11 @@ public class AppConfig {
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
+    @Autowired
+    private UserDetailsServiceCustom customUserDetailsService;
     @Bean
     public UserDetailsService userDetailsService() {
-        return new UserDetailsServiceCustom();
+        return customUserDetailsService;
     }
 
     @Autowired
