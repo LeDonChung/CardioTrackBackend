@@ -27,14 +27,12 @@ public class RateLimitingFilter implements GatewayFilter {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         return redisTemplate.opsForValue()
-                .increment(GLOBAL_KEY)
-                .flatMap(count -> {
-                    // Lần đầu tạo key trong chu kỳ, set TTL = 60s
-                    if (count == 1) {
-                        redisTemplate.expire(GLOBAL_KEY, Duration.ofMinutes(1)).subscribe();
-                    }
-
-                    if (count > MAX_REQUESTS_PER_MINUTE) {
+                .get(GLOBAL_KEY)
+                .defaultIfEmpty("0")
+                .flatMap(valueStr -> {
+                    long currentCount = Long.parseLong(valueStr);
+                    if (currentCount >= MAX_REQUESTS_PER_MINUTE) {
+                        // Trả lỗi luôn mà không tăng thêm
                         ServerHttpResponse response = exchange.getResponse();
                         response.setStatusCode(HttpStatus.TOO_MANY_REQUESTS);
                         response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
@@ -47,10 +45,20 @@ public class RateLimitingFilter implements GatewayFilter {
                         DataBuffer buffer = response.bufferFactory()
                                 .wrap(body.getBytes(StandardCharsets.UTF_8));
                         return response.writeWith(Mono.just(buffer));
+                    } else {
+                        // Chưa vượt, tăng counter
+                        return redisTemplate.opsForValue()
+                                .increment(GLOBAL_KEY)
+                                .flatMap(count -> {
+                                    if (count == 1) {
+                                        return redisTemplate.expire(GLOBAL_KEY, Duration.ofMinutes(3))
+                                                .then(Mono.just(count));
+                                    }
+                                    return Mono.just(count);
+                                })
+                                .flatMap(count -> chain.filter(exchange));
                     }
-
-                    // Ngược lại cho chạy tiếp
-                    return chain.filter(exchange);
                 });
     }
+
 }

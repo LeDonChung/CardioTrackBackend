@@ -17,7 +17,7 @@ public class CacheConfig {
     @Bean
     public CacheManager cacheManager(RedisConnectionFactory redisConnectionFactory) {
         RedisCacheConfiguration cacheConfig = RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofMinutes(1))  // TTL cho các đối tượng cache
+                .entryTtl(Duration.ofMinutes(3))  // TTL cho các đối tượng cache
                 .disableCachingNullValues();      // Không cache giá trị null
         return RedisCacheManager.builder(redisConnectionFactory)
                 .cacheDefaults(cacheConfig)
