@@ -26,7 +26,7 @@ public class UserAnswer {
     private String testTitle;  // Tiêu đề bài kiểm tra
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_info_id")  // Trường khóa ngoại
-    private UserInfo userInfo;  // Quan hệ với UserInfo
+        private UserInfo userInfo;  // Quan hệ với UserInfo
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_id", insertable = false, updatable = false)
